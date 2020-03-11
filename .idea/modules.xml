@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/delivery-project.iml" filepath="$PROJECT_DIR$/.idea/delivery-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../redux-quiz/.idea/redux-quiz.iml" filepath="$PROJECT_DIR$/../redux-quiz/.idea/redux-quiz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../tensor-test-task/.idea/tensor-test-task.iml" filepath="$PROJECT_DIR$/../tensor-test-task/.idea/tensor-test-task.iml" />
+    </modules>
+  </component>
+</project>
