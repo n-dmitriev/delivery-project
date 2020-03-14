@@ -1,0 +1,80 @@
+@import "normalize.css";
+
+.app{
+  font-family: Arial;
+
+  & .button-section {
+    display: flex;
+    margin: 0;
+
+    &_bottom{
+      margin-top: auto;
+      margin-left: auto;
+    }
+  }
+
+  & .non-click {
+    pointer-events: none;
+  }
+
+  & .main-item-style {
+    outline: 0 !important;
+    padding: 7px 10px;
+    font-size: 20px;
+    border: 1px solid white;
+    border-radius: 8px;
+    cursor: pointer;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+
+    &:hover {
+      -webkit-transform: scale(1.1);
+      -ms-transform: scale(1.1);
+      transform: scale(1.1);
+      color: white;
+      background-color: gray;
+    }
+  }
+
+  & .dagger {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    opacity: 0.3;
+    cursor: pointer;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    &:hover {
+      opacity: 0.6;
+      -webkit-transform: scale(1.13);
+      -ms-transform: scale(1.13);
+      transform: scale(1.13);
+    }
+    &:before,&:after {
+      position: absolute;
+      left: 15px;
+      content: ' ';
+      height: 30px;
+      width: 2px;
+      background-color: #333;
+    }
+
+    &_add{
+      &:before {
+        transform: rotate(90deg);
+      }
+    }
+
+    &_delete{
+      float: right;
+      &:before {
+        transform: rotate(45deg);
+      }
+      &:after {
+        transform: rotate(-45deg);
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+.header {
+  display: flex;
+  background-color: #F5F5F5;
+  padding: 5px 15px;
+
+  &__title{
+    cursor: default;
+    font-size: 35px;
+    border-bottom: 2px solid #5CB85C;
+  }
+
+  &__btn-section {
+    display: flex;
+    margin-left: auto;
+    flex-direction: row;
+  }
+
+  & .main-item-style{
+    margin: 10px;
+  }
+}

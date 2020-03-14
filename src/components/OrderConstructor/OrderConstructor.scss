@@ -1,0 +1,45 @@
+.order-constructor {
+  border: 1px solid gray;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  justify-content: center;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;
+    max-height: 600px;
+
+    & .dagger {
+      margin: auto 10px 10px auto;
+    }
+
+    & .button-section {
+      margin: auto auto 10px 10px;
+    }
+  }
+
+  &__tab {
+    padding: 10px 10px 0 10px;
+    margin: 10px;
+    font-size: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+
+    &:hover {
+      -webkit-transform: scale(1.03);
+      -ms-transform: scale(1.03);
+      transform: scale(1.03);
+      background-color: silver;
+    }
+  }
+  .placeholder{
+    opacity: 0.3;
+    font-weight: bold;
+    cursor: default;
+    padding: 10px;
+  }
+}
