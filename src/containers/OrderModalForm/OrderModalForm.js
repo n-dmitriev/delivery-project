@@ -13,6 +13,13 @@ import {
 class OrderModalForm extends Component {
     state = {
         activeTab: 'shop-tab',
+        formIsOpen: false,
+    }
+
+    interactionWithDagger() {
+        this.setState({
+            formIsOpen: !this.state.formIsOpen,
+        })
     }
 
     close(e) {
@@ -23,6 +30,7 @@ class OrderModalForm extends Component {
     clickItemHandler(event) {
         this.setState({
             activeTab: event.target.id,
+            formIsOpen: this.state.formIsOpen ? !this.state.formIsOpen : this.state.formIsOpen
         })
     }
 
@@ -52,12 +60,15 @@ class OrderModalForm extends Component {
 
                     <OrderConstructor
                         activeTab={this.state.activeTab}
-                        order={this.props.order}
+                        shopOrder={this.props.shopOrder}
+                        restaurantOrder={this.props.restaurantOrder}
                         addProductToOrder={this.props.addProductToOrder}
                         removeProductFromOrder={this.props.removeProductFromOrder}
                         editOrderItem={this.props.editOrderItem}
                         sendOrder={this.props.sendOrder}
                         deleteOrder={this.props.deleteOrder}
+                        interactionWithDagger={this.interactionWithDagger.bind(this)}
+                        formIsOpen={this.state.formIsOpen}
                     />
                 </form>
                 <div className={'bg'} onClick={e => this.close(e)}/>
@@ -68,19 +79,20 @@ class OrderModalForm extends Component {
 
 function mapStateToProps(state) {
     return {
-        order: state.currentOrder.order
+        shopOrder: state.currentOrder.shopOrder,
+        restaurantOrder: state.currentOrder.restaurantOrder
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        addProductToOrder: (item) =>
-            dispatch(addProductToOrder(item)),
-        editOrderItem: (item) =>
-            dispatch(editOrderItem(item)),
-        removeProductFromOrder: (id) => dispatch(removeProductFromOrder(id)),
+        addProductToOrder: (item, list) =>
+            dispatch(addProductToOrder(item, list)),
+        editOrderItem: (item, list) =>
+            dispatch(editOrderItem(item, list)),
+        removeProductFromOrder: (id, list) => dispatch(removeProductFromOrder(id,list)),
         sendOrder: () => dispatch(sendOrder()),
-        deleteOrder: () => dispatch(deleteOrder())
+        deleteOrder: () => dispatch(deleteOrder()),
     }
 }
 
