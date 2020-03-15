@@ -8,7 +8,6 @@ const initialState = {
 }
 
 export default function eateriesReducer(state = initialState, action) {
-    let arr = state.order, el
     switch (action.type) {
         case ADD_P_TO_ORDER:
             return {

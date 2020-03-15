@@ -1,16 +1,24 @@
 import {ADD_P_TO_ORDER, DELETE_ORDER, EDIT_ORDER_ITEM, REMOVE_P_FROM_ORDER, SEND_ORDER} from './actionTypes'
 
-export function add(item) {
+function getElementById(arr, id) {
+    return arr.findIndex(x => x.id === id)
+}
+
+function updateLocalStorage(getState) {
+    localStorage.setItem('currentOrder', JSON.stringify(getState().currentOrder.order))
+}
+
+function dispatchAction(actionType, item) {
     return {
-        type: ADD_P_TO_ORDER,
-        item,
+        type: actionType,
+        item
     }
 }
 
 export function addProductToOrder(item) {
     return (dispatch, getState) => {
-        dispatch(add(item))
-        localStorage.setItem('currentOrder', JSON.stringify(getState().currentOrder.order))
+        dispatch(dispatchAction(ADD_P_TO_ORDER,item))
+        updateLocalStorage(getState)
     }
 }
 
@@ -18,20 +26,10 @@ export function editOrderItem(item) {
     return (dispatch, getState) => {
         const state = getState().currentOrder
         const index = getElementById(state.order, item.id)
-        const arr = state.order[index].assign({}, item)
-        dispatch(edit(arr))
-        localStorage.setItem('currentOrder', JSON.stringify(getState().currentOrder.order))
-    }
-}
-
-function getElementById(arr, id) {
-    return arr.findIndex(x => x.id === id)
-}
-
-export function edit(item) {
-    return {
-        type: EDIT_ORDER_ITEM,
-        item,
+        const arr = state.order
+        arr[index] = item
+        dispatch(dispatchAction(EDIT_ORDER_ITEM, arr))
+        updateLocalStorage(getState)
     }
 }
 
@@ -44,26 +42,21 @@ export function removeProductFromOrder(id) {
         }
         const arr = state.order
         arr.splice(index, 1)
-        dispatch(remove([...arr]))
-        localStorage.setItem('currentOrder', JSON.stringify(getState().currentOrder.order))
-    }
-}
-
-export function remove(item) {
-    return {
-        type: REMOVE_P_FROM_ORDER,
-        item,
+        dispatch(dispatchAction(REMOVE_P_FROM_ORDER,[...arr]))
+        updateLocalStorage(getState)
     }
 }
 
 export function sendOrder() {
-    return {
-        type: SEND_ORDER,
+    return (dispatch, getState) => {
+        dispatch(dispatchAction(SEND_ORDER, null))
+        updateLocalStorage(getState)
     }
 }
 
 export function deleteOrder() {
-    return {
-        type: DELETE_ORDER,
+    return (dispatch, getState) => {
+        dispatch(dispatchAction(DELETE_ORDER, null))
+        updateLocalStorage(getState)
     }
 }

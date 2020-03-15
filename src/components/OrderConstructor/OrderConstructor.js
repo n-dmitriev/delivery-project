@@ -27,6 +27,12 @@ export default class OrderConstructor extends Component {
         this.props.removeProductFromOrder(e.target.id)
     }
 
+    resetActiveItem(){
+        this.setState({
+            activeItem: null
+        })
+    }
+
     renderOrder() {
         return (
             <div className={'order-constructor__content'}>
@@ -69,7 +75,9 @@ export default class OrderConstructor extends Component {
                         activeTab={this.props.activeTab}
                         interactionWithDagger={this.interactionWithDagger.bind(this)}
                         addProductToOrder={this.props.addProductToOrder}
+                        editOrderItem={this.props.editOrderItem}
                         item={this.state.activeItem}
+                        resetActiveItem={this.resetActiveItem.bind(this)}
                     />
                     : this.renderOrder()
                 }

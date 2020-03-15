@@ -4,7 +4,7 @@ import './ProductForm.scss'
 export default class productForm extends Component {
     constructor(props) {
         super(props)
-        this.handleSubmit = this.handleSubmit.bind(this)
+        this.addAndEditOrder = this.addAndEditOrder.bind(this)
         this.inputName = React.createRef()
         this.inputQuantity = React.createRef()
         this.inputBrand = React.createRef()
@@ -12,47 +12,62 @@ export default class productForm extends Component {
         this.text = React.createRef()
     }
 
-    handleSubmit() {
-        this.props.addProductToOrder({
-            id: `note-${Math.random().toString(36).substr(2, 9)}`,
+    addAndEditOrder() {
+        const item = {
             name: this.inputName.current.value,
             quantity: this.inputQuantity.current.value,
             brand: this.inputBrand.current.value,
             price: this.inputPrice.current.value,
-            description: this.text.current.value
-        })
+            description: this.text.current.value,
+        }
+
+        if (this.props.item === null) {
+            item.id = `note-${Math.random().toString(36).substr(2, 9)}`
+            this.props.addProductToOrder(item)
+        } else
+        {
+            item.id = this.props.item.id
+            this.props.editOrderItem(item)
+        }
         this.props.interactionWithDagger()
     }
 
     shopForm() {
+        let isEdit
+        this.props.item === null ? isEdit = false : isEdit = true
         return (
             <>
                 <div className={'product-form__input-field'}>
                     <label>Наименование продукта*</label>
-                    <input type="text" ref={this.inputName}/>
+                    <input type="text" ref={this.inputName} defaultValue={isEdit ? this.props.item.name : null}/>
                 </div>
                 <div className={'product-form__input-field'}>
                     <label>Объём/Кол-во*</label>
-                    <input type="text" ref={this.inputQuantity}/>
+                    <input type="text" ref={this.inputQuantity}
+                           defaultValue={isEdit ? this.props.item.quantity : null}/>
                 </div>
                 <div className={'product-form__input-field'}>
                     <label>Бренд</label>
-                    <input type="text" ref={this.inputBrand}/>
+                    <input type="text" ref={this.inputBrand} defaultValue={isEdit ? this.props.item.brand : null}/>
                 </div>
                 <div className={'product-form__input-field'}>
                     <label>Примерная цена</label>
-                    <input type="text" ref={this.inputPrice}/>
+                    <input type="text" ref={this.inputPrice} defaultValue={isEdit ? this.props.item.price : null}/>
                 </div>
                 <div className={'product-form__input-field'}>
                     <label>Примечание</label>
-                    <textarea ref={this.text} cols="30" rows="5">
+                    <textarea ref={this.text} cols="30" rows="5" defaultValue={isEdit ? this.props.item.text : null}>
                 </textarea>
                 </div>
                 <small>Поля помеченные * обязательные для заполнения</small>
 
                 <div className="button-section button-section_bottom">
-                    <span className="main-item-style" onClick={this.handleSubmit}>Добавить</span>
-                    <span className="main-item-style" onClick={this.props.interactionWithDagger}>Отменить</span>
+                    <span className="main-item-style" onClick={this.addAndEditOrder}>
+                        {isEdit ? 'Применить' : 'Сохранить'}
+                    </span>
+                    <span className="main-item-style" onClick={this.props.interactionWithDagger}>
+                        {isEdit ? 'Назад' : 'Отменить'}
+                    </span>
                 </div>
             </>
         )
