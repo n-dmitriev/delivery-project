@@ -1,6 +1,6 @@
 import {
     ADD_P_TO_RESTAURANT_ORDER,
-    ADD_P_TO_SHOP_ORDER,
+    ADD_P_TO_SHOP_ORDER, CHANGE_RESTAURANT_NAME, CHANGE_SHOP_NAME,
     DELETE_ORDER, EDIT_ORDER_RESTAURANT_ITEM,
     EDIT_ORDER_SHOP_ITEM, REMOVE_P_FROM_RESTAURANT_ORDER,
     REMOVE_P_FROM_SHOP_ORDER,
@@ -86,5 +86,19 @@ export function deleteOrder() {
     return (dispatch, getState) => {
         dispatch(dispatchAction(DELETE_ORDER, null))
         updateLocalStorage(getState, null)
+    }
+}
+
+export function changeRestaurantName(name) {
+    return (dispatch, getState) => {
+        dispatch(dispatchAction(CHANGE_RESTAURANT_NAME,name))
+        localStorage.setItem('nameOfRestaurant', JSON.stringify(getState().currentOrder.nameOfRestaurant))
+    }
+}
+
+export function changeShopName(name) {
+    return (dispatch, getState) => {
+        dispatch(dispatchAction(CHANGE_SHOP_NAME,name))
+        localStorage.setItem('nameOfShop', JSON.stringify(getState().currentOrder.nameOfShop))
     }
 }

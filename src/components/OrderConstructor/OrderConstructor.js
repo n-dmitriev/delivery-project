@@ -5,20 +5,6 @@ import ProductForm from '../ProductForm/ProductForm'
 export default class OrderConstructor extends Component {
     state = {
         activeItem: null,
-        nameOfRestaurant: '',
-        nameOfShop: '',
-    }
-
-    changeShopName(value) {
-        this.setState({
-            nameOfShop: value
-        })
-    }
-
-    changeRestaurantName(value) {
-        this.setState({
-            nameOfRestaurant: value,
-        })
     }
 
     editItem(e){
@@ -106,11 +92,11 @@ export default class OrderConstructor extends Component {
                         addProductToOrder={this.props.addProductToOrder}
                         editOrderItem={this.props.editOrderItem}
                         item={this.state.activeItem}
-                        nameOfRestaurant={this.state.nameOfRestaurant}
-                        nameOfShop={this.state.nameOfShop}
+                        nameOfRestaurant={this.props.nameOfRestaurant}
+                        nameOfShop={this.props.nameOfShop}
                         resetActiveItem={this.resetActiveItem.bind(this)}
-                        changeShopName={this.changeShopName.bind(this)}
-                        changeRestaurantName={this.changeRestaurantName.bind(this)}
+                        changeShopName={this.props.changeShopName}
+                        changeRestaurantName={this.props.changeRestaurantName}
                     />
                     : this.renderOrder()
                 }

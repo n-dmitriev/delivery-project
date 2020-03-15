@@ -1,6 +1,6 @@
 import {
     ADD_P_TO_RESTAURANT_ORDER,
-    ADD_P_TO_SHOP_ORDER,
+    ADD_P_TO_SHOP_ORDER, CHANGE_RESTAURANT_NAME, CHANGE_SHOP_NAME,
     DELETE_ORDER, EDIT_ORDER_RESTAURANT_ITEM,
     EDIT_ORDER_SHOP_ITEM, REMOVE_P_FROM_RESTAURANT_ORDER,
     REMOVE_P_FROM_SHOP_ORDER,
@@ -19,8 +19,8 @@ localStorage.setItem('nameOfShop', JSON.stringify(nameOfShop))
 const initialState = {
     shopOrder: shopOrder,
     restaurantOrder: restaurantOrder,
-    nameOfRestaurant: '',
-    nameOfShop: ''
+    nameOfRestaurant: nameOfRestaurant,
+    nameOfShop: nameOfShop
 }
 
 export default function eateriesReducer(state = initialState, action) {
@@ -48,6 +48,14 @@ export default function eateriesReducer(state = initialState, action) {
         case REMOVE_P_FROM_RESTAURANT_ORDER:
             return {
                 ...state, restaurantOrder: action.item
+            }
+        case CHANGE_RESTAURANT_NAME:
+            return {
+                ...state, nameOfRestaurant: action.item
+            }
+        case CHANGE_SHOP_NAME:
+            return {
+                ...state, nameOfShop: action.item
             }
         case SEND_ORDER:
             return {

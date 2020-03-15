@@ -156,7 +156,7 @@ export default class productForm extends Component {
                         <small>Это поле необязательное для заполнения</small>
                         <button
                             className={'main-item-style'}
-                            onClick={() => this.props.changeShopName(this.shopName)}>
+                            onClick={() => {this.props.changeShopName(this.shopName.current.value)}}>
                             Далее
                         </button>
                     </div>
@@ -170,9 +170,10 @@ export default class productForm extends Component {
                     <div className={'product-form__input-field product-form__input-field_name'}>
                         <label>Введите название ресторана</label>
                         <input type="text" ref={this.restaurantName}/>
+                        <small>Это поле обязательное для заполнения</small>
                         <button
                             className={'main-item-style'}
-                            onClick={() => this.props.changeRestaurantName(this.restaurantName)}>
+                            onClick={() => this.props.changeRestaurantName(this.restaurantName.current.value)}>
                             Далее
                         </button>
                     </div>

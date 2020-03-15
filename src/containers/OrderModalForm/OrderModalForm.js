@@ -3,7 +3,7 @@ import './OrderModalForm.scss'
 import {connect} from 'react-redux'
 import OrderConstructor from '../../components/OrderConstructor/OrderConstructor'
 import {
-    addProductToOrder,
+    addProductToOrder, changeRestaurantName, changeShopName,
     deleteOrder,
     editOrderItem,
     removeProductFromOrder,
@@ -69,6 +69,10 @@ class OrderModalForm extends Component {
                         deleteOrder={this.props.deleteOrder}
                         interactionWithDagger={this.interactionWithDagger.bind(this)}
                         formIsOpen={this.state.formIsOpen}
+                        nameOfRestaurant={this.props.nameOfRestaurant}
+                        nameOfShop={this.props.nameOfShop}
+                        changeShopName={this.props.changeShopName}
+                        changeRestaurantName={this.props.changeRestaurantName}
                     />
                 </form>
                 <div className={'bg'} onClick={e => this.close(e)}/>
@@ -80,7 +84,9 @@ class OrderModalForm extends Component {
 function mapStateToProps(state) {
     return {
         shopOrder: state.currentOrder.shopOrder,
-        restaurantOrder: state.currentOrder.restaurantOrder
+        restaurantOrder: state.currentOrder.restaurantOrder,
+        nameOfRestaurant: state.currentOrder.nameOfRestaurant,
+        nameOfShop: state.currentOrder.nameOfShop,
     }
 }
 
@@ -93,6 +99,8 @@ function mapDispatchToProps(dispatch) {
         removeProductFromOrder: (id, list) => dispatch(removeProductFromOrder(id,list)),
         sendOrder: () => dispatch(sendOrder()),
         deleteOrder: () => dispatch(deleteOrder()),
+        changeShopName: (name) => dispatch(changeShopName(name)),
+        changeRestaurantName: (name) => dispatch(changeRestaurantName(name))
     }
 }
 
