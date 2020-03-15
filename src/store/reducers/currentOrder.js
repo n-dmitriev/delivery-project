@@ -1,7 +1,10 @@
 import {ADD_P_TO_ORDER, DELETE_ORDER, EDIT_ORDER_ITEM, REMOVE_P_FROM_ORDER, SEND_ORDER} from '../actions/actionTypes'
 
+let itemsArray = localStorage.getItem('currentOrder') ? JSON.parse(localStorage.getItem('currentOrder')) : []
+localStorage.setItem('currentOrder', JSON.stringify(itemsArray))
+
 const initialState = {
-    order: []
+    order: itemsArray
 }
 
 export default function eateriesReducer(state = initialState, action) {
@@ -13,14 +16,11 @@ export default function eateriesReducer(state = initialState, action) {
             }
         case EDIT_ORDER_ITEM:
             return {
-                ...state, order: getElementById(state.order, action.item.id).assign({}, action.item)
+                ...state, order: action.item
             }
         case REMOVE_P_FROM_ORDER:
-            const index = state.order.findIndex(x => x.id === action.id)
-            if (index < -1) {return null}
-            arr.length === 1? arr = [] :  arr.splice(index, 1)
             return {
-                ...state, order: arr
+                ...state, order: action.item
             }
         case SEND_ORDER:
             return {
@@ -33,9 +33,4 @@ export default function eateriesReducer(state = initialState, action) {
         default:
             return state
     }
-}
-
-function getElementById(arr, id) {
-    const index = this.listOfNotes.findIndex(x => x.id === id)
-    return arr[index]
 }

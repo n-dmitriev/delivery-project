@@ -43,19 +43,24 @@ export default class OrderConstructor extends Component {
                         ? <div className="button-section button-section_bottom">
                             <button className="main-item-style" onClick={this.props.sendOrder}>Заказать</button>
                             <button className="main-item-style" onClick={this.props.deleteOrder}>Отменить</button>
+                            <span
+                                className={'dagger dagger_add'}
+                                onClick={this.interactionWithDagger.bind(this)}>
+                            </span>
                         </div>
-                        : <p className={'placeholder'}>Вы ещё ничего не добавили в заказ</p>
+                        : <>
+                            <p className={'placeholder'}>Вы ещё ничего не добавили в заказ</p>
+                            <span
+                                className={'dagger dagger_add'}
+                                onClick={this.interactionWithDagger.bind(this)}>
+                            </span>
+                        </>
                 }
-                <span
-                    className={'dagger dagger_add'}
-                    onClick={this.interactionWithDagger.bind(this)}>
-                </span>
             </div>
         )
     }
 
     renderContent() {
-        console.log(this.props)
         return (
             <>
                 {this.state.formIsOpen === true
