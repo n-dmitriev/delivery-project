@@ -3,8 +3,19 @@
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   justify-content: center;
-  overflow-y: scroll;
-  overflow-x: hidden;
+
+
+  &__order-list{
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  &__name{
+    padding: 5px 0 7px 20px;
+    font-size: 27px;
+    border-bottom: 1px solid gray;
+    cursor: pointer;
+  }
 
   &__content {
     display: flex;
@@ -13,12 +24,13 @@
     max-height: 600px;
 
     & .dagger {
-      margin: auto 30px 10px auto;
+      margin: auto 10px 10px auto;
     }
 
     & .button-section {
-      margin: auto auto 10px 10px;
+      margin: auto auto 0 0;
       width: 100%;
+      border-top: 1px solid silver;
       & .dagger {
         float: right;
       }
@@ -30,6 +42,7 @@
     margin: 10px;
     font-size: 20px;
     border-radius: 8px;
+    min-height: 60px;
     cursor: pointer;
     -moz-transition: all 0.3s ease-out;
     -o-transition: all 0.3s ease-out;

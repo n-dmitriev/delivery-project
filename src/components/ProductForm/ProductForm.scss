@@ -5,10 +5,6 @@
   min-height: 600px;
   max-height: 600px;
 
-  & .none{
-    display: none;
-  }
-
   &__input-field{
     display: flex;
     margin: 10px 0;
@@ -49,5 +45,20 @@
 
   & small {
     opacity: 0.5;
+    cursor: default;
+    margin: 10px 0 20px 0;
+  }
+
+  & .error{
+    opacity: 1;
+    color: red;
+  }
+
+  & .input-error{
+    border: 1px solid red;
+  }
+
+  & .none{
+    display: none;
   }
 }

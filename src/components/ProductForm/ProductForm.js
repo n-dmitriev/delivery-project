@@ -10,99 +10,112 @@ export default class productForm extends Component {
         this.inputBrand = React.createRef()
         this.inputPrice = React.createRef()
         this.text = React.createRef()
-        this.restaurantName = React.createRef()
-        this.shopName = React.createRef()
+        this.restaurantNameInput = React.createRef()
+        this.shopNameInput = React.createRef()
         this.state = {
+            orderFormIsValid: true,
+            restIsValid: true,
             listOfShopQuestions: [
                 {
                     id: 'name',
                     question: 'Наименование продукта*',
-                    required: 'true',
+                    required: true,
                     ref: this.inputName,
-                    type: 'input'
+                    type: 'input',
                 },
                 {
                     id: 'quantity',
                     question: 'Объём/Кол-во*',
-                    required: 'true',
+                    required: true,
                     ref: this.inputQuantity,
-                    type: 'input'
+                    type: 'input',
                 },
                 {
                     id: 'brand',
                     question: 'Бренд',
-                    required: 'false',
+                    required: false,
                     ref: this.inputBrand,
-                    type: 'input'
+                    type: 'input',
                 },
                 {
                     id: 'price',
                     question: 'Примерная, ожидаемая цена',
-                    required: 'false',
+                    required: false,
                     ref: this.inputPrice,
-                    type: 'input'
+                    type: 'input',
                 },
                 {
                     id: 'description',
                     question: 'Примечание',
-                    required: 'false',
+                    required: false,
                     ref: this.text,
-                    type: 'textarea'
+                    type: 'textarea',
                 },
             ],
             listOfRestaurantQuestions: [
                 {
                     id: 'name',
                     question: 'Наименование блюда*',
-                    required: 'true',
+                    required: true,
                     ref: this.inputName,
-                    type: 'input'
+                    type: 'input',
                 },
                 {
                     id: 'quantity',
                     question: 'Объём/Кол-во*',
-                    required: 'true',
+                    required: true,
                     ref: this.inputQuantity,
-                    type: 'input'
+                    type: 'input',
                 },
                 {
                     id: 'price',
                     question: 'Примерная, ожидаемая цена',
-                    required: 'false',
+                    required: false,
                     ref: this.inputPrice,
-                    type: 'input'
+                    type: 'input',
                 },
                 {
                     id: 'description',
                     question: 'Примечание',
-                    required: 'false',
+                    required: false,
                     ref: this.text,
-                    type: 'textarea'
+                    type: 'textarea',
                 },
             ],
         }
     }
 
-    addAndEditOrder() {
-        const item = {
-            name: this.inputName.current.value,
-            quantity: this.inputQuantity.current.value,
-            price: this.inputPrice.current.value,
-            description: this.text.current.value,
-        }
+    addAndEditOrder(e) {
+        e.preventDefault()
+        if(this.inputName.current.value.replace(/\s+/g, '') !== '' && this.inputQuantity.current.value.replace(/\s+/g, '') !== ''){
+            const item = {
+                name: this.inputName.current.value,
+                quantity: this.inputQuantity.current.value,
+                price: this.inputPrice.current.value,
+                description: this.text.current.value,
+            }
 
-        if (this.props.activeTab === 'shop-tab')
-            item.brand = this.inputBrand.current.value
+            if (this.props.activeTab === 'shop-tab')
+                item.brand = this.inputBrand.current.value
 
-        if (this.props.item === null) {
-            item.id = `note-${Math.random().toString(36).substr(2, 9)}`
-            this.props.addProductToOrder(item, this.props.activeTab)
-        } else {
-            item.id = this.props.item.id
-            this.props.editOrderItem(item, this.props.activeTab)
+            if (this.props.item === null) {
+                item.id = `note-${Math.random().toString(36).substr(2, 9)}`
+                this.props.addProductToOrder(item, this.props.activeTab)
+            } else {
+                item.id = this.props.item.id
+                this.props.editOrderItem(item, this.props.activeTab)
+            }
+            this.props.interactionWithDagger()
+            this.props.resetActiveItem()
+            this.setState({
+                orderFormIsValid: true
+            })
         }
-        this.props.interactionWithDagger()
-        this.props.resetActiveItem()
+        else {
+            this.setState({
+                orderFormIsValid: false
+            })
+        }
     }
 
     formInputs(isEdit, listQuestions) {
@@ -110,23 +123,30 @@ export default class productForm extends Component {
             <>
                 <input className={'none'}/>
                 {
-                    listQuestions.map((question) =>(
+                    listQuestions.map((question) => (
                         <div key={question.id} className={'product-form__input-field'}>
                             <label>{question.question}</label>
                             {
                                 question.type === 'input'
-                                ? <input type="text"
-                                         ref={question.ref}
-                                         defaultValue={isEdit ? this.props.item[question.id] : null}/>
-                                : <textarea
+                                    ? <input type="text"
+                                             ref={question.ref}
+                                             defaultValue={isEdit ? this.props.item[question.id] : null}
+                                             className={
+                                                 question.required === true ? this.state.orderFormIsValid === true ? ' ' : 'input-error' : ' '
+                                             }/>
+                                    : <textarea
                                         ref={question.ref} cols="30" rows="5"
-                                        defaultValue={isEdit ? this.props.item[question.id] : null}>
+                                        defaultValue={isEdit ? this.props.item[question.id] : null}
+                                        className={
+                                            question.required === true ? this.state.orderFormIsValid === true ? '' : 'input-error' : ''
+                                        }>
                                 </textarea>
                             }
                         </div>
                     ))
                 }
-                <small>Поля помеченные * обязательные для заполнения</small>
+                <small className={this.state.orderFormIsValid === true ? '' : 'error'}>Поля
+                    помеченные * обязательные для заполнения</small>
 
                 <div className="button-section button-section_bottom">
                     <button className="main-item-style" onClick={this.addAndEditOrder}>
@@ -143,43 +163,69 @@ export default class productForm extends Component {
         )
     }
 
+    validateRestaurantName(e) {
+        e.preventDefault()
+        if (this.restaurantNameInput.current.value.replace(/\s+/g, '') !== '') {
+            this.props.changeRestaurantName(this.restaurantNameInput.current.value)
+            this.props.interactionWithDagger()
+            this.setState({
+                restIsValid: true,
+            })
+        } else {
+            this.setState({
+                restIsValid: false,
+            })
+        }
+    }
+
+    validateShopName(e) {
+        e.preventDefault()
+        if (this.shopNameInput.current.value.replace(/\s+/g, '') !== '') {
+            this.props.changeShopName(this.shopNameInput.current.value)
+        }
+        else
+            this.props.changeShopName('В любом магазине')
+        this.props.interactionWithDagger()
+    }
+
     form() {
         let isEdit
         this.props.item === null ? isEdit = false : isEdit = true
 
-        if(this.props.activeTab === 'shop-tab'){
+        if (this.props.activeTab === 'shop-tab') {
             if (this.props.nameOfShop === '' && !isEdit)
                 return (
                     <div className={'product-form__input-field product-form__input-field_name'}>
                         <label>Введите название магазина</label>
-                        <input type="text" ref={this.shopName}/>
+                        <input type="text" ref={this.shopNameInput}/>
                         <small>Это поле необязательное для заполнения</small>
                         <button
                             className={'main-item-style'}
-                            onClick={() => {this.props.changeShopName(this.shopName.current.value)}}>
+                            onClick={this.validateShopName.bind(this)}>
                             Далее
                         </button>
                     </div>
                 )
             else
                 return this.formInputs(isEdit, this.state.listOfShopQuestions)
-        }
-        else {
+        } else {
             if (this.props.nameOfRestaurant === '' && !isEdit)
                 return (
                     <div className={'product-form__input-field product-form__input-field_name'}>
                         <label>Введите название ресторана</label>
-                        <input type="text" ref={this.restaurantName}/>
-                        <small>Это поле обязательное для заполнения</small>
+                        <input className={this.state.restIsValid === true ? '' : 'input-error'} type="text"
+                               ref={this.restaurantNameInput}/>
+                        <small className={this.state.restIsValid === true ? '' : 'error'}>Это поле обязательное для
+                            заполнения</small>
                         <button
                             className={'main-item-style'}
-                            onClick={() => this.props.changeRestaurantName(this.restaurantName.current.value)}>
+                            onClick={this.validateRestaurantName.bind(this)}>
                             Далее
                         </button>
                     </div>
                 )
             else
-                return  this.formInputs(isEdit, this.state.listOfRestaurantQuestions)
+                return this.formInputs(isEdit, this.state.listOfRestaurantQuestions)
         }
     }
 

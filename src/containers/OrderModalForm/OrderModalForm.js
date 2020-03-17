@@ -22,11 +22,6 @@ class OrderModalForm extends Component {
         })
     }
 
-    close(e) {
-        e.preventDefault()
-        this.props.onClose()
-    }
-
     clickItemHandler(event) {
         this.setState({
             activeTab: event.target.id,
@@ -73,9 +68,10 @@ class OrderModalForm extends Component {
                         nameOfShop={this.props.nameOfShop}
                         changeShopName={this.props.changeShopName}
                         changeRestaurantName={this.props.changeRestaurantName}
+                        close={this.props.onClose}
                     />
                 </form>
-                <div className={'bg'} onClick={e => this.close(e)}/>
+                <div className={'bg'} onClick={this.props.onClose}/>
             </>
         )
     }

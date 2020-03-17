@@ -2,7 +2,7 @@ import {
     ADD_P_TO_RESTAURANT_ORDER,
     ADD_P_TO_SHOP_ORDER, CHANGE_RESTAURANT_NAME, CHANGE_SHOP_NAME,
     DELETE_ORDER, EDIT_ORDER_RESTAURANT_ITEM,
-    EDIT_ORDER_SHOP_ITEM, REMOVE_P_FROM_RESTAURANT_ORDER,
+    EDIT_ORDER_SHOP_ITEM, REMOVE_NAMES, REMOVE_P_FROM_RESTAURANT_ORDER,
     REMOVE_P_FROM_SHOP_ORDER,
     SEND_ORDER,
 } from './actionTypes'
@@ -12,9 +12,9 @@ function getElementById(arr, id) {
 }
 
 function updateLocalStorage(getState, list) {
-    if(list === 'shop-tab')
+    if (list === 'shop-tab')
         localStorage.setItem('shopOrder', JSON.stringify(getState().currentOrder.shopOrder))
-    else if(list === 'restaurant-tab')
+    else if (list === 'restaurant-tab')
         localStorage.setItem('restaurantOrder', JSON.stringify(getState().currentOrder.restaurantOrder))
     else localStorage.clear()
 }
@@ -23,6 +23,12 @@ function dispatchAction(actionType, item) {
     return {
         type: actionType,
         item,
+    }
+}
+
+function removeNames() {
+    return {
+        type: REMOVE_NAMES,
     }
 }
 
@@ -78,27 +84,30 @@ export function removeProductFromOrder(id, list) {
 export function sendOrder() {
     return (dispatch, getState) => {
         dispatch(dispatchAction(SEND_ORDER, null))
+        dispatch(removeNames())
         updateLocalStorage(getState, null)
+        alert('Ваш заказ принят!')
     }
 }
 
 export function deleteOrder() {
     return (dispatch, getState) => {
         dispatch(dispatchAction(DELETE_ORDER, null))
+        dispatch(removeNames())
         updateLocalStorage(getState, null)
     }
 }
 
 export function changeRestaurantName(name) {
     return (dispatch, getState) => {
-        dispatch(dispatchAction(CHANGE_RESTAURANT_NAME,name))
+        dispatch(dispatchAction(CHANGE_RESTAURANT_NAME, name))
         localStorage.setItem('nameOfRestaurant', JSON.stringify(getState().currentOrder.nameOfRestaurant))
     }
 }
 
 export function changeShopName(name) {
     return (dispatch, getState) => {
-        dispatch(dispatchAction(CHANGE_SHOP_NAME,name))
+        dispatch(dispatchAction(CHANGE_SHOP_NAME, name))
         localStorage.setItem('nameOfShop', JSON.stringify(getState().currentOrder.nameOfShop))
     }
 }
