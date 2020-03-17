@@ -33,7 +33,7 @@ class OrderModalForm extends Component {
         if (this.props.isOpen === false) return null
         return (
             <>
-                <form className={'order-form'} key={'order-form'}>
+                <div className={'order-form'} key={'order-form'}>
                     <div className={'order-form__selector'}>
                         <div
                             id={'shop-tab'}
@@ -70,7 +70,7 @@ class OrderModalForm extends Component {
                         changeRestaurantName={this.props.changeRestaurantName}
                         close={this.props.onClose}
                     />
-                </form>
+                </div>
                 <div className={'bg'} onClick={this.props.onClose}/>
             </>
         )
