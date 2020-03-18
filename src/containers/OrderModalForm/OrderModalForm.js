@@ -16,13 +16,13 @@ class OrderModalForm extends Component {
         formIsOpen: false,
     }
 
-    interactionWithDagger() {
+    interactionWithDagger = () => {
         this.setState({
             formIsOpen: !this.state.formIsOpen,
         })
     }
 
-    clickItemHandler(event) {
+    clickItemHandler = (event) => {
         this.setState({
             activeTab: event.target.id,
             formIsOpen: this.state.formIsOpen ? !this.state.formIsOpen : this.state.formIsOpen
@@ -34,13 +34,14 @@ class OrderModalForm extends Component {
         return (
             <>
                 <div className={'order-form'} key={'order-form'}>
+                    <span className="dagger dagger_delete" onClick={this.props.onClose}></span>
                     <div className={'order-form__selector'}>
                         <div
                             id={'shop-tab'}
                             className={this.state.activeTab === 'shop-tab'
                                 ? 'order-form__select order-form__select_active'
                                 : 'order-form__select'}
-                            onClick={this.clickItemHandler.bind(this)}>
+                            onClick={this.clickItemHandler}>
                             <span className={'non-click'}>Заказать из магазина</span>
                         </div>
                         <div
@@ -48,9 +49,10 @@ class OrderModalForm extends Component {
                             className={this.state.activeTab === 'restaurant-tab'
                                 ? 'order-form__select order-form__select_active'
                                 : 'order-form__select'}
-                            onClick={this.clickItemHandler.bind(this)}>
+                            onClick={this.clickItemHandler}>
                             <span className={'non-click'}>Заказать из заведения</span>
                         </div>
+
                     </div>
 
                     <OrderConstructor
@@ -62,7 +64,7 @@ class OrderModalForm extends Component {
                         editOrderItem={this.props.editOrderItem}
                         sendOrder={this.props.sendOrder}
                         deleteOrder={this.props.deleteOrder}
-                        interactionWithDagger={this.interactionWithDagger.bind(this)}
+                        interactionWithDagger={this.interactionWithDagger}
                         formIsOpen={this.state.formIsOpen}
                         nameOfRestaurant={this.props.nameOfRestaurant}
                         nameOfShop={this.props.nameOfShop}

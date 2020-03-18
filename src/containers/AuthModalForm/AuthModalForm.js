@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import './AuthModalForm.scss'
 import {connect} from 'react-redux'
+import {auth} from '../../store/actions/auth'
 
 class AuthModalForm extends Component {
     constructor(props) {
@@ -10,20 +11,38 @@ class AuthModalForm extends Component {
         this.state = {}
     }
 
+    loginHandler = (e) => {
+        e.preventDefault()
+        this.props.auth(
+            this.login.current.value,
+            this.password.current.value,
+            true
+        )
+    }
+
+    registerHandler = () => {
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            false
+        )
+    }
+
     render() {
-        if (this.props.isOpen === false) return null
+        if (this.props.isOpen === false || this.props.isAuth === true) return null
         return (
             <>
                 <div className={'auth-form'}>
                     <div className="auth-form__inputs">
                         <h3>Авторизуйтесь</h3>
                         <label>Введите логин</label>
-                        <input type="text" ref={this.login}/>
+                        <input className={this.props.isError === true ?'input-error' :''} type="text" ref={this.login}/>
                         <label>Введите пароль</label>
-                        <input type="text" ref={this.password}/>
+                        <input className={this.props.isError === true ?'input-error' :''} type="text" ref={this.password}/>
+                        <small className={this.props.isError === true ?'error' :'hide'}>Не верный логин или пароль</small>
 
                         <div className={'button-section'}>
-                            <button className={'main-item-style'}>Войти</button>
+                            <button className={'main-item-style'} onClick={this.loginHandler}>Войти</button>
                             <button className={'main-item-style'}>Создать аккаунт</button>
                         </div>
                     </div>
@@ -39,7 +58,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {}
+    return {
+        auth: (email, password, login) => dispatch(auth(email, password, login))
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthModalForm)

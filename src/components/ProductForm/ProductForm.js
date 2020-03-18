@@ -4,7 +4,7 @@ import './ProductForm.scss'
 export default class productForm extends Component {
     constructor(props) {
         super(props)
-        this.addAndEditOrder = this.addAndEditOrder.bind(this)
+        this.addAndEditOrder = this.addAndEditOrder
         this.inputName = React.createRef()
         this.inputQuantity = React.createRef()
         this.inputBrand = React.createRef()
@@ -85,7 +85,7 @@ export default class productForm extends Component {
         }
     }
 
-    addAndEditOrder(e) {
+    addAndEditOrder = (e) => {
         e.preventDefault()
         if(this.inputName.current.value.replace(/\s+/g, '') !== '' && this.inputQuantity.current.value.replace(/\s+/g, '') !== ''){
             const item = {
@@ -121,7 +121,6 @@ export default class productForm extends Component {
     formInputs(isEdit, listQuestions) {
         return (
             <>
-                <input className={'none'}/>
                 {
                     listQuestions.map((question) => (
                         <div key={question.id} className={'product-form__input-field'}>
@@ -163,7 +162,7 @@ export default class productForm extends Component {
         )
     }
 
-    validateRestaurantName(e) {
+    validateRestaurantName = (e) => {
         e.preventDefault()
         if (this.restaurantNameInput.current.value.replace(/\s+/g, '') !== '') {
             this.props.changeRestaurantName(this.restaurantNameInput.current.value)
@@ -178,7 +177,7 @@ export default class productForm extends Component {
         }
     }
 
-    validateShopName(e) {
+    validateShopName = (e) => {
         e.preventDefault()
         if (this.shopNameInput.current.value.replace(/\s+/g, '') !== '') {
             this.props.changeShopName(this.shopNameInput.current.value)
@@ -201,7 +200,7 @@ export default class productForm extends Component {
                         <small>Это поле необязательное для заполнения</small>
                         <button
                             className={'main-item-style'}
-                            onClick={this.validateShopName.bind(this)}>
+                            onClick={this.validateShopName}>
                             Далее
                         </button>
                     </div>
@@ -219,7 +218,7 @@ export default class productForm extends Component {
                             заполнения</small>
                         <button
                             className={'main-item-style'}
-                            onClick={this.validateRestaurantName.bind(this)}>
+                            onClick={this.validateRestaurantName}>
                             Далее
                         </button>
                     </div>

@@ -1,13 +1,13 @@
 @import "normalize.css";
 
-.app{
+.app {
   font-family: Arial;
 
   & .button-section {
     display: flex;
     margin: 0;
 
-    &_bottom{
+    &_bottom {
       margin-top: auto;
       margin-left: auto;
     }
@@ -29,9 +29,9 @@
     -webkit-transition: all 0.3s ease-out;
 
     &:hover {
-      -webkit-transform: scale(1.1);
-      -ms-transform: scale(1.1);
-      transform: scale(1.1);
+      -webkit-transform: scale(1.05);
+      -ms-transform: scale(1.05);
+      transform: scale(1.05);
       color: white;
       background-color: gray;
     }
@@ -46,13 +46,15 @@
     -moz-transition: all 0.3s ease-out;
     -o-transition: all 0.3s ease-out;
     -webkit-transition: all 0.3s ease-out;
+
     &:hover {
       opacity: 0.6;
       -webkit-transform: scale(1.13);
       -ms-transform: scale(1.13);
       transform: scale(1.13);
     }
-    &:before,&:after {
+
+    &:before, &:after {
       position: absolute;
       left: 15px;
       content: ' ';
@@ -61,29 +63,32 @@
       background-color: #333;
     }
 
-    &_add{
+    &_add {
       &:before {
         transform: rotate(90deg);
       }
     }
 
-    &_delete{
+    &_delete {
       float: right;
+
       &:before {
         transform: rotate(45deg);
       }
+
       &:after {
         transform: rotate(-45deg);
       }
     }
   }
-  & label{
+
+  & label {
     flex: 1;
     font-weight: 600;
     margin-right: 10px;
   }
 
-  & input, & textarea{
+  & input, & textarea {
     flex: 2;
     outline: 0 !important;
     padding: 5px;
@@ -99,6 +104,7 @@
       transform: scale(1.05);
     }
   }
+
   & textarea {
     resize: none;
   }
@@ -109,16 +115,16 @@
     margin: 10px 0 20px 0;
   }
 
-  & .error{
+  & .error {
     opacity: 1;
     color: red;
   }
 
-  & .input-error{
+  & .input-error {
     border: 1px solid red;
   }
 
-  & .none{
+  & .hide {
     display: none;
   }
 }

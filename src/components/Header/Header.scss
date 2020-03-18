@@ -18,4 +18,22 @@
   & .main-item-style{
     margin: 10px;
   }
+
+  &__user{
+    padding: 0 20px;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0.9;
+
+    & .fa.fa-user-circle-o{
+      font-size: 30px;
+    }
+    .name {
+      font-size: 23px;
+      margin: 0 10px 0 10px;
+    }
+    &:hover {
+      opacity: 1;
+    }
+  }
 }

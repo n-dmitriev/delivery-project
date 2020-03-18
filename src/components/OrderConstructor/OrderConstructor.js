@@ -7,7 +7,7 @@ export default class OrderConstructor extends Component {
         activeItem: null,
     }
 
-    editItem(e){
+    editItem = (e) =>{
         e.preventDefault()
         this.props.activeTab === 'shop-tab'
             ? this.setState({
@@ -20,12 +20,12 @@ export default class OrderConstructor extends Component {
         this.props.interactionWithDagger()
     }
 
-    deleteItem(e){
+    deleteItem = (e) =>{
         e.stopPropagation()
         this.props.removeProductFromOrder(e.target.id, this.props.activeTab)
     }
 
-    resetActiveItem(){
+    resetActiveItem = () =>{
         this.setState({
             activeItem: null
         })
@@ -35,9 +35,9 @@ export default class OrderConstructor extends Component {
         return (
             <div className={'order-constructor__order-list'}>
                 {this.props.shopOrder.map((item, count) => (
-                <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem.bind(this)}>
+                <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
                     {item.name} {item.brand} {item.quantity} {item.price} {item.description}
-                    <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem.bind(this)}></span>
+                    <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}></span>
                 </div>
                 ))}
             </div>
@@ -48,9 +48,9 @@ export default class OrderConstructor extends Component {
         return (
             <div className={'order-constructor__order-list'}>
                 {this.props.restaurantOrder.map((item, count) => (
-                <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem.bind(this)}>
+                <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
                     {item.name} {item.quantity} {item.price} {item.description}
-                    <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem.bind(this)}></span>
+                    <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}></span>
                 </div>
                 ))}
             </div>
@@ -116,9 +116,9 @@ export default class OrderConstructor extends Component {
         )
     }
 
-    renderContent() {
+    render() {
         return (
-            <>
+            <div className={'order-constructor'}>
                 {this.props.formIsOpen === true
                     ? <ProductForm
                         activeTab={this.props.activeTab}
@@ -128,20 +128,12 @@ export default class OrderConstructor extends Component {
                         item={this.state.activeItem}
                         nameOfRestaurant={this.props.nameOfRestaurant}
                         nameOfShop={this.props.nameOfShop}
-                        resetActiveItem={this.resetActiveItem.bind(this)}
+                        resetActiveItem={this.resetActiveItem}
                         changeShopName={this.props.changeShopName}
                         changeRestaurantName={this.props.changeRestaurantName}
                     />
                     : this.renderOrder()
                 }
-            </>
-        )
-    }
-
-    render() {
-        return (
-            <div className={'order-constructor'}>
-                {this.renderContent()}
             </div>
         )
     }
