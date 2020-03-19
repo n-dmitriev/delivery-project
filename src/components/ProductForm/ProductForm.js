@@ -4,7 +4,6 @@ import './ProductForm.scss'
 export default class productForm extends Component {
     constructor(props) {
         super(props)
-        this.addAndEditOrder = this.addAndEditOrder
         this.inputName = React.createRef()
         this.inputQuantity = React.createRef()
         this.inputBrand = React.createRef()

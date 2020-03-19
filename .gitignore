@@ -8,6 +8,8 @@
 # testing
 /coverage
 
+/src/axios/key.js
+
 # production
 /build
 

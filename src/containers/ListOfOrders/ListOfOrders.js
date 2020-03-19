@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
-import './ListOfProducts.scss'
+import './ListOfOrders.scss'
 import {connect} from 'react-redux'
 import {fetchList} from '../../store/actions/products'
 
 //Данный компонент должен отвечать за рендеринг списка товаров, но поскольку такового нет, он не использутеся
-class ListOfProducts extends Component {
+class ListOfOrders extends Component {
     componentDidMount() {
         this.props.fetchList()
     }
@@ -35,4 +35,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(ListOfProducts)
+export default connect(mapStateToProps,mapDispatchToProps)(ListOfOrders)

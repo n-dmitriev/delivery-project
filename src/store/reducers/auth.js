@@ -19,7 +19,7 @@ export default function authReducer(state = initialState, action) {
     switch (action.type) {
         case AUTH_SUCCESS:
             return {
-                ...state, isAuth: true, email: action.email, id: action.id,
+                ...state, isAuth: true, email: action.email, id: action.id, isError: false,
             }
         case AUTH_LOGOUT:
             return {
