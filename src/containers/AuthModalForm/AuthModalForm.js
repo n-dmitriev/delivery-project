@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import './AuthModalForm.scss'
 import {connect} from 'react-redux'
-import {auth} from '../../store/actions/auth'
+import {auth, removeError} from '../../store/actions/auth'
+import {createUserStore} from '../../store/actions/orders'
 
 class AuthModalForm extends Component {
     constructor(props) {
@@ -13,23 +14,51 @@ class AuthModalForm extends Component {
         this.address = React.createRef()
         this.state = {
             currentWin: 'signIn',
-            isValid: true,
+            nameIsValid: true,
+            numberPhoneIsValid: true,
+            addressIsValid: true,
+            loginIsValid: true,
+            passwordIsValid: true,
         }
     }
 
+    //Обунуление инпутов, необходимость вызвана переносом содержимого инпутов, при рендеринге нового элемента
+    zeroingInputs = () => {
+        if (this.login.current) this.login.current.value = ''
+        if (this.password.current) this.password.current.value = ''
+        if (this.numberPhone.current) this.numberPhone.current.value = ''
+        if (this.address.current) this.address.current.value = ''
+        if (this.name.current) this.name.current.value = ''
+    }
+
+    //Меняем контент в модальном окне, состояния: signIn, signUp, userInfoInp, success
     switchCurrentWin = (winName) => {
         this.setState({
             currentWin: winName,
             isValid: true,
         })
+        this.props.removeError()
+        this.zeroingInputs()
     }
 
-    invertIsValid = () => {
+    //Валидация пароля и логина
+    validateUserData = () => {
         this.setState({
-            isValid: !this.state.isValid,
+            loginIsValid: this.password.current.value.length > 6,
+            passwordIsValid: this.login.current.value.replace(/\s+/g, '') !== '',
         })
     }
 
+    //Валидация информации о пользователе
+    validateUserInformation = () => {
+        this.setState({
+            nameIsValid: this.name.current.value.replace(/\s+/g, '') !== '',
+            numberPhoneIsValid: this.numberPhone.current.value.replace(/\s+/g, '') !== '',
+            addressIsValid: this.address.current.value.replace(/\s+/g, '') !== '',
+        })
+    }
+
+    //Обрабочтик попытки авторизации
     loginHandler = (e) => {
         e.preventDefault()
         this.props.auth(
@@ -39,100 +68,116 @@ class AuthModalForm extends Component {
         )
     }
 
-    registerHandler = (e) => {
+    //Обработчик попытки решистрации
+    registerHandler = async (e) => {
         e.preventDefault()
-        if (this.password.current.value.length < 6 || this.login.current.value.replace(/\s+/g, '') === '')
-            this.invertIsValid()
-        else {
-            this.props.auth(
-                this.login.current.value,
-                this.password.current.value,
-                false,
-            )
-            this.switchCurrentWin('userInfoInp')
+        if (this.password && this.login) {
+            {
+                await this.validateUserData()
+                if (this.state.loginIsValid && this.state.passwordIsValid) {
+                    await this.props.auth(
+                        this.login.current.value,
+                        this.password.current.value,
+                        false,
+                    )
+                    if (this.props.isError !== true)
+                        this.switchCurrentWin('userInfoInp')
+                }
+            }
         }
     }
 
-    saveContactInformation = (e) => {
+    //Обработчик попытки сохранения пользовательских данных
+    saveContactInformation = async (e) => {
         e.preventDefault()
-        if (this.name.current.value.replace(/\s+/g, '') !== ''
-            && this.numberPhone.current.value.replace(/\s+/g, '') !== '' && this.address.current.value.replace(/\s+/g, '') !== '') {
-            this.switchCurrentWin('success')
-        } else {
-            this.invertIsValid()
+        if (this.name && this.numberPhone && this.address) {
+            await this.validateUserInformation()
+            if (this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid) {
+                this.props.createUserStore({
+                    name: this.name.current.value,
+                    numberPhone: this.numberPhone.current.value,
+                    address: this.address.current.value,
+                    role: 'user',
+                    orderList: [],
+                })
+                this.switchCurrentWin('success')
+            }
         }
     }
 
+    //Сообщение об успешной регистрации
     renderSuccessMessage = () => {
         return (
             <>
                 <h3>Вы успешно зарегестрированы!</h3>
                 <div className={'button-section'}>
-                    <button className={'main-item-style'} onClick={this.props.onClose}>Ок</button>
+                    <button className={'main-item-style'} onClick={() => {
+                        this.props.onClose()
+                        this.switchCurrentWin('signIn')
+                    }}>Ок</button>
                 </div>
             </>
         )
     }
 
+    //Редеринг формы для ввода контактной информации
     renderInputUserInfo() {
-        if (this.props.isError === true)
-            this.switchCurrentWin('signUp')
         return (
             <>
-                <input className={'hide'}/><input className={'hide'}/><input className={'hide'}/>
                 <h3>Введите вашу контактную ифнормацию</h3>
 
                 <label>Введите ваше имя*</label>
-                <input className={this.state.isValid === false ? 'input-error' : ''} type="text" ref={this.name}/>
+                <input className={this.state.nameIsValid === false ? 'input-error' : ''} type="text" ref={this.name}/>
                 <label>Введите ваш номер телефона*</label>
-                <input className={this.state.isValid === false ? 'input-error' : ''} type="text"
+                <input className={this.state.numberPhoneIsValid === false ? 'input-error' : ''} type="text"
                        ref={this.numberPhone}/>
                 <label>Введите ваш адрес*</label>
-                <input className={this.state.isValid === false ? 'input-error' : ''} type="text" ref={this.address}/>
-                <small className={this.state.isValid === false ? 'error' : 'hide'}>
+                <input className={this.state.addressIsValid === false ? 'input-error' : ''} type="text" ref={this.address}/>
+                <small className={this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid ? 'hide' : 'error'}>
                     Поля помеченные * обязательные для заполнения
                 </small>
 
                 <div className={'button-section'}>
                     <button className={'main-item-style'} onClick={this.saveContactInformation}>Применить</button>
-                    <button className={'main-item-style'} onClick={this.saveContactInformation}>Позже</button>
+                    <button className={'main-item-style'} onClick={this.props.onClose}>Позже</button>
                 </div>
             </>
         )
     }
 
+    //Рендеринг формы для регестрации
     renderSignUp = () => {
-        if (this.props.isError === true)
-            console.log(this.login)
-        else
-            return (
-                <>
-                    <h3>Регестрация</h3>
+        return (
+            <>
+                <h3>Регестрация</h3>
 
-                    <label>Укажите почту</label>
-                    <input
-                        className={this.login.current.value.replace(/\s+/g, '') === '' && !this.state.isValid ? 'input-error' : ''}
-                        type="text" ref={this.login}/>
-                    <label>Придумайте пароль</label>
-                    <input className={this.state.isValid === false ? 'input-error' : ''} type="text"
-                           ref={this.password}/>
-                    <small className={this.state.isValid === false ? 'error' : 'hide'}>
-                        {this.login.current.value.replace(/\s+/g, '') === '' ? 'Почта не может быть пустой!' : null}
-                        {this.password.current.value.replace(/\s+/g, '') === '' ? <><br/>Пароль не может содержать менее
-                            6 символов!</> : null}
-                    </small>
+                <label>Укажите почту</label>
+                <input
+                    className={!this.state.loginIsValid || this.props.isError ? 'input-error' : ''}
+                    type="text" ref={this.login}/>
+                <label>Придумайте пароль</label>
+                <input className={!this.state.passwordIsValid ? 'input-error' : ''} type="text"
+                       ref={this.password}/>
+                <small className={this.state.loginIsValid && this.state.passwordIsValid ? 'hide' : 'error'}>
+                    {!this.state.loginIsValid ? 'Почта не может быть пустой!' : null}
+                    {!this.state.passwordIsValid ? <><br/>Пароль не может содержать менее 6 символов!</> : null}
+                </small>
 
-                    <div className={'button-section'}>
-                        <button className={'main-item-style'} onClick={this.registerHandler}>Регистрация</button>
-                        <button className={'main-item-style'} onClick={() => {
-                            this.switchCurrentWin('signIn')
-                        }}>Назад
-                        </button>
-                    </div>
-                </>
-            )
+                <small className={this.props.isError ? 'error' : 'hide'}>Вы указали некорректную почту!</small>
+
+                <div className={'button-section'}>
+                    <button className={'main-item-style'} onClick={this.registerHandler}>Регистрация</button>
+                    <button className={'main-item-style'} onClick={() => {
+                        this.switchCurrentWin('signIn')
+                    }}>
+                        Назад
+                    </button>
+                </div>
+            </>
+        )
     }
 
+    //Рендеринг формы для авторизации
     renderSignIn = () => {
         return (
             <>
@@ -141,7 +186,7 @@ class AuthModalForm extends Component {
                 <input className={this.props.isError === true ? 'input-error' : ''} type="text" ref={this.login}/>
                 <label>Введите пароль</label>
                 <input className={this.props.isError === true ? 'input-error' : ''} type="text" ref={this.password}/>
-                <small className={this.props.isError === true ? 'error' : 'hide'}>Не верный логин или пароль</small>
+                <small className={this.props.isError === true ? 'error' : 'hide'}>Неверный логин или пароль!</small>
 
                 <div className={'button-section'}>
                     <button className={'main-item-style'} onClick={this.loginHandler}>Войти</button>
@@ -163,10 +208,11 @@ class AuthModalForm extends Component {
                         {
                             this.state.currentWin === 'signIn'
                                 ? this.renderSignIn()
-                                : this.state.currentWin === 'signUp' ? this.renderSignUp()
-                                : this.state.currentWin === 'userInfoInp'
-                                    ? this.renderInputUserInfo()
-                                    : this.renderSuccessMessage()
+                                : this.state.currentWin === 'signUp'
+                                    ? this.renderSignUp()
+                                    : this.state.currentWin === 'userInfoInp'
+                                        ? this.renderInputUserInfo()
+                                        : this.renderSuccessMessage()
                         }
                     </div>
                 </div>
@@ -183,6 +229,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         auth: (email, password, login) => dispatch(auth(email, password, login)),
+        createUserStore: (info) => dispatch(createUserStore(info)),
+        removeError: () => dispatch(removeError())
     }
 }
 

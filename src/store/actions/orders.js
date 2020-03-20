@@ -21,6 +21,13 @@ export function fetchList() {
     }
 }
 
+export function createUserStore(info) {
+    return async (dispatch,getState) => {
+        const r = await axios.post(`/users/${getState().authReducer.id}.json`, info)
+        console.log(r)
+    }
+}
+
 export function fetchListStart() {
     return {
         type: START_PL_DOWNLOADING,

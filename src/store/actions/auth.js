@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {key}  from '../../axios/key'
-import {AUTH_ERROR, AUTH_LOGOUT, AUTH_SUCCESS} from './actionTypes'
+import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS} from './actionTypes'
 
 export function auth(email, password, isLogin) {
     return async dispatch => {
@@ -19,18 +19,24 @@ export function auth(email, password, isLogin) {
             localStorage.setItem('id', JSON.stringify(data.localId))
             localStorage.setItem('email', JSON.stringify(email))
 
-            dispatch(authSuccess(email, data.localId))
+            dispatch(dispatchAction(AUTH_SUCCESS,{email, id: data.localId}))
         }
         catch (e) {
-            dispatch(authError())
+            dispatch(dispatchAction(AUTH_ERROR, null))
         }
 
     }
 }
 
-export function authError() {
-    return{
-        type: AUTH_ERROR
+export function dispatchAction(type, item) {
+    return {
+        type, item
+    }
+}
+
+export function removeError() {
+    return {
+        type: AUTH_OK
     }
 }
 
@@ -39,12 +45,5 @@ export function logout() {
     localStorage.removeItem('email')
     return{
         type: AUTH_LOGOUT
-    }
-}
-
-export function authSuccess(email, id) {
-    return {
-        type: AUTH_SUCCESS,
-        email, id
     }
 }

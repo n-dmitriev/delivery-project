@@ -1,4 +1,4 @@
-import {AUTH_ERROR, AUTH_LOGOUT, AUTH_SUCCESS} from '../actions/actionTypes'
+import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS} from '../actions/actionTypes'
 
 const id = localStorage.getItem('id') ? JSON.parse(localStorage.getItem('id')) : ''
 localStorage.setItem('id', JSON.stringify(id))
@@ -19,7 +19,7 @@ export default function authReducer(state = initialState, action) {
     switch (action.type) {
         case AUTH_SUCCESS:
             return {
-                ...state, isAuth: true, email: action.email, id: action.id, isError: false,
+                ...state, isAuth: true, email: action.item.email, id: action.item.id, isError: false,
             }
         case AUTH_LOGOUT:
             return {
@@ -28,6 +28,10 @@ export default function authReducer(state = initialState, action) {
         case AUTH_ERROR:
             return {
                 ...state, isError: true,
+            }
+        case AUTH_OK:
+            return {
+                ...state, isError: false,
             }
         default:
             return state

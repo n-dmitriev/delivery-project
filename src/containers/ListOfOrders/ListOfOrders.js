@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './ListOfOrders.scss'
 import {connect} from 'react-redux'
-import {fetchList} from '../../store/actions/products'
+import {fetchList} from '../../store/actions/orders'
 
 //Данный компонент должен отвечать за рендеринг списка товаров, но поскольку такового нет, он не использутеся
 class ListOfOrders extends Component {
