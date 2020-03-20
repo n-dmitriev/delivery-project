@@ -1,10 +1,16 @@
 import axios from '../../axios/axios'
 import {FETCH_PL_ERROR, FETCH_PL_SUCCESS, START_PL_DOWNLOADING} from './actionTypes'
 
+export function dispatchAction(type, item) {
+    return {
+        type, item
+    }
+}
+
 export function fetchList() {
     return async dispatch => {
         try {
-            dispatch(fetchListStart())
+            dispatch(dispatchAction(START_PL_DOWNLOADING, null))
             const response = await axios.get('/products.json')
 
             const productList = []
@@ -14,35 +20,16 @@ export function fetchList() {
                     id: key
                 })
             })
-            dispatch(fetchListSuccess(productList))
+            dispatch(dispatchAction(FETCH_PL_SUCCESS, productList))
         } catch (e) {
-            dispatch(fetchListError(e))
+            dispatch(dispatchAction(FETCH_PL_ERROR, e))
         }
     }
 }
 
 export function createUserStore(info) {
     return async (dispatch,getState) => {
-        const r = await axios.post(`/users/${getState().authReducer.id}.json`, info)
-        console.log(r)
-    }
-}
+        //const r = await axios.post(`/users/${getState().authReducer.id}.json`, info)
 
-export function fetchListStart() {
-    return {
-        type: START_PL_DOWNLOADING,
-    }
-}
-export function fetchListSuccess(productList) {
-    return {
-        type: FETCH_PL_SUCCESS,
-        productList,
-    }
-}
-
-export function fetchListError(e) {
-    return {
-        type: FETCH_PL_ERROR,
-        error: e,
     }
 }

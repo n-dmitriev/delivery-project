@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {key}  from '../../axios/key'
+import {config}  from '../config'
 import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS} from './actionTypes'
 
 export function auth(email, password, isLogin) {
@@ -9,10 +9,10 @@ export function auth(email, password, isLogin) {
                 email, password,
                 returnSecureToken: true,
             }
-            let url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${key}`
+            let url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${config.apiKey}`
 
             if(isLogin)
-                url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${key}`
+                url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${config.apiKey}`
             const response = await axios.post(url, authData)
             const data = response.data
             console.log(data)

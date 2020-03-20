@@ -2,10 +2,10 @@ import {FETCH_PL_ERROR, FETCH_PL_SUCCESS, START_PL_DOWNLOADING} from '../actions
 
 const initialState = {
     loading: false,
-    productList: []
+    orderList: []
 }
 
-export default function eateriesReducer(state = initialState, action) {
+export default function orderListReducer(state = initialState, action) {
     switch (action.type) {
         case START_PL_DOWNLOADING:
             return {

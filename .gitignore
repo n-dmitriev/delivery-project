@@ -8,7 +8,7 @@
 # testing
 /coverage
 
-/src/axios/key.js
+/src/store/config.js
 
 # production
 /build

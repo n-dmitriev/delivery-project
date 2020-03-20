@@ -10,22 +10,25 @@ import {
     sendOrder,
 } from '../../store/actions/currentOrder'
 
+//Данный контэйнер отвечает за рендеринг модального окна и отправку функций/перменных в качестве пропсов дочерним эл-там
 class OrderModalForm extends Component {
     state = {
-        activeTab: 'shop-tab',
-        formIsOpen: false,
+        activeTab: 'shop-tab', // текущее вкладка 2 состояния shop-tab и restaurant-tab
+        formIsOpen: false, // флаг отвечающий за форму ввода, если false - рендерится заказ, true - рендерится форма ввода
     }
 
+    //Функция открывающая/закрывающая форму ввода
     interactionWithDagger = () => {
         this.setState({
             formIsOpen: !this.state.formIsOpen,
         })
     }
 
+    //Функция меняющая активную вкладку и закрывающая форму ввода
     clickItemHandler = (event) => {
         this.setState({
             activeTab: event.target.id,
-            formIsOpen: this.state.formIsOpen ? !this.state.formIsOpen : this.state.formIsOpen
+            formIsOpen: false
         })
     }
 
@@ -34,7 +37,10 @@ class OrderModalForm extends Component {
         return (
             <>
                 <div className={'order-form'} key={'order-form'}>
-                    <span className="dagger dagger_delete" onClick={this.props.onClose}></span>
+                    <span className="dagger dagger_delete" onClick={() =>{
+                        this.props.onClose()
+                        this.props.deleteOrder()
+                    }}></span>
                     <div className={'order-form__selector'}>
                         <div
                             id={'shop-tab'}
@@ -56,21 +62,21 @@ class OrderModalForm extends Component {
                     </div>
 
                     <OrderConstructor
-                        activeTab={this.state.activeTab}
-                        shopOrder={this.props.shopOrder}
-                        restaurantOrder={this.props.restaurantOrder}
-                        addProductToOrder={this.props.addProductToOrder}
-                        removeProductFromOrder={this.props.removeProductFromOrder}
-                        editOrderItem={this.props.editOrderItem}
-                        sendOrder={this.props.sendOrder}
-                        deleteOrder={this.props.deleteOrder}
-                        interactionWithDagger={this.interactionWithDagger}
-                        formIsOpen={this.state.formIsOpen}
-                        nameOfRestaurant={this.props.nameOfRestaurant}
-                        nameOfShop={this.props.nameOfShop}
-                        changeShopName={this.props.changeShopName}
-                        changeRestaurantName={this.props.changeRestaurantName}
-                        close={this.props.onClose}
+                        activeTab={this.state.activeTab} // Текущая вклака
+                        shopOrder={this.props.shopOrder} // Коллекция в которой хранится текущий заказ из магазина
+                        restaurantOrder={this.props.restaurantOrder} // Коллекция в которой хранится текущий заказ из ресторана
+                        addProductToOrder={this.props.addProductToOrder} // Фу-я, добавляет продукт в заказ, на вход получает тип коллекции и заказ
+                        removeProductFromOrder={this.props.removeProductFromOrder} // Фу-я, удаляет продукт из коллекции, на вход получает тип коллекции и id
+                        editOrderItem={this.props.editOrderItem}// Фу-я, редактирует продукт в коллекции, на вход получает заменяющий объект и тип коллекции
+                        sendOrder={this.props.sendOrder} // Фу-я, отпавляет текущий заказ на сервер
+                        deleteOrder={this.props.deleteOrder} // Фу-я, удаляет текущий заказ
+                        interactionWithDagger={this.interactionWithDagger} // Фу-я, закрывает/открывает форму ввода
+                        formIsOpen={this.state.formIsOpen} //Флаг, открыта ли форма
+                        nameOfRestaurant={this.props.nameOfRestaurant} // Название ресторана введённое пользователем
+                        nameOfShop={this.props.nameOfShop} // Название магазина введённое пользователем
+                        changeShopName={this.props.changeShopName} // Фу-я, меняет название магазина
+                        changeRestaurantName={this.props.changeRestaurantName} // Фу-я, меняет название ресторана
+                        close={this.props.onClose} //Закрывает модальное окно
                     />
                 </div>
                 <div className={'bg'} onClick={this.props.onClose}/>

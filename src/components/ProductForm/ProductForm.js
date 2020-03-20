@@ -14,6 +14,7 @@ export default class productForm extends Component {
         this.state = {
             orderFormIsValid: true,
             restIsValid: true,
+            //Список вопросов для магазина
             listOfShopQuestions: [
                 {
                     id: 'name',
@@ -51,6 +52,7 @@ export default class productForm extends Component {
                     type: 'textarea',
                 },
             ],
+            //Список вопросов для ресторана
             listOfRestaurantQuestions: [
                 {
                     id: 'name',
@@ -84,9 +86,47 @@ export default class productForm extends Component {
         }
     }
 
-    addAndEditOrder = (e) => {
+    // Валидация заказа
+    validateOrderData = () => {
+        this.setState({
+            orderFormIsValid: this.inputName.current.value.replace(/\s+/g, '') !== '' && this.inputQuantity.current.value.replace(/\s+/g, '') !== ''
+        })
+    }
+
+    // Редактирование названия ресторана, с валидацией
+    editRestaurantName = (e) => {
         e.preventDefault()
-        if(this.inputName.current.value.replace(/\s+/g, '') !== '' && this.inputQuantity.current.value.replace(/\s+/g, '') !== ''){
+        if (this.restaurantNameInput.current.value.replace(/\s+/g, '') !== '') {
+            this.props.changeRestaurantName(this.restaurantNameInput.current.value)
+            this.props.interactionWithDagger()
+            this.setState({
+                restIsValid: true,
+            })
+        } else {
+            this.setState({
+                restIsValid: false,
+            })
+        }
+    }
+
+    // Редактирование названия магазина
+    editShopName = (e) => {
+        e.preventDefault()
+        if (this.shopNameInput.current.value.replace(/\s+/g, '') !== '') {
+            this.props.changeShopName(this.shopNameInput.current.value)
+        }
+        else
+            this.props.changeShopName('В любом магазине')
+        this.props.interactionWithDagger()
+    }
+
+    // Функция отвечающая за добавление и редактивроание эл-та
+    // Редактирование и добавление в 1-ом месте, так как функционал компонента переиспользуется, как для добавления, так и для ред.
+    addAndEditOrder = async (e) => {
+        e.preventDefault()
+        await this.validateOrderData()
+        if(this.state.orderFormIsValid){
+            // Формируем объект из input-ов
             const item = {
                 name: this.inputName.current.value,
                 quantity: this.inputQuantity.current.value,
@@ -94,29 +134,26 @@ export default class productForm extends Component {
                 description: this.text.current.value,
             }
 
+            // Если магазин, то в объект добавляем название бренда
             if (this.props.activeTab === 'shop-tab')
                 item.brand = this.inputBrand.current.value
 
+            // Если item(текущий редактируемый эл-т) пустой, значит надо добавить в заказ новый продукт и сгенерировать его id
             if (this.props.item === null) {
                 item.id = `note-${Math.random().toString(36).substr(2, 9)}`
                 this.props.addProductToOrder(item, this.props.activeTab)
-            } else {
+            }
+            // Иначе item(текущий редактируемый эл-т) непустой, значит надо редактировать продукт в заказе, id достаём из item-а
+            else {
                 item.id = this.props.item.id
                 this.props.editOrderItem(item, this.props.activeTab)
             }
             this.props.interactionWithDagger()
             this.props.resetActiveItem()
-            this.setState({
-                orderFormIsValid: true
-            })
-        }
-        else {
-            this.setState({
-                orderFormIsValid: false
-            })
         }
     }
 
+    // Функция, рендерит input-ы с вопросами из list-ов
     formInputs(isEdit, listQuestions) {
         return (
             <>
@@ -130,20 +167,20 @@ export default class productForm extends Component {
                                              ref={question.ref}
                                              defaultValue={isEdit ? this.props.item[question.id] : null}
                                              className={
-                                                 question.required === true ? this.state.orderFormIsValid === true ? ' ' : 'input-error' : ' '
+                                                 question.required === true ? this.state.orderFormIsValid ? ' ' : 'input-error' : ' '
                                              }/>
                                     : <textarea
                                         ref={question.ref} cols="30" rows="5"
                                         defaultValue={isEdit ? this.props.item[question.id] : null}
                                         className={
-                                            question.required === true ? this.state.orderFormIsValid === true ? '' : 'input-error' : ''
+                                            question.required === true ? this.state.orderFormIsValid ? '' : 'input-error' : ''
                                         }>
                                 </textarea>
                             }
                         </div>
                     ))
                 }
-                <small className={this.state.orderFormIsValid === true ? '' : 'error'}>Поля
+                <small className={this.state.orderFormIsValid ? '' : 'error'}>Поля
                     помеченные * обязательные для заполнения</small>
 
                 <div className="button-section button-section_bottom">
@@ -161,31 +198,7 @@ export default class productForm extends Component {
         )
     }
 
-    validateRestaurantName = (e) => {
-        e.preventDefault()
-        if (this.restaurantNameInput.current.value.replace(/\s+/g, '') !== '') {
-            this.props.changeRestaurantName(this.restaurantNameInput.current.value)
-            this.props.interactionWithDagger()
-            this.setState({
-                restIsValid: true,
-            })
-        } else {
-            this.setState({
-                restIsValid: false,
-            })
-        }
-    }
-
-    validateShopName = (e) => {
-        e.preventDefault()
-        if (this.shopNameInput.current.value.replace(/\s+/g, '') !== '') {
-            this.props.changeShopName(this.shopNameInput.current.value)
-        }
-        else
-            this.props.changeShopName('В любом магазине')
-        this.props.interactionWithDagger()
-    }
-
+    //Главная функция, отвечает за редактирование названий заведений и вызов функции formInputs
     form() {
         let isEdit
         this.props.item === null ? isEdit = false : isEdit = true
@@ -199,7 +212,7 @@ export default class productForm extends Component {
                         <small>Это поле необязательное для заполнения</small>
                         <button
                             className={'main-item-style'}
-                            onClick={this.validateShopName}>
+                            onClick={this.editShopName}>
                             Далее
                         </button>
                     </div>
@@ -217,7 +230,7 @@ export default class productForm extends Component {
                             заполнения</small>
                         <button
                             className={'main-item-style'}
-                            onClick={this.validateRestaurantName}>
+                            onClick={this.editRestaurantName}>
                             Далее
                         </button>
                     </div>

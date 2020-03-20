@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import {auth, removeError} from '../../store/actions/auth'
 import {createUserStore} from '../../store/actions/orders'
 
+//Данный контейнер отвечает за авторизацию и регистрацию пользователей
 class AuthModalForm extends Component {
     constructor(props) {
         super(props)
@@ -222,10 +223,6 @@ class AuthModalForm extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {}
-}
-
 function mapDispatchToProps(dispatch) {
     return {
         auth: (email, password, login) => dispatch(auth(email, password, login)),
@@ -234,4 +231,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthModalForm)
+export default connect(null, mapDispatchToProps)(AuthModalForm)

@@ -2,11 +2,14 @@ import React, {Component} from 'react'
 import './OrderConstructor.scss'
 import ProductForm from '../ProductForm/ProductForm'
 
+//Этот компонент отвечает за визуализацию списка заказов, так-же он рендерит "конструктор заказа" - форму ввода
 export default class OrderConstructor extends Component {
     state = {
-        activeItem: null,
+        activeItem: null, // В переменной хранится текуший элемент, который выбран для редактирования
     }
 
+
+    // Обработчик, кладёт в переменную activeItem эл-т, редактировать который хочет пользователь и открывает конструктор заказа
     editItem = (e) =>{
         e.preventDefault()
         this.props.activeTab === 'shop-tab'
@@ -20,17 +23,20 @@ export default class OrderConstructor extends Component {
         this.props.interactionWithDagger()
     }
 
-    deleteItem = (e) =>{
-        e.stopPropagation()
-        this.props.removeProductFromOrder(e.target.id, this.props.activeTab)
-    }
-
+    // Обработчик, возвращает activeItem в начальное состояние
     resetActiveItem = () =>{
         this.setState({
             activeItem: null
         })
     }
 
+    // Обработчик, удаляет выбранный продукт из заказа
+    deleteItem = (e) =>{
+        e.stopPropagation()
+        this.props.removeProductFromOrder(e.target.id, this.props.activeTab)
+    }
+
+    // Функция, рендерит заказ из магазина
     renderShopOrder() {
         return (
             <div className={'order-constructor__order-list'}>
@@ -44,6 +50,7 @@ export default class OrderConstructor extends Component {
         )
     }
 
+    // Функция, рендерит заказ из ресторана
     renderRestaurantOrder() {
         return (
             <div className={'order-constructor__order-list'}>
@@ -57,19 +64,21 @@ export default class OrderConstructor extends Component {
         )
     }
 
+    // Функция, рендерит заказ и навигационное меню
     renderOrder() {
         return (
             <div className={'order-constructor__content'}>
                 {
+                    // Вывод названия заведения
                     this.props.activeTab === 'shop-tab'
                         ? this.props.nameOfShop !== ''
                             ? <>
                                 <div
                                     className={'order-constructor__name'}
+                                    //При нажатии на название, сбрасываем его и открываем форму редактирования
                                     onClick={()=>{
                                         this.props.changeShopName('')
-                                        this.props.interactionWithDagger()
-                                    }}>
+                                        this.props.interactionWithDagger()}}>
                                     {this.props.nameOfShop}
                                 </div>
                             {this.renderShopOrder()}
@@ -79,6 +88,7 @@ export default class OrderConstructor extends Component {
                             ? <>
                                 <div
                                     className={'order-constructor__name'}
+                                    //При нажатии на название, сбрасываем его и открываем форму редактирования
                                     onClick={()=>{
                                         this.props.changeRestaurantName('')
                                         this.props.interactionWithDagger()
@@ -91,6 +101,7 @@ export default class OrderConstructor extends Component {
                             : null
                 }
                 {
+                    // Вывод навигационной панели, если заказ пуст, нет кнопок
                     (this.props.activeTab ==='shop-tab' && Object.keys(this.props.shopOrder).length !== 0)
                     || (this.props.activeTab ==='restaurant-tab' && Object.keys(this.props.restaurantOrder).length !== 0)
                         ? <div className="button-section button-section_bottom">
