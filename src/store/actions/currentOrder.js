@@ -6,6 +6,7 @@ import {
     REMOVE_P_FROM_SHOP_ORDER,
     SEND_ORDER,
 } from './actionTypes'
+import {addOrderToOrderList} from './orders'
 
 function getElementById(arr, id) {
     return arr.findIndex(x => x.id === id)
@@ -83,10 +84,10 @@ export function removeProductFromOrder(id, list) {
 
 export function sendOrder() {
     return (dispatch, getState) => {
+        dispatch(addOrderToOrderList())
         dispatch(dispatchAction(SEND_ORDER, null))
         dispatch(removeNames())
         updateLocalStorage(getState, null)
-        alert('Ваш заказ принят!')
     }
 }
 

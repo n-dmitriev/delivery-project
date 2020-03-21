@@ -7,7 +7,6 @@ import {Provider} from 'react-redux'
 import rootReducer from './store/reducers/rootReducer'
 import thunk from 'redux-thunk'
 import {BrowserRouter} from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const composeEnhancers =
     typeof window === 'object' &&

@@ -11,8 +11,11 @@
 
     &_name {
       flex-direction: column;
-      & label {
-        font-size: 25px;
+      & h2 {
+        margin: 0 0 30px 0;
+      }
+      & small{
+        margin: 0 0 30px;
       }
     }
   }

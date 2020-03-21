@@ -1,29 +1,32 @@
 .auth-form{
   z-index: 9999;
   position: absolute;
+  display: flex;
+  flex-direction: column;
   top: 50%;
   left: 50%;
   min-height: 100px;
-  padding: 20px 20px;
+  padding: 20px;
   border-radius: 10px;
   transform: translate(-50%, -50%);
   background-color: #F5F5F5;
   min-width: 500px;
+
+
+  & .dagger {
+    margin-left: auto;
+    top: 15px;
+    right: 0px;
+  }
 
   &__inputs{
     display: flex;
     flex-direction: column;
     border: 1px solid gray;
     border-radius: 10px;
-    padding: 20px;
-    height: 100%;
-    width: 100%;
+    padding: 0 20px 20px 20px;
     & input{
-      margin-bottom: 20px;
-    }
-    & h3 {
-      margin-bottom: 30px;
-      cursor: default;
+      margin: 10px 0 30px  0;
     }
   }
 

@@ -1,5 +1,7 @@
 import axios from '../../axios/axios'
 import {FETCH_PL_ERROR, FETCH_PL_SUCCESS, START_PL_DOWNLOADING} from './actionTypes'
+import {dataBase} from '../../firebase/firebase'
+import * as firebase from 'firebase/app'
 
 export function dispatchAction(type, item) {
     return {
@@ -27,9 +29,41 @@ export function fetchList() {
     }
 }
 
+export function addOrderToOrderList() {
+    return async (dispatch, getState) => {
+        const state = getState().currentOrder
+        let order
+        if(state.shopOrder.length !== 0){
+            order = {
+                orderId: Math.random().toString(36).substr(2, 9),courierId: '',
+                delivered: false,
+                startTime: new Date(),
+                endTime: '',
+                nameOfShop: state.nameOfShop,
+                shopOrder: state.shopOrder
+            }
+            dataBase.collection("users").doc(getState().authReducer.id).update({
+                orderList: firebase.firestore.FieldValue.arrayUnion(order)
+            })
+        }
+        if(state.restaurantOrder.length !== 0 && state.nameOfRestaurant !== ''){
+            order = {
+                orderId: Math.random().toString(36).substr(2, 9),courierId: '',
+                delivered: false,
+                startTime: new Date(),
+                endTime: '',
+                nameOfRestaurant: state.nameOfRestaurant,
+                restaurantOrder: state.restaurantOrder
+            }
+            dataBase.collection("users").doc(getState().authReducer.id).update({
+                orderList: firebase.firestore.FieldValue.arrayUnion(order)
+            })
+        }
+    }
+}
+
 export function createUserStore(info) {
     return async (dispatch,getState) => {
-        //const r = await axios.post(`/users/${getState().authReducer.id}.json`, info)
-
+        dataBase.collection("users").doc(getState().authReducer.id).set(info)
     }
 }

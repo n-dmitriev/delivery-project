@@ -109,7 +109,7 @@ export default class OrderConstructor extends Component {
                                 this.props.close()
                                 this.props.sendOrder()
                             }}>Заказать</button>
-                            <button className="main-item-style" onClick={this.props.deleteOrder}>Отменить</button>
+                            <button className="main-item-style" onClick={this.props.sendOrder}>Отменить</button>
                             <span
                                 className={'dagger dagger_add'}
                                 onClick={this.props.interactionWithDagger}>

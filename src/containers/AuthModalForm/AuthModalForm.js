@@ -33,7 +33,7 @@ class AuthModalForm extends Component {
     }
 
     //Меняем контент в модальном окне, состояния: signIn, signUp, userInfoInp, success
-    switchCurrentWin = (winName) => {
+    switchCurrentWin =  (winName) => {
         this.setState({
             currentWin: winName,
             isValid: true,
@@ -157,7 +157,7 @@ class AuthModalForm extends Component {
                     className={!this.state.loginIsValid || this.props.isError ? 'input-error' : ''}
                     type="text" ref={this.login}/>
                 <label>Придумайте пароль</label>
-                <input className={!this.state.passwordIsValid ? 'input-error' : ''} type="text"
+                <input className={!this.state.passwordIsValid ? 'input-error' : ''} type="login"
                        ref={this.password}/>
                 <small className={this.state.loginIsValid && this.state.passwordIsValid ? 'hide' : 'error'}>
                     {!this.state.loginIsValid ? 'Почта не может быть пустой!' : null}
@@ -167,7 +167,7 @@ class AuthModalForm extends Component {
                 <small className={this.props.isError ? 'error' : 'hide'}>Вы указали некорректную почту!</small>
 
                 <div className={'button-section'}>
-                    <button className={'main-item-style'} onClick={this.registerHandler}>Регистрация</button>
+                    <button className={'main-item-style'} onClick={this.registerHandler}>Зарегестрироваться</button>
                     <button className={'main-item-style'} onClick={() => {
                         this.switchCurrentWin('signIn')
                     }}>
@@ -184,9 +184,9 @@ class AuthModalForm extends Component {
             <>
                 <h3>Авторизуйтесь</h3>
                 <label>Введите логин</label>
-                <input className={this.props.isError === true ? 'input-error' : ''} type="text" ref={this.login}/>
+                <input className={this.props.isError === true ? 'input-error' : ''} type="login" ref={this.login}/>
                 <label>Введите пароль</label>
-                <input className={this.props.isError === true ? 'input-error' : ''} type="text" ref={this.password}/>
+                <input className={this.props.isError === true ? 'input-error' : ''} type="password" ref={this.password}/>
                 <small className={this.props.isError === true ? 'error' : 'hide'}>Неверный логин или пароль!</small>
 
                 <div className={'button-section'}>
@@ -206,6 +206,7 @@ class AuthModalForm extends Component {
             <>
                 <div className={'auth-form'}>
                     <div className="auth-form__inputs">
+                        <span className="dagger dagger_delete" onClick={this.props.onClose}></span>
                         {
                             this.state.currentWin === 'signIn'
                                 ? this.renderSignIn()

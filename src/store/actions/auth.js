@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {config}  from '../config'
+import {config} from '../../firebase/config'
 import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS} from './actionTypes'
 
 export function auth(email, password, isLogin) {
@@ -11,17 +11,15 @@ export function auth(email, password, isLogin) {
             }
             let url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${config.apiKey}`
 
-            if(isLogin)
+            if (isLogin)
                 url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${config.apiKey}`
             const response = await axios.post(url, authData)
             const data = response.data
-            console.log(data)
             localStorage.setItem('id', JSON.stringify(data.localId))
             localStorage.setItem('email', JSON.stringify(email))
 
-            dispatch(dispatchAction(AUTH_SUCCESS,{email, id: data.localId}))
-        }
-        catch (e) {
+            dispatch(dispatchAction(AUTH_SUCCESS, {email, id: data.localId}))
+        } catch (e) {
             dispatch(dispatchAction(AUTH_ERROR, null))
         }
 
@@ -30,20 +28,20 @@ export function auth(email, password, isLogin) {
 
 export function dispatchAction(type, item) {
     return {
-        type, item
+        type, item,
     }
 }
 
 export function removeError() {
     return {
-        type: AUTH_OK
+        type: AUTH_OK,
     }
 }
 
 export function logout() {
     localStorage.removeItem('id')
     localStorage.removeItem('email')
-    return{
-        type: AUTH_LOGOUT
+    return {
+        type: AUTH_LOGOUT,
     }
 }
