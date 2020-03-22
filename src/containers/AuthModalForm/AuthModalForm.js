@@ -150,7 +150,7 @@ class AuthModalForm extends Component {
     renderSignUp = () => {
         return (
             <>
-                <h3>Регестрация</h3>
+                <h2>Регестрация</h2>
 
                 <label>Укажите почту</label>
                 <input
@@ -182,7 +182,7 @@ class AuthModalForm extends Component {
     renderSignIn = () => {
         return (
             <>
-                <h3>Авторизуйтесь</h3>
+                <h2>Авторизуйтесь</h2>
                 <label>Введите логин</label>
                 <input className={this.props.isError === true ? 'input-error' : ''} type="login" ref={this.login}/>
                 <label>Введите пароль</label>
@@ -202,6 +202,7 @@ class AuthModalForm extends Component {
 
     render() {
         if (this.props.isOpen === false || (this.props.isAuth === true && this.state.currentWin === 'signIn')) return null
+        console.log(this.props.isOpen)
         return (
             <>
                 <div className={'auth-form'}>

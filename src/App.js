@@ -12,20 +12,20 @@ class App extends Component {
         isAuthModalOpen: false
     }
 
-    interactionWithOrderModal() {
+    interactionWithOrderModal = () => {
         this.setState({ isOrderModalOpen: !this.state.isOrderModalOpen });
     }
 
-    interactionWithAuthModal() {
+    interactionWithAuthModal = () => {
         this.setState({ isAuthModalOpen: !this.state.isAuthModalOpen });
     }
 
     render() {
         return (
             <div className={'app'}>
-                <Header logout={this.props.logout} isAuth={this.props.isAuth} openOrderForm={this.interactionWithOrderModal.bind(this)} openAuthForm={this.interactionWithAuthModal.bind(this)}/>
-                <OrderModalForm isAuth={this.props.isAuth} isOpen={this.state.isOrderModalOpen} onClose={this.interactionWithOrderModal.bind(this)}/>
-                <Auth isAuth={this.props.isAuth} isOpen={this.state.isAuthModalOpen} isError={this.props.isError} onClose={this.interactionWithAuthModal.bind(this)}/>
+                <Header logout={this.props.logout} isAuth={this.props.isAuth} openOrderForm={this.interactionWithOrderModal} openAuthForm={this.interactionWithAuthModal}/>
+                <OrderModalForm isAuth={this.props.isAuth} isOpen={this.state.isOrderModalOpen} onClose={this.interactionWithOrderModal}/>
+                <Auth isAuth={this.props.isAuth} isOpen={this.state.isAuthModalOpen} isError={this.props.isError} onClose={this.interactionWithAuthModal}/>
             </div>
         )
     }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './OrderConstructor.scss'
-import ProductForm from '../ProductForm/ProductForm'
+import ProductForm from './ProductForm/ProductForm'
 
 //Этот компонент отвечает за визуализацию списка заказов, так-же он рендерит "конструктор заказа" - форму ввода
 export default class OrderConstructor extends Component {
@@ -34,6 +34,11 @@ export default class OrderConstructor extends Component {
     deleteItem = (e) =>{
         e.stopPropagation()
         this.props.removeProductFromOrder(e.target.id, this.props.activeTab)
+    }
+
+    sendOrder = () => {
+        this.props.close()
+        this.props.sendOrder()
     }
 
     // Функция, рендерит заказ из магазина
@@ -105,10 +110,7 @@ export default class OrderConstructor extends Component {
                     (this.props.activeTab ==='shop-tab' && Object.keys(this.props.shopOrder).length !== 0)
                     || (this.props.activeTab ==='restaurant-tab' && Object.keys(this.props.restaurantOrder).length !== 0)
                         ? <div className="button-section button-section_bottom">
-                            <button className="main-item-style" onClick={()=>{
-                                this.props.close()
-                                this.props.sendOrder()
-                            }}>Заказать</button>
+                            <button className="main-item-style" onClick={this.sendOrder}>Заказать</button>
                             <button className="main-item-style" onClick={this.props.sendOrder}>Отменить</button>
                             <span
                                 className={'dagger dagger_add'}
