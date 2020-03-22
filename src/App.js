@@ -7,25 +7,44 @@ import {connect} from 'react-redux'
 import {logout} from './store/actions/auth'
 
 class App extends Component {
-    state={
+    state = {
+        trySendOrderNotAuth: false,
         isOrderModalOpen: false,
-        isAuthModalOpen: false
+        isAuthModalOpen: false,
     }
 
+    // Метод на случай, если пользователь попытается сделать заказ не авторизовавшись
+    trySendOrder = (falg) => {
+        this.setState({
+            trySendOrderNotAuth: falg,
+        })
+    }
+
+
     interactionWithOrderModal = () => {
-        this.setState({ isOrderModalOpen: !this.state.isOrderModalOpen });
+        this.setState({isOrderModalOpen: !this.state.isOrderModalOpen})
     }
 
     interactionWithAuthModal = () => {
-        this.setState({ isAuthModalOpen: !this.state.isAuthModalOpen });
+        this.setState({isAuthModalOpen: !this.state.isAuthModalOpen})
     }
 
     render() {
         return (
             <div className={'app'}>
-                <Header logout={this.props.logout} isAuth={this.props.isAuth} openOrderForm={this.interactionWithOrderModal} openAuthForm={this.interactionWithAuthModal}/>
-                <OrderModalForm isAuth={this.props.isAuth} isOpen={this.state.isOrderModalOpen} onClose={this.interactionWithOrderModal}/>
-                <Auth isAuth={this.props.isAuth} isOpen={this.state.isAuthModalOpen} isError={this.props.isError} onClose={this.interactionWithAuthModal}/>
+                <Header
+                    logout={this.props.logout} isAuth={this.props.isAuth}
+                    openOrderForm={this.interactionWithOrderModal} openAuthForm={this.interactionWithAuthModal}/>
+                <OrderModalForm
+                    trySendOrder={this.trySendOrder} isAuth={this.props.isAuth}
+                    isOpen={this.state.isOrderModalOpen} onOpenAuth={this.interactionWithAuthModal}
+                    onClose={this.interactionWithOrderModal}/>
+                <Auth
+                    trySendOrderNotAuth={this.state.trySendOrderNotAuth}
+                    trySendOrder={this.trySendOrder}
+                    isAuth={this.props.isAuth} isOpen={this.state.isAuthModalOpen}
+                    isError={this.props.isError}
+                    onClose={this.interactionWithAuthModal}/>
             </div>
         )
     }
@@ -34,13 +53,13 @@ class App extends Component {
 function mapStateToProps(state) {
     return {
         isAuth: state.authReducer.isAuth,
-        isError: state.authReducer.isError
+        isError: state.authReducer.isError,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        logout: () => dispatch(logout())
+        logout: () => dispatch(logout()),
     }
 }
 

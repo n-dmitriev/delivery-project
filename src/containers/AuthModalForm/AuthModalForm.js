@@ -3,6 +3,7 @@ import './AuthModalForm.scss'
 import {connect} from 'react-redux'
 import {auth, removeError} from '../../store/actions/auth'
 import {createUserStore} from '../../store/actions/orders'
+import {sendOrder} from '../../store/actions/currentOrder'
 
 //Данный контейнер отвечает за авторизацию и регистрацию пользователей
 class AuthModalForm extends Component {
@@ -33,7 +34,7 @@ class AuthModalForm extends Component {
     }
 
     //Меняем контент в модальном окне, состояния: signIn, signUp, userInfoInp, success
-    switchCurrentWin =  (winName) => {
+    switchCurrentWin = (winName) => {
         this.setState({
             currentWin: winName,
             isValid: true,
@@ -60,13 +61,16 @@ class AuthModalForm extends Component {
     }
 
     //Обрабочтик попытки авторизации
-    loginHandler = (e) => {
+    loginHandler = async (e) => {
         e.preventDefault()
-        this.props.auth(
+        await this.props.auth(
             this.login.current.value,
             this.password.current.value,
             true,
         )
+        if(this.props.isAuth){
+            this.switchCurrentWin('successAuth')
+        }
     }
 
     //Обработчик попытки решистрации
@@ -107,19 +111,25 @@ class AuthModalForm extends Component {
     }
 
     //Сообщение об успешной регистрации
-    renderSuccessMessage = () => {
+    renderSuccessMessage = (type) => {
         return (
             <>
-                <h3>Вы успешно зарегестрированы!</h3>
+                <h2>Вы успешно {this.state.currentWin === 'successAuth'? 'авторизовались' :'зарегестрированы'}!<br/>{this.props.trySendOrderNotAuth ? 'Ваш заказ успешно оформлен!' : null}</h2>
                 <div className={'button-section'}>
                     <button className={'main-item-style'} onClick={() => {
                         this.props.onClose()
                         this.switchCurrentWin('signIn')
-                    }}>Ок</button>
+                        if(this.props.trySendOrderNotAuth){
+                            this.props.trySendOrder(false)
+                            this.props.sendOrder()
+                        }
+                    }}>Ок
+                    </button>
                 </div>
             </>
         )
     }
+
 
     //Редеринг формы для ввода контактной информации
     renderInputUserInfo() {
@@ -133,8 +143,10 @@ class AuthModalForm extends Component {
                 <input className={this.state.numberPhoneIsValid === false ? 'input-error' : ''} type="text"
                        ref={this.numberPhone}/>
                 <label>Введите ваш адрес*</label>
-                <input className={this.state.addressIsValid === false ? 'input-error' : ''} type="text" ref={this.address}/>
-                <small className={this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid ? 'hide' : 'error'}>
+                <input className={this.state.addressIsValid === false ? 'input-error' : ''} type="text"
+                       ref={this.address}/>
+                <small
+                    className={this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid ? 'hide' : 'error'}>
                     Поля помеченные * обязательные для заполнения
                 </small>
 
@@ -182,11 +194,13 @@ class AuthModalForm extends Component {
     renderSignIn = () => {
         return (
             <>
-                <h2>Авторизуйтесь</h2>
+                <h2>{this.props.trySendOrderNotAuth? 'Прежде чем сдеать заказ, авторизуйтесь или зарегестрируйтесь' : 'Авторизуйтесь'}  </h2>
+
                 <label>Введите логин</label>
                 <input className={this.props.isError === true ? 'input-error' : ''} type="login" ref={this.login}/>
                 <label>Введите пароль</label>
-                <input className={this.props.isError === true ? 'input-error' : ''} type="password" ref={this.password}/>
+                <input className={this.props.isError === true ? 'input-error' : ''} type="password"
+                       ref={this.password}/>
                 <small className={this.props.isError === true ? 'error' : 'hide'}>Неверный логин или пароль!</small>
 
                 <div className={'button-section'}>
@@ -202,26 +216,27 @@ class AuthModalForm extends Component {
 
     render() {
         if (this.props.isOpen === false || (this.props.isAuth === true && this.state.currentWin === 'signIn')) return null
-        console.log(this.props.isOpen)
-        return (
-            <>
-                <div className={'auth-form'}>
-                    <div className="auth-form__inputs">
-                        <span className="dagger dagger_delete" onClick={this.props.onClose}></span>
-                        {
-                            this.state.currentWin === 'signIn'
-                                ? this.renderSignIn()
-                                : this.state.currentWin === 'signUp'
-                                    ? this.renderSignUp()
-                                    : this.state.currentWin === 'userInfoInp'
-                                        ? this.renderInputUserInfo()
-                                        : this.renderSuccessMessage()
-                        }
+            return (
+                <>
+                    <div className={'auth-form'}>
+                        <div className="auth-form__inputs">
+                            <span className="dagger dagger_delete" onClick={this.props.onClose}></span>
+                            {
+                                this.state.currentWin === 'signIn'
+                                    ? this.renderSignIn()
+                                    : this.state.currentWin === 'signUp'
+                                        ? this.renderSignUp()
+                                        : this.state.currentWin === 'userInfoInp'
+                                            ? this.renderInputUserInfo()
+                                            : this.state.currentWin === 'success'
+                                                ? this.renderSuccessMessage('successRegistration')
+                                                : this.renderSuccessMessage('successAuth')
+                            }
+                        </div>
                     </div>
-                </div>
-                <div className={'bg'} onClick={this.props.onClose}/>
-            </>
-        )
+                    <div className={'bg'} onClick={this.props.onClose}/>
+                </>
+            )
     }
 }
 
@@ -229,7 +244,8 @@ function mapDispatchToProps(dispatch) {
     return {
         auth: (email, password, login) => dispatch(auth(email, password, login)),
         createUserStore: (info) => dispatch(createUserStore(info)),
-        removeError: () => dispatch(removeError())
+        removeError: () => dispatch(removeError()),
+        sendOrder: () => dispatch(sendOrder()),
     }
 }
 
