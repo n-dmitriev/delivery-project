@@ -1,10 +1,10 @@
 .header {
   display: flex;
   background-color: #F5F5F5;
-  padding: 5px 15px;
+  padding: 5px 15px 5px 25px;
 
   &__title{
-    cursor: default;
+    cursor: pointer;
     font-size: 35px;
     border-bottom: 2px solid #5CB85C;
     white-space: nowrap;
@@ -21,10 +21,10 @@
   }
 
   &__user{
-    padding: 0 20px;
+    margin: 10px 20px 0 20px;
     justify-content: center;
     cursor: pointer;
-    opacity: 0.9;
+    opacity: 0.8;
 
     & .fa.fa-user-circle-o{
       font-size: 30px;

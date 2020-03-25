@@ -6,7 +6,9 @@ import {
     REMOVE_P_FROM_SHOP_ORDER,
     SEND_ORDER,
 } from './actionTypes'
-import {addOrderToOrderList} from './orders'
+import {dataBase} from '../../firebase/firebase'
+import * as firebase from 'firebase/app'
+import {fetchUserInfo} from './userInformation'
 
 function getElementById(arr, id) {
     return arr.findIndex(x => x.id === id)
@@ -17,7 +19,12 @@ function updateLocalStorage(getState, list) {
         localStorage.setItem('shopOrder', JSON.stringify(getState().currentOrder.shopOrder))
     else if (list === 'restaurant-tab')
         localStorage.setItem('restaurantOrder', JSON.stringify(getState().currentOrder.restaurantOrder))
-    else localStorage.clear()
+    else {
+        localStorage.removeItem('shopOrder')
+        localStorage.removeItem('restaurantOrder')
+        localStorage.removeItem('nameOfRestaurant')
+        localStorage.removeItem('nameOfShop')
+    }
 }
 
 function dispatchAction(actionType, item) {
@@ -88,6 +95,7 @@ export function sendOrder() {
         dispatch(dispatchAction(SEND_ORDER, null))
         dispatch(removeNames())
         updateLocalStorage(getState, null)
+        dispatch(fetchUserInfo())
     }
 }
 
@@ -110,5 +118,41 @@ export function changeShopName(name) {
     return (dispatch, getState) => {
         dispatch(dispatchAction(CHANGE_SHOP_NAME, name))
         localStorage.setItem('nameOfShop', JSON.stringify(getState().currentOrder.nameOfShop))
+    }
+}
+
+export function addOrderToOrderList() {
+    return async (dispatch, getState) => {
+        const state = getState().currentOrder
+        const orderInfo = {
+            delivered: false,
+            startTime: `${new Date()}`,
+            courierId: '',
+            endTime: '',
+            description: 'Курьер ещё не принял заказ',
+        }
+        if (state.shopOrder.length !== 0) {
+            orderInfo.id = Math.random().toString(36).substr(2, 9)
+            orderInfo.name = state.nameOfShop === '' ? 'Из любого магизна' : state.nameOfShop
+            orderInfo.order = state.shopOrder
+            dataBase.collection('users').doc(getState().authReducer.id).update({
+                listOfCurrentOrders: firebase.firestore.FieldValue.arrayUnion(orderInfo),
+            })
+        }
+        if (state.restaurantOrder.length !== 0 && state.nameOfRestaurant !== '') {
+            orderInfo.id = Math.random().toString(36).substr(2, 9)
+            orderInfo.name = state.nameOfRestaurant
+            orderInfo.order = state.restaurantOrder
+            dataBase.collection('users').doc(getState().authReducer.id).update({
+                listOfCurrentOrders: firebase.firestore.FieldValue.arrayUnion(orderInfo),
+            })
+        }
+    }
+}
+
+export function createUserStore(info) {
+    return async (dispatch, getState) => {
+        dataBase.collection('users').doc(getState().authReducer.id).set(info)
+        dispatch(fetchUserInfo())
     }
 }

@@ -1,17 +1,9 @@
-.auth-form{
-  z-index: 9999;
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: 50%;
-  left: 50%;
-  min-height: 100px;
-  padding: 20px;
-  border-radius: 10px;
-  transform: translate(-50%, -50%);
-  background-color: #F5F5F5;
-  min-width: 500px;
+@import "../../mixins";
 
+.auth-form{
+  @include modal();
+  min-width: 500px;
+  padding: 20px;
 
   & .dagger {
     margin-left: auto;

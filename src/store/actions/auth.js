@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {config} from '../../firebase/config'
 import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS} from './actionTypes'
+import {fetchUserInfo} from './userInformation'
 
 export function auth(email, password, isLogin) {
     return async dispatch => {
@@ -19,6 +20,8 @@ export function auth(email, password, isLogin) {
             localStorage.setItem('email', JSON.stringify(email))
 
             dispatch(dispatchAction(AUTH_SUCCESS, {email, id: data.localId}))
+            if(isLogin)
+                dispatch(fetchUserInfo())
         } catch (e) {
             dispatch(dispatchAction(AUTH_ERROR, null))
         }
