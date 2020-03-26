@@ -48,7 +48,7 @@ export default class InputUserInformation extends Component {
         return(
             <>
 
-                <h2>{isEdit ? 'Ваша контактная информация' : 'Укажите вашу контактную ифнормацию'}</h2>
+                <h2 className={'mb-15'}>{isEdit ? 'Ваша контактная информация' : 'Укажите вашу контактную ифнормацию'}</h2>
 
                 <label>Имя*</label>
                 <input className={this.state.nameIsValid === false ? 'input-error' : ''}

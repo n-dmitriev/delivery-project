@@ -1,0 +1,8 @@
+@import "../../mixins";
+
+.notification {
+  @include modal();
+  min-height: 200px;
+  min-width: 300px;
+  padding: 30px;
+}

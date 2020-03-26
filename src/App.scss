@@ -4,24 +4,23 @@
 .app {
   font-family: Arial;
 
-  & h1, & h2, & h3, & h4{
-    margin: 0 0 20px 0;
+  & h1, & h2, & h3, & h4 {
     cursor: default;
     line-height: 1.5;
+    margin: 0;
   }
 
   & label {
-    flex: 1;
-    margin-right: 10px;
     font-size: 20px;
+    flex: 1;
   }
 
   & input, & textarea {
-    flex: 2;
     outline: 0 !important;
     padding: 5px;
     border: 1px solid white;
     border-radius: 8px;
+    flex: 2;
     @include animate();
 
     &:hover {
@@ -46,13 +45,11 @@
   & hr {
     width: 100%;
     height: 1px;
-    border-radius: 5px;
     opacity: 0.4;
-    margin: 20px 0;
   }
 
   &__main-content {
-    padding: 30px 30px 20px 25px;
+    padding: 30px 50px 20px 50px;
   }
 
   & .button-section {
@@ -65,21 +62,26 @@
     }
   }
 
-  & .non-click {
-    pointer-events: none;
-  }
-
   & .main-item-style {
+    text-align: center;
+    min-width: 100px;
     outline: 0 !important;
     padding: 7px 10px;
     font-size: 20px;
-    border: 1px solid white;
-    border-radius: 8px;
     cursor: pointer;
+
     @include animate();
+    @include border();
 
     &:hover {
       @include animate-hover-color(1.05);
+    }
+    &_danger {
+      background-color: Crimson;
+      color: white;
+      &:hover {
+        background-color: DarkRed;
+      }
     }
   }
 
@@ -137,13 +139,48 @@
     display: none;
   }
 
+  & .non-click {
+    pointer-events: none;
+  }
+
   & .bg {
     z-index: 9998;
     position: absolute;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     top: 0;
     left: 0;
     background: rgba(0, 0, 0, 0.3);
+  }
+
+  .mr-15 {
+    margin-right: 15px;
+  }
+
+  .mt-15 {
+    margin-top: 15px;
+  }
+
+  .mb-15 {
+    margin-bottom: 15px;
+  }
+
+  .ml-15 {
+    margin-left: 15px;
+  }
+  .mr-30 {
+    margin-right: 30px;
+  }
+
+  .mt-30 {
+    margin-top: 30px;
+  }
+
+  .mb-30 {
+    margin-bottom: 30px;
+  }
+
+  .ml-30 {
+    margin-left: 30px;
   }
 }

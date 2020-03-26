@@ -37,8 +37,8 @@ class AuthModalForm extends Component {
     //Валидация пароля и логина
     validateUserData = () => {
         this.setState({
-            loginIsValid: this.password.current.value.length > 6,
-            passwordIsValid: this.login.current.value.replace(/\s+/g, '') !== '',
+            loginIsValid: this.login.current.value.replace(/\s+/g, '') !== '',
+            passwordIsValid: this.password.current.value.length > 6,
         })
     }
 
@@ -52,7 +52,7 @@ class AuthModalForm extends Component {
             true,
         )
         if(this.props.isAuth){
-            this.switchCurrentWin('successAuth')
+            this.closeAuthWin()
         }
     }
 
@@ -69,7 +69,7 @@ class AuthModalForm extends Component {
                         false,
                     )
                     if (this.props.isError !== true)
-                        this.switchCurrentWin('userInfoInp')
+                        this.switchCurrentWin()
                 }
             }
         }
@@ -78,28 +78,17 @@ class AuthModalForm extends Component {
     //Обработчик попытки сохранения пользовательских данных
     saveContactInformation = async (info) => {
         this.props.createUserStore(info)
-        this.switchCurrentWin('success')
+        this.closeAuthWin('successRegistration')
     }
 
-    //Сообщение об успешной регистрации
-    renderSuccessMessage = (type) => {
-        return (
-            <>
-                <h2>Вы успешно {this.state.currentWin === 'successAuth' ? 'авторизовались' : 'зарегестрированы'}!</h2>
-                <label>{this.props.trySendOrderNotAuth ? 'Ваш заказ успешно оформлен!' : null}</label>
-                <div className={'button-section'}>
-                    <button className={'main-item-style'} onClick={() => {
-                        this.props.onClose()
-                        this.switchCurrentWin('signIn')
-                        if (this.props.trySendOrderNotAuth) {
-                            this.props.trySendOrder(false)
-                            this.props.sendOrder()
-                        }
-                    }}>Ок
-                    </button>
-                </div>
-            </>
-        )
+
+    closeAuthWin = () => {
+        this.props.onClose()
+        this.switchCurrentWin('signIn')
+        if (this.props.trySendOrderNotAuth) {
+            this.props.trySendOrder(false)
+            this.props.sendOrder()
+        }
     }
 
 
@@ -119,14 +108,14 @@ class AuthModalForm extends Component {
     renderSignUp = () => {
         return (
             <>
-                <h2>Регестрация</h2>
+                <h2 className={'mb-30'}>Регестрация</h2>
 
-                <label>Укажите почту</label>
+                <label className={'mb-15'}>Укажите почту</label>
                 <input
-                    className={!this.state.loginIsValid || this.props.isError ? 'input-error' : ''}
+                    className={!this.state.loginIsValid || this.props.isError ? 'input-error mb-30' : 'mb-30'}
                     type="text" ref={this.login}/>
-                <label>Придумайте пароль</label>
-                <input className={!this.state.passwordIsValid ? 'input-error' : ''} type="login"
+                <label className={'mb-15'}>Придумайте пароль</label>
+                <input className={!this.state.passwordIsValid ? 'input-error mb-15' : 'mb-30'} type="login"
                        ref={this.password}/>
                 <small className={this.state.loginIsValid && this.state.passwordIsValid ? 'hide' : 'error'}>
                     {!this.state.loginIsValid ? 'Почта не может быть пустой!' : null}
@@ -136,7 +125,7 @@ class AuthModalForm extends Component {
                 <small className={this.props.isError ? 'error' : 'hide'}>Вы указали некорректную почту!</small>
 
                 <div className={'button-section'}>
-                    <button className={'main-item-style'} onClick={this.registerHandler}>Зарегестрироваться</button>
+                    <button className={'main-item-style mr-15'} onClick={this.registerHandler}>Зарегестрироваться</button>
                     <button className={'main-item-style'} onClick={() => {
                         this.switchCurrentWin('signIn')
                     }}>
@@ -151,17 +140,17 @@ class AuthModalForm extends Component {
     renderSignIn = () => {
         return (
             <>
-                <h2>{this.props.trySendOrderNotAuth? 'Прежде чем сдеать заказ, авторизуйтесь или зарегестрируйтесь' : 'Авторизуйтесь'}  </h2>
+                <h2 className={'mb-30'}>{this.props.trySendOrderNotAuth? 'Прежде чем сдеать заказ, авторизуйтесь или зарегестрируйтесь' : 'Авторизуйтесь'}  </h2>
 
-                <label>Введите логин</label>
-                <input className={this.props.isError === true ? 'input-error' : ''} type="login" ref={this.login}/>
-                <label>Введите пароль</label>
-                <input className={this.props.isError === true ? 'input-error' : ''} type="password"
+                <label className={'mb-15'}>Введите логин</label>
+                <input className={this.props.isError === true ? 'input-error mb-30' : 'mb-30'} type="login" ref={this.login}/>
+                <label className={'mb-15'}>Введите пароль</label>
+                <input className={this.props.isError === true ? 'input-error mb-15' : 'mb-30'} type="password"
                        ref={this.password}/>
                 <small className={this.props.isError === true ? 'error' : 'hide'}>Неверный логин или пароль!</small>
 
                 <div className={'button-section'}>
-                    <button className={'main-item-style'} onClick={this.loginHandler}>Войти</button>
+                    <button className={'main-item-style mr-15'} onClick={this.loginHandler}>Войти</button>
                     <button className={'main-item-style'} onClick={() => {
                         this.switchCurrentWin('signUp')
                     }}>Создать аккаунт
@@ -185,9 +174,7 @@ class AuthModalForm extends Component {
                                 ? this.renderSignUp()
                                 : this.state.currentWin === 'userInfoInp'
                                     ? this.renderInputUserInfo()
-                                    : this.state.currentWin === 'success'
-                                        ? this.renderSuccessMessage('successRegistration')
-                                        : this.renderSuccessMessage('successAuth')
+                                    : null
                         }
                     </div>
                 </div>

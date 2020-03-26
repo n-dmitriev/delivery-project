@@ -1,22 +1,19 @@
 .product-form{
   display: flex;
   flex-direction: column;
-  padding: 20px 20px;
+  padding: 20px;
   min-height: 600px;
   max-height: 600px;
 
   &__input-field{
     display: flex;
-    margin: 10px 0;
+    margin-bottom: 30px;
+    & label {
+      margin-right: 10px;
+    }
 
     &_name {
       flex-direction: column;
-      & h2 {
-        margin: 0 0 30px 0;
-      }
-      & small{
-        margin: 0 0 30px;
-      }
     }
   }
 }

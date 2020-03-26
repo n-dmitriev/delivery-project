@@ -1,19 +1,36 @@
-import React from 'react'
+import React, {Component} from 'react'
 import './Notification.scss'
 
-const Notification = props =>{
-    return (
-        <div className={''}>
-                <h2>Вы успешно {this.state.currentWin === 'successAuth' ? 'авторизовались' : 'зарегестрированы'}!</h2>
-                <label>{this.props.trySendOrderNotAuth ? 'Ваш заказ успешно оформлен!' : null}</label>
-                <div className={'button-section'}>
-                    <button className={'main-item-style'} onClick={() => {
+class Notification extends Component{
+    state = {
+        isOpen: true
+    }
 
-                    }}>Ок
-                    </button>
+    onClose = () => {
+        this.setState({
+            isOpen: false
+        })
+    }
+
+    render() {
+        if(!this.state.isOpen)
+            return null
+        return (
+            <>
+                <div className={'notification'}>
+                    <h2>{this.props.message}</h2>
+                    <hr className={'mb-30 mt-15'}/>
+                    <label className={'mb-30'}>{this.props.optionalMessage}</label>
+                    <div className={'button-section mt-15 mb-15'}>
+                        <button className={'main-item-style'} onClick={this.onClose}>
+                            Ок
+                        </button>
+                    </div>
                 </div>
-        </div>
-    )
+                <div className={'bg'} onClick={this.onClose}/>
+            </>
+        )
+    }
 }
 
 export default Notification

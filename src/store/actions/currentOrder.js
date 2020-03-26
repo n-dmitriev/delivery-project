@@ -68,6 +68,40 @@ export function editOrderItem(item, list) {
     }
 }
 
+export function editOrder(order) {
+    return (dispatch, getState) => {
+        try {
+            dataBase.collection('users').doc(getState().authReducer.id).update({
+                listOfCurrentOrders: firebase.firestore.FieldValue.arrayUnion(order),
+            })
+            dispatch(fetchUserInfo())
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+}
+
+export function cancelOrder(order) {
+    return (dispatch, getState) => {
+        try {
+            dataBase.collection('users').doc(getState().authReducer.id).update({
+                listOfCurrentOrders: firebase.firestore.FieldValue.arrayRemove(order),
+            })
+            order.description = 'Вы отменили заказ'
+            order.endTime = `${new Date()}`
+            order.status = 5
+            dataBase.collection('users').doc(getState().authReducer.id).update({
+                listOfDeliveredOrders: firebase.firestore.FieldValue.arrayUnion(order),
+            })
+            dispatch(fetchUserInfo())
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+}
+
 export function removeProductFromOrder(id, list) {
     return (dispatch, getState) => {
         const state = getState().currentOrder
@@ -125,7 +159,8 @@ export function addOrderToOrderList() {
     return async (dispatch, getState) => {
         const state = getState().currentOrder
         const orderInfo = {
-            delivered: false,
+            // 3 статуса 0 - заказ на обработке, 1 - курьер принял заказ, 2 - заказ выполнен или отменён
+            status: 0,
             startTime: `${new Date()}`,
             courierId: '',
             endTime: '',
@@ -156,3 +191,4 @@ export function createUserStore(info) {
         dispatch(fetchUserInfo())
     }
 }
+

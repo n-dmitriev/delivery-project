@@ -207,9 +207,9 @@ export default class productForm extends Component {
             if (this.props.nameOfShop === '' && !isEdit)
                 return (
                     <div className={'product-form__input-field product-form__input-field_name'}>
-                        <h2>Введите название магазина</h2>
-                        <input type="text" ref={this.shopNameInput}/>
-                        <small>Это поле необязательное для заполнения</small>
+                        <h2 className={'mb-30'}>Введите название магазина</h2>
+                        <input type="text" ref={this.shopNameInput} className={'mb-15'}/>
+                        <small className={'mb-30'}>Это поле необязательное для заполнения</small>
                         <button
                             className={'main-item-style'}
                             onClick={this.editShopName}>
@@ -223,10 +223,10 @@ export default class productForm extends Component {
             if (this.props.nameOfRestaurant === '' && !isEdit)
                 return (
                     <div className={'product-form__input-field product-form__input-field_name'}>
-                        <h2>Введите название ресторана</h2>
-                        <input className={this.state.restIsValid === true ? '' : 'input-error'} type="text"
+                        <h2 className={'mb-30'}>Введите название ресторана</h2>
+                        <input className={this.state.restIsValid === true ? 'mb-15' : 'input-error mb-15'} type="text"
                                ref={this.restaurantNameInput}/>
-                        <small className={this.state.restIsValid === true ? '' : 'error'}>Это поле обязательное для
+                        <small className={this.state.restIsValid === true ? 'mb-30' : 'error mb-30'}>Это поле обязательное для
                             заполнения</small>
                         <button
                             className={'main-item-style'}

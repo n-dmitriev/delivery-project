@@ -77,7 +77,7 @@ class OrderModalForm extends Component {
             <div className={'order-constructor__order-list'}>
                 {this.props.shopOrder.map((item, count) => (
                     <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
-                        {item.name} {item.brand} {item.quantity} {item.price} {item.description}
+                        {item.name}, {item.quantity}, {item.brand}
                         <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}></span>
                     </div>
                 ))}
