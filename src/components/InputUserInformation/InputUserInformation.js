@@ -48,21 +48,21 @@ export default class InputUserInformation extends Component {
         return(
             <>
 
-                <h2 className={'mb-15'}>{isEdit ? 'Ваша контактная информация' : 'Укажите вашу контактную ифнормацию'}</h2>
+                <h2 className={'mb-30'}>{isEdit ? 'Ваша контактная информация' : 'Укажите вашу контактную ифнормацию'}</h2>
 
-                <label>Имя*</label>
-                <input className={this.state.nameIsValid === false ? 'input-error' : ''}
+                <label className={'mb-15'}>Имя*</label>
+                <input className={this.state.nameIsValid === false ? 'input-error mb-30' : 'mb-30'}
                        type="text"
                        ref={this.name}
                        defaultValue={isEdit ? this.props.userInfo.name : null}
                 />
-                <label>Номер телефона*</label>
-                <input className={this.state.numberPhoneIsValid === false ? 'input-error' : ''}
+                <label className={'mb-15'}>Номер телефона*</label>
+                <input className={this.state.numberPhoneIsValid === false ? 'input-error mb-30' : 'mb-30'}
                        type="text"
                        ref={this.numberPhone}
                        defaultValue={isEdit ? this.props.userInfo.numberPhone : null}/>
-                <label>Адрес*</label>
-                <input className={this.state.addressIsValid === false ? 'input-error' : ''}
+                <label className={'mb-15'}>Адрес*</label>
+                <input className={this.state.addressIsValid === false ? 'input-error mb-15' : 'mb-30'}
                        type="text"
                        ref={this.address}
                        defaultValue={isEdit ? this.props.userInfo.address : null}

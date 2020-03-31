@@ -43,7 +43,7 @@ export default class PasswordChangeForm extends Component {
         if(!this.props.isOpen)
             return null
         return (
-            <Modal>
+            <>
                 <div className={'password-change'}>
                     <div className={'password-change__content'}>
                         <h2>Смена пароля</h2>
@@ -67,7 +67,8 @@ export default class PasswordChangeForm extends Component {
                         </div>
                     </div>
                 </div>
-            </Modal>
+                <div className={'bg'} onClick={this.close}/>
+            </>
         )
     }
 }

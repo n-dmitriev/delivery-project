@@ -10,7 +10,7 @@ import {dataBase} from '../../firebase/firebase'
 import * as firebase from 'firebase/app'
 import {fetchUserInfo} from './userInformation'
 
-function getElementById(arr, id) {
+export function getElementById(arr, id) {
     return arr.findIndex(x => x.id === id)
 }
 
@@ -65,20 +65,6 @@ export function editOrderItem(item, list) {
         arr[index] = item
         dispatch(dispatchAction(type, arr))
         updateLocalStorage(getState, list)
-    }
-}
-
-export function editOrder(order) {
-    return (dispatch, getState) => {
-        try {
-            dataBase.collection('users').doc(getState().authReducer.id).update({
-                listOfCurrentOrders: firebase.firestore.FieldValue.arrayUnion(order),
-            })
-            dispatch(fetchUserInfo())
-        }
-        catch (e) {
-            console.log(e)
-        }
     }
 }
 

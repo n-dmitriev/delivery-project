@@ -3,6 +3,7 @@
 .order-form {
   @include modal();
   padding: 10px 25px 25px 20px;
+  min-width: 500px;
 
   & .main-item-style{
     margin: 10px 0 5px 10px;

@@ -14,10 +14,11 @@ class UserAccount extends Component {
     state = {
         cpfIsOpen: false,
         isOrderModalOpen: false,
+        editItem: null
     }
 
     interactionWithOrderModal = () => {
-        console.log('da')
+        window.scrollTo(0, 0)
         this.setState({isOrderModalOpen: !this.state.isOrderModalOpen})
     }
 
@@ -29,6 +30,13 @@ class UserAccount extends Component {
 
     saveContactInformation = (info) => {
         this.props.setUserInfo(info)
+    }
+
+    setEditItem = (item) => {
+        this.setState({
+            editItem: item
+        })
+        this.interactionWithOrderModal()
     }
 
     render() {
@@ -57,6 +65,7 @@ class UserAccount extends Component {
                         isOpen={this.state.isOrderModalOpen}
                         onClose={this.interactionWithOrderModal}
                         isEdit={true}
+                        editItem={this.state.editItem}
                     />
 
                     <hr/>
@@ -69,7 +78,7 @@ class UserAccount extends Component {
                                      orderList={this.props.userInfo.listOfCurrentOrders || []}
                                      type={'active'}
                                      cancelOrder={this.props.cancelOrder}
-                                     openForm={this.interactionWithOrderModal}
+                                     setEditItem={this.setEditItem}
                     />
                     <hr/>
                     <RenderOrderList description={'завершённых заказов'}

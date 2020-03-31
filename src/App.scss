@@ -3,6 +3,7 @@
 
 .app {
   font-family: Arial;
+  height: 100vh;
 
   & h1, & h2, & h3, & h4 {
     cursor: default;
@@ -147,7 +148,7 @@
     z-index: 9998;
     position: absolute;
     width: 100%;
-    min-height: 100vh;
+    min-height: 100%;
     top: 0;
     left: 0;
     background: rgba(0, 0, 0, 0.3);

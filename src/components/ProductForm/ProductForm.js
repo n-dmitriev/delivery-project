@@ -89,7 +89,7 @@ export default class productForm extends Component {
     // Валидация заказа
     validateOrderData = () => {
         this.setState({
-            orderFormIsValid: this.inputName.current.value.replace(/\s+/g, '') !== '' && this.inputQuantity.current.value.replace(/\s+/g, '') !== ''
+            orderFormIsValid: this.inputName.current.value.replace(/\s+/g, '') !== '' && this.inputQuantity.current.value.replace(/\s+/g, '') !== '',
         })
     }
 
@@ -114,9 +114,9 @@ export default class productForm extends Component {
         e.preventDefault()
         if (this.shopNameInput.current.value.replace(/\s+/g, '') !== '') {
             this.props.changeShopName(this.shopNameInput.current.value)
-        }
-        else
+        } else {
             this.props.changeShopName('В любом магазине')
+        }
         this.props.interactionWithDagger()
     }
 
@@ -125,8 +125,9 @@ export default class productForm extends Component {
     addAndEditOrder = async (e) => {
         e.preventDefault()
         await this.validateOrderData()
-        if(this.state.orderFormIsValid){
+        if (this.state.orderFormIsValid) {
             // Формируем объект из input-ов
+
             const item = {
                 name: this.inputName.current.value,
                 quantity: this.inputQuantity.current.value,
@@ -141,16 +142,23 @@ export default class productForm extends Component {
             // Если item(текущий редактируемый эл-т) пустой, значит надо добавить в заказ новый продукт и сгенерировать его id
             if (this.props.item === null) {
                 item.id = `note-${Math.random().toString(36).substr(2, 9)}`
-                this.props.addProductToOrder(item, this.props.activeTab)
+                if (this.props.isEdit === true)
+                    this.props.addSentOrder(item)
+                else
+                    this.props.addProductToOrder(item, this.props.activeTab)
             }
             // Иначе item(текущий редактируемый эл-т) непустой, значит надо редактировать продукт в заказе, id достаём из item-а
             else {
                 item.id = this.props.item.id
-                this.props.editOrderItem(item, this.props.activeTab)
+                if (this.props.isEdit === true)
+                    this.props.editSentOrder(item)
+                else
+                    this.props.editOrderItem(item, this.props.activeTab)
             }
             this.props.interactionWithDagger()
             this.props.resetActiveItem()
         }
+
     }
 
     // Функция, рендерит input-ы с вопросами из list-ов
@@ -175,7 +183,7 @@ export default class productForm extends Component {
                                         className={
                                             question.required === true ? this.state.orderFormIsValid ? '' : 'input-error' : ''
                                         }>
-                                </textarea>
+                                    </textarea>
                             }
                         </div>
                     ))
@@ -204,7 +212,7 @@ export default class productForm extends Component {
         this.props.item === null ? isEdit = false : isEdit = true
 
         if (this.props.activeTab === 'shop-tab') {
-            if (this.props.nameOfShop === '' && !isEdit)
+            if (this.props.nameOfShop === '' && !isEdit && this.props.isEdit !== true)
                 return (
                     <div className={'product-form__input-field product-form__input-field_name'}>
                         <h2 className={'mb-30'}>Введите название магазина</h2>
@@ -226,7 +234,8 @@ export default class productForm extends Component {
                         <h2 className={'mb-30'}>Введите название ресторана</h2>
                         <input className={this.state.restIsValid === true ? 'mb-15' : 'input-error mb-15'} type="text"
                                ref={this.restaurantNameInput}/>
-                        <small className={this.state.restIsValid === true ? 'mb-30' : 'error mb-30'}>Это поле обязательное для
+                        <small className={this.state.restIsValid === true ? 'mb-30' : 'error mb-30'}>Это поле
+                            обязательное для
                             заполнения</small>
                         <button
                             className={'main-item-style'}

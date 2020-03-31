@@ -82,7 +82,7 @@ export default class RenderOrderList extends Component {
                                                         className={`main-item-style mr-15 ${
                                                             orderInfo.status > 1 ?  'non-click' : ''
                                                         }`}
-                                                        onClick={this.props.openForm}>
+                                                        onClick={() => this.props.setEditItem(orderInfo)}>
                                                         Редактировать заказ
                                                     </button>
                                                     <button

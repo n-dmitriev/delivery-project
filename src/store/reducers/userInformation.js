@@ -3,6 +3,7 @@ import {
     FETCH_USER_INFO_START,
     FETCH_USER_INFO_SUCCESS,
     SET_USER_PASSWORD_ERROR, SET_USER_PASSWORD_SUCCESS,
+    ADD_P_TO_SENT_ORDER, REMOVE_P_FROM_SENT_ORDER, EDIT_SENT_ORDER_ITEM,
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -33,6 +34,21 @@ export default function userInfReducer(state = initialState, action) {
             return {
                 ...state, error: action.error
             }
+        case ADD_P_TO_SENT_ORDER: {
+            return {
+                ...state, info: action.item
+            }
+        }
+        case REMOVE_P_FROM_SENT_ORDER: {
+           return {
+               ...state, info: action.item
+           }
+        }
+        case EDIT_SENT_ORDER_ITEM: {
+            return {
+                ...state, info: action.item
+            }
+        }
         default:
             return state
     }
