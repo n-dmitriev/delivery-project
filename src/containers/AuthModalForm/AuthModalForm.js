@@ -5,80 +5,57 @@ import {auth, removeError} from '../../store/actions/auth'
 import {createUserStore} from '../../store/actions/currentOrder'
 import {sendOrder} from '../../store/actions/currentOrder'
 import InputUserInformation from '../../components/InputUserInformation/InputUserInformation'
+import AuthShape from '../../components/AuthShape/AuthShape'
+
 
 //Данный контейнер отвечает за авторизацию и регистрацию пользователей
 class AuthModalForm extends Component {
-    constructor(props) {
-        super(props)
-        this.login = React.createRef()
-        this.password = React.createRef()
-        this.state = {
-            currentWin: 'signIn',
-            loginIsValid: true,
-            passwordIsValid: true,
-        }
-    }
-
-    //Обунуление инпутов, необходимость вызвана переносом содержимого инпутов, при рендеринге нового элемента
-    zeroingInputs = () => {
-        if (this.login.current) this.login.current.value = ''
-        if (this.password.current) this.password.current.value = ''
+    state = {
+        currentWin: 'signIn',
     }
 
     //Меняем контент в модальном окне, состояния: signIn, signUp, userInfoInp, success
     switchCurrentWin = (winName) => {
         this.setState({
-            currentWin: winName
+            currentWin: winName,
         })
         this.props.removeError()
-        this.zeroingInputs()
     }
-
-    //Валидация пароля и логина
-    validateUserData = () => {
-        this.setState({
-            loginIsValid: this.login.current.value.replace(/\s+/g, '') !== '',
-            passwordIsValid: this.password.current.value.length > 6,
-        })
-    }
-
 
     //Обрабочтик попытки авторизации
-    loginHandler = async (e) => {
-        e.preventDefault()
-        await this.props.auth(
-            this.login.current.value,
-            this.password.current.value,
-            true,
-        )
-        if(this.props.isAuth){
+    loginHandler = async (login, email) => {
+        await this.props.auth(login, email, true,)
+        if (this.props.isAuth) {
             this.closeAuthWin()
         }
     }
 
-    //Обработчик попытки решистрации
-    registerHandler = async (e) => {
-        e.preventDefault()
-        if (this.password && this.login) {
-            {
-                await this.validateUserData()
-                if (this.state.loginIsValid && this.state.passwordIsValid) {
-                    await this.props.auth(
-                        this.login.current.value,
-                        this.password.current.value,
-                        false,
-                    )
-                    if (this.props.isError !== true)
-                        this.switchCurrentWin()
-                }
-            }
+    createEmptyUser = () => {
+        const info = {
+            name: '',
+            numberPhone: '',
+            address: '',
+            role: 'user',
+            listOfDeliveredOrders: [],
+            listOfCurrentOrders: [],
         }
+        this.props.createUserStore(info)
     }
 
     //Обработчик попытки сохранения пользовательских данных
     saveContactInformation = async (info) => {
         this.props.createUserStore(info)
         this.closeAuthWin('successRegistration')
+    }
+
+    //Обработчик попытки решистрации
+    registerHandler = async (login, email) => {
+
+        await this.props.auth(login, email, false,)
+        if (this.props.isError !== true) {
+            this.createEmptyUser()
+            this.switchCurrentWin('userInfoInp')
+        }
     }
 
 
@@ -98,7 +75,8 @@ class AuthModalForm extends Component {
             <>
                 <InputUserInformation
                     saveContactInformation={this.saveContactInformation}
-                    onClose={this.props.onClose}
+                    onClose={this.closeAuthWin}
+                    trySend={this.props.trySendOrderNotAuth}
                 />
             </>
         )
@@ -107,56 +85,26 @@ class AuthModalForm extends Component {
     //Рендеринг формы для регестрации
     renderSignUp = () => {
         return (
-            <>
-                <h2 className={'mb-30'}>Регестрация</h2>
-
-                <label className={'mb-15'}>Укажите почту</label>
-                <input
-                    className={!this.state.loginIsValid || this.props.isError ? 'input-error mb-30' : 'mb-30'}
-                    type="text" ref={this.login}/>
-                <label className={'mb-15'}>Придумайте пароль</label>
-                <input className={!this.state.passwordIsValid ? 'input-error mb-15' : 'mb-30'} type="login"
-                       ref={this.password}/>
-                <small className={this.state.loginIsValid && this.state.passwordIsValid ? 'hide' : 'error'}>
-                    {!this.state.loginIsValid ? 'Почта не может быть пустой!' : null}
-                    {!this.state.passwordIsValid ? <><br/>Пароль не может содержать менее 6 символов!</> : null}
-                </small>
-
-                <small className={this.props.isError ? 'error' : 'hide'}>Вы указали некорректную почту!</small>
-
-                <div className={'button-section'}>
-                    <button className={'main-item-style mr-15'} onClick={this.registerHandler}>Зарегестрироваться</button>
-                    <button className={'main-item-style'} onClick={() => {
-                        this.switchCurrentWin('signIn')
-                    }}>
-                        Назад
-                    </button>
-                </div>
-            </>
+            <AuthShape
+                type={'authModal'}
+                isError={this.props.error}
+                auth={this.registerHandler}
+                thisReg={true}
+                switchCurrentWin={this.switchCurrentWin}
+            />
         )
     }
 
     //Рендеринг формы для авторизации
     renderSignIn = () => {
         return (
-            <>
-                <h2 className={'mb-30'}>{this.props.trySendOrderNotAuth? 'Прежде чем сдеать заказ, авторизуйтесь или зарегестрируйтесь' : 'Авторизуйтесь'}  </h2>
-
-                <label className={'mb-15'}>Введите логин</label>
-                <input className={this.props.isError === true ? 'input-error mb-30' : 'mb-30'} type="login" ref={this.login}/>
-                <label className={'mb-15'}>Введите пароль</label>
-                <input className={this.props.isError === true ? 'input-error mb-15' : 'mb-30'} type="password"
-                       ref={this.password}/>
-                <small className={this.props.isError === true ? 'error' : 'hide'}>Неверный логин или пароль!</small>
-
-                <div className={'button-section'}>
-                    <button className={'main-item-style mr-15'} onClick={this.loginHandler}>Войти</button>
-                    <button className={'main-item-style'} onClick={() => {
-                        this.switchCurrentWin('signUp')
-                    }}>Создать аккаунт
-                    </button>
-                </div>
-            </>
+            <AuthShape
+                type={'authModal'}
+                isError={this.props.error}
+                auth={this.loginHandler}
+                thisReg={false}
+                switchCurrentWin={this.switchCurrentWin}
+            />
         )
     }
 
@@ -166,7 +114,7 @@ class AuthModalForm extends Component {
             <>
                 <div className={'auth-form'}>
                     <div className="auth-form__inputs">
-                        <span className="dagger dagger_delete" onClick={this.props.onClose}></span>
+                        <span className="dagger dagger_delete" onClick={this.closeAuthWin}></span>
                         {
                             this.state.currentWin === 'signIn'
                                 ? this.renderSignIn()
@@ -178,7 +126,7 @@ class AuthModalForm extends Component {
                         }
                     </div>
                 </div>
-                <div className={'bg'} onClick={this.props.onClose}/>
+                <div className={'bg'} onClick={this.closeAuthWin}/>
             </>
         )
     }

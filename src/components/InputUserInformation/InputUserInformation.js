@@ -73,8 +73,8 @@ export default class InputUserInformation extends Component {
                 </small>
 
                 <div className={'button-section'}>
-                    <button className={'main-item-style'} onClick={this.saveUI}>Применить</button>
-                    {isEdit ? null : <button className={'main-item-style'} onClick={this.onClose}>Позже</button>}
+                    <button className={'main-item-style mr-15'} onClick={this.saveUI}>Применить</button>
+                    {isEdit || this.props.trySend ? null : <button className={'main-item-style'} onClick={this.props.onClose}>Позже</button>}
                 </div>
             </>
         )

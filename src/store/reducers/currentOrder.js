@@ -20,56 +20,62 @@ const initialState = {
     shopOrder: shopOrder,
     restaurantOrder: restaurantOrder,
     nameOfRestaurant: nameOfRestaurant,
-    nameOfShop: nameOfShop
+    nameOfShop: nameOfShop,
 }
 
 export default function eateriesReducer(state = initialState, action) {
     switch (action.type) {
         case ADD_P_TO_SHOP_ORDER:
             return {
-                ...state, shopOrder: [...state.shopOrder, action.item]
+                ...state, shopOrder: [...state.shopOrder, action.item],
             }
         case EDIT_ORDER_SHOP_ITEM:
             return {
-                ...state, shopOrder: action.item
+                ...state, shopOrder: action.item,
             }
         case REMOVE_P_FROM_SHOP_ORDER:
             return {
-                ...state, shopOrder: action.item
+                ...state, shopOrder: action.item,
             }
         case ADD_P_TO_RESTAURANT_ORDER:
             return {
-                ...state, restaurantOrder: [...state.restaurantOrder, action.item]
+                ...state, restaurantOrder: [...state.restaurantOrder, action.item],
             }
         case EDIT_ORDER_RESTAURANT_ITEM:
             return {
-                ...state, restaurantOrder: action.item
+                ...state, restaurantOrder: action.item,
             }
         case REMOVE_P_FROM_RESTAURANT_ORDER:
             return {
-                ...state, restaurantOrder: action.item
+                ...state, restaurantOrder: action.item,
             }
         case CHANGE_RESTAURANT_NAME:
             return {
-                ...state, nameOfRestaurant: action.item
+                ...state, nameOfRestaurant: action.item,
             }
         case CHANGE_SHOP_NAME:
             return {
-                ...state, nameOfShop: action.item
+                ...state, nameOfShop: action.item,
             }
         case REMOVE_NAMES:
             return {
                 ...state,
                 nameOfRestaurant: '',
-                nameOfShop: ''
+                nameOfShop: '',
             }
         case SEND_ORDER:
             return {
-                ...state, shopOrder: []
+                shopOrder: [],
+                restaurantOrder: [],
+                nameOfRestaurant: '',
+                nameOfShop: '',
             }
         case DELETE_ORDER:
             return {
-                ...state, shopOrder: []
+                shopOrder: [],
+                restaurantOrder: [],
+                nameOfRestaurant: '',
+                nameOfShop: '',
             }
         default:
             return state

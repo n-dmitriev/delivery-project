@@ -22,8 +22,15 @@ class OrderModalForm extends Component {
         activeTab: 'shop-tab', // текущее вкладка 2 состояния shop-tab и restaurant-tab
         formIsOpen: false, // флаг отвечающий за форму ввода, если false - рендерится заказ, true - рендерится форма ввода
         activeItem: null, // В переменной хранится текуший элемент, который выбран для редактирования
+        update: true
     }
 
+
+    removeUpdate = () => {
+        this.setState({
+            update: !this.state.update
+        })
+    }
 
     //Функция открывающая/закрывающая форму ввода
     interactionWithDagger = () => {

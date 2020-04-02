@@ -1,6 +1,7 @@
 import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS} from './actionTypes'
 import {fetchUserInfo} from './userInformation'
-import {authWithFirebase} from '../../firebase/firebase'
+import {authWithFirebase, dataBase} from '../../firebase/firebase'
+import {dispatchAction} from './universalFunctions'
 
 export function auth(email, password, isLogin) {
     return async dispatch => {
@@ -10,8 +11,19 @@ export function auth(email, password, isLogin) {
             else
                 await authWithFirebase.createUserWithEmailAndPassword(email, password)
 
-            authWithFirebase.onAuthStateChanged(function(user) {
+            authWithFirebase.onAuthStateChanged(async (user) => {
                 if (user) {
+                    if(isLogin === true){
+                        const docRef = dataBase.collection('users').doc(user.uid)
+                        const answer = await docRef.get()
+                        const data = answer.data()
+
+                        if(data === undefined){
+                            dispatch(dispatchAction(AUTH_ERROR, null))
+                            return
+                        }
+                    }
+
                     dispatch(dispatchAction(AUTH_SUCCESS, {email: user.email, id: user.uid}))
                     localStorage.setItem('id', JSON.stringify(user.uid))
                     localStorage.setItem('email', JSON.stringify(user.email))
@@ -28,12 +40,6 @@ export function auth(email, password, isLogin) {
     }
 }
 
-export function dispatchAction(type, item) {
-    return {
-        type, item,
-    }
-}
-
 export function removeError() {
     return {
         type: AUTH_OK,
@@ -41,8 +47,7 @@ export function removeError() {
 }
 
 export function logout() {
-    localStorage.removeItem('id')
-    localStorage.removeItem('email')
+    localStorage.clear()
     return {
         type: AUTH_LOGOUT,
     }

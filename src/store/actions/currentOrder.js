@@ -9,10 +9,7 @@ import {
 import {dataBase} from '../../firebase/firebase'
 import * as firebase from 'firebase/app'
 import {fetchUserInfo} from './userInformation'
-
-export function getElementById(arr, id) {
-    return arr.findIndex(x => x.id === id)
-}
+import {dispatchAction, getElementById} from './universalFunctions'
 
 function updateLocalStorage(getState, list) {
     if (list === 'shop-tab')
@@ -24,13 +21,6 @@ function updateLocalStorage(getState, list) {
         localStorage.removeItem('restaurantOrder')
         localStorage.removeItem('nameOfRestaurant')
         localStorage.removeItem('nameOfShop')
-    }
-}
-
-function dispatchAction(actionType, item) {
-    return {
-        type: actionType,
-        item,
     }
 }
 

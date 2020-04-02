@@ -9,6 +9,8 @@ import UserAccount from './containers/UserAccount/UserAccount'
 import CourierAccount from './containers/CourierAccount/CourierAccount'
 import MainPage from './components/MainPage/MainPage'
 import {fetchUserInfo} from './store/actions/userInformation'
+import Admin from './containers/Admin/Admin'
+import {autoLogin} from './store/actions/admin'
 
 
 class App extends Component {
@@ -21,6 +23,7 @@ class App extends Component {
     async componentDidMount() {
         if (this.props.isAuth)
             await this.props.fetchUserInfo()
+        this.props.autoLogin()
     }
 
     // Метод на случай, если пользователь попытается сделать заказ не авторизовавшись
@@ -63,6 +66,7 @@ class App extends Component {
                         <Route path='/'  component={MainPage} exact/>
                         <Route path='/user-account/:number' component={UserAccount}/>
                         <Route path='/courier-account/:number' component={CourierAccount}/>
+                        <Route path='/admin' component={Admin}/>
                     </Switch>
                 </div>
             </div>
@@ -75,13 +79,14 @@ function mapStateToProps(state) {
         isAuth: state.authReducer.isAuth,
         isError: state.authReducer.isError,
         id: state.authReducer.id,
-        userInfo: state.userInfReducer.info,
+        userInfo: state.userInfReducer.info
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         fetchUserInfo: () => dispatch(fetchUserInfo()),
+        autoLogin: () => dispatch(autoLogin())
     }
 }
 
