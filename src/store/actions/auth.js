@@ -13,15 +13,28 @@ export function auth(email, password, isLogin) {
 
             authWithFirebase.onAuthStateChanged(async (user) => {
                 if (user) {
+                    const collection = dataBase.collection('users')
                     if(isLogin === true){
-                        const docRef = dataBase.collection('users').doc(user.uid)
-                        const answer = await docRef.get()
+                        const answer = await collection.doc(user.uid).get()
                         const data = answer.data()
 
                         if(data === undefined){
                             dispatch(dispatchAction(AUTH_ERROR, null))
                             return
                         }
+                    }
+                    else {
+                        const info = {
+                            name: '',
+                            numberPhone: '',
+                            address: '',
+                            email: email,
+                            role: 'user',
+                            listOfDeliveredOrders: [],
+                            listOfCurrentOrders: [],
+                        }
+                        await collection.doc(user.uid).set(info)
+                        dispatch(fetchUserInfo())
                     }
 
                     dispatch(dispatchAction(AUTH_SUCCESS, {email: user.email, id: user.uid}))

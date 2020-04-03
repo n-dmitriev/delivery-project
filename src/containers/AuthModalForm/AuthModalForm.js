@@ -2,10 +2,10 @@ import React, {Component} from 'react'
 import './AuthModalForm.scss'
 import {connect} from 'react-redux'
 import {auth, removeError} from '../../store/actions/auth'
-import {createUserStore} from '../../store/actions/currentOrder'
 import {sendOrder} from '../../store/actions/currentOrder'
 import InputUserInformation from '../../components/InputUserInformation/InputUserInformation'
 import AuthShape from '../../components/AuthShape/AuthShape'
+import {setUserInfo} from '../../store/actions/userInformation'
 
 
 //Данный контейнер отвечает за авторизацию и регистрацию пользователей
@@ -30,21 +30,9 @@ class AuthModalForm extends Component {
         }
     }
 
-    createEmptyUser = () => {
-        const info = {
-            name: '',
-            numberPhone: '',
-            address: '',
-            role: 'user',
-            listOfDeliveredOrders: [],
-            listOfCurrentOrders: [],
-        }
-        this.props.createUserStore(info)
-    }
-
     //Обработчик попытки сохранения пользовательских данных
     saveContactInformation = async (info) => {
-        this.props.createUserStore(info)
+        this.props.setUserInfo(info)
         this.closeAuthWin('successRegistration')
     }
 
@@ -53,7 +41,6 @@ class AuthModalForm extends Component {
 
         await this.props.auth(login, email, false,)
         if (this.props.isError !== true) {
-            this.createEmptyUser()
             this.switchCurrentWin('userInfoInp')
         }
     }
@@ -77,6 +64,7 @@ class AuthModalForm extends Component {
                     saveContactInformation={this.saveContactInformation}
                     onClose={this.closeAuthWin}
                     trySend={this.props.trySendOrderNotAuth}
+                    type={'user'}
                 />
             </>
         )
@@ -87,7 +75,7 @@ class AuthModalForm extends Component {
         return (
             <AuthShape
                 type={'authModal'}
-                isError={this.props.error}
+                isError={this.props.isError}
                 auth={this.registerHandler}
                 thisReg={true}
                 switchCurrentWin={this.switchCurrentWin}
@@ -99,8 +87,9 @@ class AuthModalForm extends Component {
     renderSignIn = () => {
         return (
             <AuthShape
+                trySendOrderNotAuth={this.props.trySendOrderNotAuth}
                 type={'authModal'}
-                isError={this.props.error}
+                isError={this.props.isError}
                 auth={this.loginHandler}
                 thisReg={false}
                 switchCurrentWin={this.switchCurrentWin}
@@ -135,9 +124,9 @@ class AuthModalForm extends Component {
 function mapDispatchToProps(dispatch) {
     return {
         auth: (email, password, login) => dispatch(auth(email, password, login)),
-        createUserStore: (info) => dispatch(createUserStore(info)),
         removeError: () => dispatch(removeError()),
         sendOrder: () => dispatch(sendOrder()),
+        setUserInfo: (info) => dispatch(setUserInfo(info))
     }
 }
 

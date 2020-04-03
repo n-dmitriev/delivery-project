@@ -40,7 +40,7 @@ class UserAccount extends Component {
     }
 
     render() {
-        if (this.props.match.params.number !== this.props.id)
+        if (this.props.match.params.number !== this.props.id || this.props.userInfo === undefined)
             return <Redirect to={'/'}/>
         else
             return (

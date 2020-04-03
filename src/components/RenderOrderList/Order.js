@@ -30,7 +30,7 @@ export default class Order extends Component {
                             : null
                     }
                 </ul>
-                <span className={'order-list__unwrapping-list mb-15'}
+                <span className={'list__unwrapping-list mb-15'}
                       onClick={this.interactionWithProductList}>
                                                 {this.state.productListIsOpen
                                                     ? 'Скрыть подробности заказа'
@@ -39,16 +39,20 @@ export default class Order extends Component {
                                             </span>
                 <div className={this.state.productListIsOpen ? '' : 'hide'}>
                     {
-                        this.props.orderInfo.order.map((product) => (
-                            <div key={product.id} className={'order-list__unwrapping-item'}>
-                                <ul className={'order-list__product-list'}>
-                                    <li>{product.name}</li>
-                                    <li>{product.quantity}</li>
-                                    <li>{product.price}</li>
-                                    <li>{product.description}</li>
-                                </ul>
-                            </div>
-                        ))
+                        this.props.orderInfo.order.length > 0
+                            ?
+                            this.props.orderInfo.order.map((product) => (
+                                <div key={product.id} className={'list__unwrapping-item'}>
+                                    <ul className={'list__product-list'}>
+                                        <li>{product.name}</li>
+                                        <li>{product.quantity}</li>
+                                        <li>{product.price}</li>
+                                        <li>{product.description}</li>
+                                    </ul>
+                                </div>
+                            ))
+                            :
+                            <span>Ваш заказ пуст!:(</span>
                     }
                 </div>
                 {

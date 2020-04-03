@@ -16,8 +16,8 @@ export default class RenderOrderList extends Component {
     render() {
         return (
             <>
-                <div className={'order-list'}>
-                <span className={'order-list__unwrapping-list mb-15'}
+                <div className={'list'}>
+                <span className={'list__unwrapping-list mb-15'}
                       onClick={this.interactionWithOrderList}>
                     {this.state.orderListIsOpen
                         ? 'Скрыть '
@@ -30,7 +30,7 @@ export default class RenderOrderList extends Component {
                         {
                             this.props.orderList.length !== 0
                                 ? this.props.orderList.map((orderInfo) => (
-                                    <div className={'order-list__item'} key={orderInfo.id}>
+                                    <div className={'list__item'} key={orderInfo.id}>
                                         <Order orderInfo={orderInfo}
                                                type={this.props.type}
                                                cancelOrder={this.props.cancelOrder}
@@ -38,7 +38,7 @@ export default class RenderOrderList extends Component {
                                     </div>
                                 ))
                                 : <>
-                                    <span>У вас ещё нет {this.props.description}:(</span>
+                                    <span>Оу, здесь пусто :(</span>
                                 </>
                         }
                     </div>

@@ -31,24 +31,25 @@ export default class InputUserInformation extends Component {
                     name: this.name.current.value,
                     numberPhone: this.numberPhone.current.value,
                     address: this.address.current.value,
-                    role: 'user',
+                    role: this.props.type,
                     listOfDeliveredOrders: [],
-                    listOfCurrentOrders: []
+                    listOfCurrentOrders: [],
                 }
+
                 this.props.saveContactInformation(info)
             }
         }
     }
 
-    render(){
+    render() {
         let isEdit = false
-        if(this.props.userInfo){
+        if (this.props.userInfo) {
             isEdit = true
         }
-        return(
+        return (
             <>
 
-                <h2 className={'mb-30'}>{isEdit ? 'Ваша контактная информация' : 'Укажите вашу контактную ифнормацию'}</h2>
+                <h2 className={'mb-30'}>{isEdit ? 'Ваша контактная информация' : 'Укажите контактную ифнормацию'}</h2>
 
                 <label className={'mb-15'}>Имя*</label>
                 <input className={this.state.nameIsValid === false ? 'input-error mb-30' : 'mb-30'}
@@ -61,20 +62,27 @@ export default class InputUserInformation extends Component {
                        type="text"
                        ref={this.numberPhone}
                        defaultValue={isEdit ? this.props.userInfo.numberPhone : null}/>
-                <label className={'mb-15'}>Адрес*</label>
+                <label className={'mb-15'}> {
+                    this.props.type === 'courier'
+                        ?
+                            'Ссылка на вк'
+                        :
+                            'Адрес*'
+                }</label>
+
                 <input className={this.state.addressIsValid === false ? 'input-error mb-15' : 'mb-30'}
                        type="text"
                        ref={this.address}
-                       defaultValue={isEdit ? this.props.userInfo.address : null}
-                />
+                       defaultValue={isEdit ? this.props.userInfo.address : null}/>
                 <small
                     className={this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid ? 'hide' : 'error'}>
                     Поля помеченные * обязательные для заполнения
                 </small>
 
-                <div className={'button-section'}>
+                <div className={'button-section mt-15'}>
                     <button className={'main-item-style mr-15'} onClick={this.saveUI}>Применить</button>
-                    {isEdit || this.props.trySend ? null : <button className={'main-item-style'} onClick={this.props.onClose}>Позже</button>}
+                    {isEdit || this.props.trySend ? null :
+                        <button className={'main-item-style'} onClick={this.props.onClose}>Позже</button>}
                 </div>
             </>
         )

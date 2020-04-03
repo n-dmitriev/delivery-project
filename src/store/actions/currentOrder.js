@@ -161,10 +161,3 @@ export function addOrderToOrderList() {
     }
 }
 
-export function createUserStore(info) {
-    return async (dispatch, getState) => {
-        dataBase.collection('users').doc(getState().authReducer.id).set(info)
-        dispatch(fetchUserInfo())
-    }
-}
-
