@@ -2,16 +2,6 @@ import React, {Component} from 'react'
 import RenderOrderList from '../../RenderOrderList/RenderOrderList'
 
 export default class Courier extends Component {
-    state = {
-        completedOrdersIsOpen: false,
-        executableOrdersIsOpen: false,
-    }
-
-    editCourier = (e) => {
-        e.preventDefault()
-        //this.props.setCourierInfo()
-    }
-
     removeCourier = (e) => {
         e.preventDefault()
         this.props.removeCourier(this.props.courierInfo.id)
@@ -46,7 +36,9 @@ export default class Courier extends Component {
                 <div className="button-section mt-30">
                     <button
                         className="main-item-style mr-15"
-                        onClick={this.editCourier}
+                        onClick={() => {
+                            this.props.editCourier(this.props.courierInfo)
+                        }}
                     >
                         Редактировать данные курьера
                     </button>

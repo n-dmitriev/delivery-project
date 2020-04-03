@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './UserAccount.scss'
 import {connect} from 'react-redux'
-import InputUserInformation from '../../components/InputUserInformation/InputUserInformation'
+import InputInformation from '../../components/InputInformation/InputInformation'
 import {logout} from '../../store/actions/auth'
 import {NavLink, Redirect} from 'react-router-dom'
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
@@ -69,7 +69,7 @@ class UserAccount extends Component {
                     />
 
                     <hr/>
-                    <InputUserInformation
+                    <InputInformation
                         saveContactInformation={this.saveContactInformation}
                         userInfo={this.props.userInfo}
                     />

@@ -28,7 +28,7 @@ export default class RenderCourierList extends Component {
                         ? 'Скрыть '
                         : 'Показать '}
                     список курьеров
-                    <i className="fa fa-caret-down" aria-hidden="true"></i>
+                    <i className="fa fa-caret-down" aria-hidden="true"/>
                 </span>
 
                     <div className={this.state.courierListIsOpen ? '' : 'hide'}>
@@ -39,7 +39,7 @@ export default class RenderCourierList extends Component {
                                         <Courier
                                             courierInfo={courier}
                                             removeCourier={this.props.removeCourier}
-                                            setCourierInfo={this.props.setCourierInfo}
+                                            editCourier={this.props.editCourier}
                                         />
                                     </div>
                                 )

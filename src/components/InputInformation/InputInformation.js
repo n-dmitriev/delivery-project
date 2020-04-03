@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 
-export default class InputUserInformation extends Component {
+export default class InputInformation extends Component {
     constructor(props) {
         super(props)
         this.name = React.createRef()
@@ -32,9 +32,10 @@ export default class InputUserInformation extends Component {
                     numberPhone: this.numberPhone.current.value,
                     address: this.address.current.value,
                     role: this.props.type,
-                    listOfDeliveredOrders: [],
-                    listOfCurrentOrders: [],
                 }
+
+                if(this.props.userInfo.id !== undefined)
+                    info.id = this.props.userInfo.id
 
                 this.props.saveContactInformation(info)
             }
@@ -49,7 +50,7 @@ export default class InputUserInformation extends Component {
         return (
             <>
 
-                <h2 className={'mb-30'}>{isEdit ? 'Ваша контактная информация' : 'Укажите контактную ифнормацию'}</h2>
+                <h2 className={'mb-30'}>{isEdit ? 'Контактная информация' : 'Укажите контактную ифнормацию'}</h2>
 
                 <label className={'mb-15'}>Имя*</label>
                 <input className={this.state.nameIsValid === false ? 'input-error mb-30' : 'mb-30'}

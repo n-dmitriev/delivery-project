@@ -13,8 +13,6 @@ import {
 } from './actionTypes'
 import {dispatchAction} from './universalFunctions'
 
-console.log(localStorage.getItem('addedCourierId'))
-
 export function authAdmin(email, password) {
     return async dispatch => {
         try {
@@ -94,7 +92,7 @@ export function fetchDataBase(collection) {
                 answer.forEach((doc, count = 0) => {
                     docArray.push(doc.data())
                     docArray[count].id = doc.id
-                    count ++
+                    count++
                 })
                 dispatch(dispatchAction(FETCH_USERS_SUCCESS, docArray))
             })
@@ -103,7 +101,7 @@ export function fetchDataBase(collection) {
                 answer.forEach((doc, count = 0) => {
                     docArray.push(doc.data())
                     docArray[count].id = doc.id
-                    count ++
+                    count++
                 })
                 dispatch(dispatchAction(FETCH_PERS_SUCCESS, docArray))
             })
@@ -130,6 +128,7 @@ export function registrNewCourier(email, password) {
                     localStorage.setItem('addedCourierId', JSON.stringify(user.uid))
 
                     dispatch(dispatchAction(CREATE_NEW_COURIER_S, null))
+                    dispatch(fetchDataBase('courier'))
                 } else {
                     new Error('Карамба, что-то пошло не так!')
                 }
@@ -144,14 +143,22 @@ export function registrNewCourier(email, password) {
 export function setCourierInfo(info) {
     return async (dispatch) => {
         try {
-            const id = localStorage.getItem('addedCourierId') ? JSON.parse(localStorage.getItem('addedCourierId')) : ''
-            console.log(info)
+            let id
+            if (info.id === undefined)
+                id = localStorage.getItem('addedCourierId') ? JSON.parse(localStorage.getItem('addedCourierId')) : ''
+            else
+            {
+                id = info.id
+                delete info.id
+            }
+
             dataBase.collection('couriers').doc(id).update({
                 name: info.name,
                 numberPhone: info.numberPhone,
             })
             dispatch(dispatchAction(SET_USER_INFO_SUCCESS, null))
             localStorage.removeItem('addedCourierId')
+            dispatch(fetchDataBase('courier'))
         } catch (e) {
             dispatch(dispatchAction(SET_USER_INFO_ERROR, e))
         }
@@ -159,7 +166,8 @@ export function setCourierInfo(info) {
 }
 
 export function removeCourier(id) {
-    return (dispatch, getState) => {
-
+    return (dispatch) => {
+        dataBase.collection("couriers").doc(id).delete()
+        dispatch(fetchDataBase('courier'))
     }
 }

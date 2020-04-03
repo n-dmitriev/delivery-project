@@ -7,10 +7,19 @@ import AddCourier from '../../components/AddCourier/AddCourier'
 import {dispatchAction} from '../../store/actions/universalFunctions'
 import {REMOVE_ERROR} from '../../store/actions/actionTypes'
 import RenderCourierList from '../../components/RenderCourierList/RenderCourierList'
+import EditCourierModal from '../../components/RenderCourierList/EditCourierModal/EditCourierModal'
 
 class Admin extends Component {
     state = {
         isAddCourierOpen: false,
+        editModalIsOpen: false,
+        editingCourier: null
+    }
+
+    interactionWithEditModal = () => {
+        this.setState({
+            editModalIsOpen: !this.state.editModalIsOpen,
+        })
     }
 
     interactionWithCourierModal = () => {
@@ -18,12 +27,20 @@ class Admin extends Component {
         this.setState({isAddCourierOpen: !this.state.isAddCourierOpen})
     }
 
+    editCourier = (courier) => {
+        window.scrollTo(0, 0)
+        this.setState({
+            editingCourier: courier
+        })
+        this.interactionWithEditModal()
+    }
+
     auth = async (login, email) => {
         await this.props.authAdmin(login, email)
     }
 
     fetchDb = async () => {
-        await this.props.fetchDataBase('personnel')
+        await this.props.fetchDataBase('couriers')
     }
 
     removeCourier = (id) => {
@@ -43,11 +60,19 @@ class Admin extends Component {
                     setCourierInfo={this.props.setCourierInfo}
                 />
 
+                <EditCourierModal
+                    isOpen={this.state.editModalIsOpen}
+                    onClose={this.interactionWithEditModal}
+                    setCourierInfo={this.props.setCourierInfo}
+                    userInfo={this.state.editingCourier}
+                />
+
                 <RenderCourierList
                     fetchDb={this.fetchDb}
                     couriers={this.props.couriers}
                     setCourierInfo={this.props.setCourierInfo}
                     removeCourier={this.removeCourier}
+                    editCourier={this.editCourier}
                 />
 
                 <div className="button-section mt-30">

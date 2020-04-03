@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './AddCourier.scss'
 import AuthShape from '../AuthShape/AuthShape'
-import InputUserInformation from '../InputUserInformation/InputUserInformation'
+import InputInformation from '../InputInformation/InputInformation'
 
 export default class AddCourier extends Component {
     state = {
@@ -41,7 +41,7 @@ export default class AddCourier extends Component {
     }
 
     renderCourierInfoForm = () => {
-        return <InputUserInformation
+        return <InputInformation
             saveContactInformation={this.saveContactInformation}
             onClose={this.close}
             type={'courier'}
@@ -54,7 +54,7 @@ export default class AddCourier extends Component {
             <>
                 <div className={'add-courier'}>
                     <div className={'add-courier__content'}>
-                        <span className="dagger dagger_delete" onClick={this.close}></span>
+                        <span className="dagger dagger_delete" onClick={this.close}/>
                         {
                             this.state.currentWin === 'signUp'
                                 ? this.renderRegistForm()

@@ -3,7 +3,7 @@ import './AuthModalForm.scss'
 import {connect} from 'react-redux'
 import {auth, removeError} from '../../store/actions/auth'
 import {sendOrder} from '../../store/actions/currentOrder'
-import InputUserInformation from '../../components/InputUserInformation/InputUserInformation'
+import InputInformation from '../../components/InputInformation/InputInformation'
 import AuthShape from '../../components/AuthShape/AuthShape'
 import {setUserInfo} from '../../store/actions/userInformation'
 
@@ -60,7 +60,7 @@ class AuthModalForm extends Component {
     renderInputUserInfo() {
         return (
             <>
-                <InputUserInformation
+                <InputInformation
                     saveContactInformation={this.saveContactInformation}
                     onClose={this.closeAuthWin}
                     trySend={this.props.trySendOrderNotAuth}
@@ -103,7 +103,7 @@ class AuthModalForm extends Component {
             <>
                 <div className={'auth-form'}>
                     <div className="auth-form__inputs">
-                        <span className="dagger dagger_delete" onClick={this.closeAuthWin}></span>
+                        <span className="dagger dagger_delete" onClick={this.closeAuthWin}/>
                         {
                             this.state.currentWin === 'signIn'
                                 ? this.renderSignIn()
