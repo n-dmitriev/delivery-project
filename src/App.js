@@ -11,6 +11,7 @@ import MainPage from './components/MainPage/MainPage'
 import {fetchUserInfo} from './store/actions/userInformation'
 import Admin from './containers/Admin/Admin'
 import {autoLogin} from './store/actions/admin'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 class App extends Component {
@@ -50,6 +51,7 @@ class App extends Component {
                     openOrderForm={this.interactionWithOrderModal} openAuthForm={this.interactionWithAuthModal}
                     id={this.props.id}
                     name={this.props.userInfo? this.props.userInfo.name : 'Безымянный пользователь'}
+                    path={this.props.path}
                 />
                 <OrderModalForm
                     trySendOrder={this.trySendOrder} isAuth={this.props.isAuth}
@@ -79,7 +81,8 @@ function mapStateToProps(state) {
         isAuth: state.authReducer.isAuth,
         isError: state.authReducer.isError,
         id: state.authReducer.id,
-        userInfo: state.userInfReducer.info
+        userInfo: state.userInfReducer.info,
+        path: state.authReducer.path
     }
 }
 

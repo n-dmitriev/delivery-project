@@ -66,7 +66,7 @@ export function cancelOrder(order) {
             })
             order.description = 'Вы отменили заказ'
             order.endTime = `${new Date()}`
-            order.status = 5
+            order.status = 4
             dataBase.collection('users').doc(getState().authReducer.id).update({
                 listOfDeliveredOrders: firebase.firestore.FieldValue.arrayUnion(order),
             })
@@ -135,7 +135,7 @@ export function addOrderToOrderList() {
     return async (dispatch, getState) => {
         const state = getState().currentOrder
         const orderInfo = {
-            // 3 статуса 0 - заказ на обработке, 1 - курьер принял заказ, 2 - заказ выполнен или отменён
+            // 5 статусов 0 - заказ на обработке, 1 - курьер принял заказ, 2 - заказ выполнен, 3 - заказ отменён пользователем, 4 - подозрение на троллинг
             status: 0,
             startTime: `${new Date()}`,
             courierId: '',

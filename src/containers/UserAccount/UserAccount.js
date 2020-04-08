@@ -40,20 +40,12 @@ class UserAccount extends Component {
     }
 
     render() {
-        if (this.props.match.params.number !== this.props.id || this.props.userInfo === undefined)
+        if ((this.props.match.path === '/user-account/:number' && this.props.match.params.number !== this.props.id) || this.props.userInfo === undefined)
             return <Redirect to={'/'}/>
         else
             return (
                 <div className={'user-account'}>
                     <h1 className={'mb-30'}>Личный кабинет</h1>
-                    <div className="button-section">
-                        <NavLink to={'/'} className="main-item-style mr-15" onClick={this.props.logout}>
-                            Выйти
-                        </NavLink>
-                        <button className="main-item-style" onClick={this.interactionWithChangeModal}>
-                            Сменить пароль
-                        </button>
-                    </div>
 
                     <PasswordChangeForm errorPassword={this.props.errorPassword}
                                         passwordChange={this.props.passwordChange}
@@ -68,24 +60,43 @@ class UserAccount extends Component {
                         editItem={this.state.editItem}
                     />
 
-                    <hr/>
-                    <InputInformation
-                        saveContactInformation={this.saveContactInformation}
-                        userInfo={this.props.userInfo}
-                    />
-                    <hr/>
-                    <RenderOrderList description={'активных заказов'}
-                                     orderList={this.props.userInfo.listOfCurrentOrders || []}
-                                     type={'active'}
-                                     cancelOrder={this.props.cancelOrder}
-                                     setEditItem={this.setEditItem}
-                    />
-                    <hr/>
-                    <RenderOrderList description={'завершённых заказов'}
-                                     orderList={this.props.userInfo.listOfDeliveredOrders || []}
-                                     type={'finish'}
-                    />
+                    <div className="row">
+                        <div className="col-lg-6 col-sm-12 col-xs-12">
+                           <div className="user-account__input">
+                               <InputInformation
+                                   saveContactInformation={this.saveContactInformation}
+                                   userInfo={this.props.userInfo}
+                               />
+                               <hr/>
 
+                               <div className="button-section">
+                                   <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15" onClick={this.props.logout}>
+                                       Выйти
+                                   </NavLink>
+                                   <button className="main-item-style" onClick={this.interactionWithChangeModal}>
+                                       Сменить пароль
+                                   </button>
+                               </div>
+                           </div>
+                        </div>
+                        <div className="col-lg-6 col-sm-12 col-xs-12">
+                            <h2>
+                                Заказы
+                            </h2>
+                            <hr/>
+                            <RenderOrderList description={'активных заказов'}
+                                             orderList={this.props.userInfo.listOfCurrentOrders || []}
+                                             type={'active'}
+                                             cancelOrder={this.props.cancelOrder}
+                                             setEditItem={this.setEditItem}
+                            />
+                           <br/>
+                            <RenderOrderList description={'завершённых заказов'}
+                                             orderList={this.props.userInfo.listOfDeliveredOrders || []}
+                                             type={'finish'}
+                            />
+                        </div>
+                    </div>
                 </div>
             )
     }

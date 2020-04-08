@@ -14,7 +14,9 @@ export function fetchUserInfo() {
     return async (dispatch, getState) => {
         try {
             dispatch(dispatchAction(FETCH_USER_INFO_START, null))
-            const docRef = dataBase.collection('users').doc(getState().authReducer.id)
+            const collection = JSON.parse(localStorage.getItem('path')) === '/user-account/' ? 'users' : 'couriers'
+
+            const docRef = dataBase.collection(collection).doc(getState().authReducer.id)
             const answer = await docRef.get()
             const data = answer.data()
             dispatch(dispatchAction(FETCH_USER_INFO_SUCCESS, data))

@@ -3,7 +3,7 @@ import {fetchUserInfo} from './userInformation'
 import {authWithFirebase, dataBase} from '../../firebase/firebase'
 import {dispatchAction} from './universalFunctions'
 
-export function auth(email, password, isLogin) {
+export function auth(email, password, isLogin, collectionType) {
     return async dispatch => {
         try {
             if(isLogin)
@@ -13,8 +13,8 @@ export function auth(email, password, isLogin) {
 
             authWithFirebase.onAuthStateChanged(async (user) => {
                 if (user) {
-                    const collection = dataBase.collection('users')
-                    if(isLogin === true){
+                    const collection = dataBase.collection(collectionType)
+                    if(isLogin){
                         const answer = await collection.doc(user.uid).get()
                         const data = answer.data()
 
@@ -37,9 +37,13 @@ export function auth(email, password, isLogin) {
                         dispatch(fetchUserInfo())
                     }
 
-                    dispatch(dispatchAction(AUTH_SUCCESS, {email: user.email, id: user.uid}))
+                    console.log(collectionType)
+
+                    const path = collectionType === 'users' ? '/user-account/' : '/courier-account/'
+
+                    dispatch(dispatchAction(AUTH_SUCCESS, {id: user.uid, path}))
                     localStorage.setItem('id', JSON.stringify(user.uid))
-                    localStorage.setItem('email', JSON.stringify(user.email))
+                    localStorage.setItem('path', JSON.stringify(path))
                     dispatch(fetchUserInfo())
                 } else {
                     new Error('Карамба, что-то пошло не так!')

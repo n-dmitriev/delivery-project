@@ -23,10 +23,10 @@ export default class RenderOrderList extends Component {
                         ? 'Скрыть '
                         : 'Показать '}
                     список {this.props.description}
-                    <i className="fa fa-caret-down" aria-hidden="true"></i>
+                    <i className="fa fa-caret-down" aria-hidden="true"/>
                 </span>
 
-                    <div className={this.state.orderListIsOpen ? '' : 'hide'}>
+                    <div className={this.state.orderListIsOpen ? 'list__content' : 'hide'}>
                         {
                             this.props.orderList.length !== 0
                                 ? this.props.orderList.map((orderInfo) => (

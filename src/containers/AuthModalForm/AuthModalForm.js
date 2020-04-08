@@ -24,7 +24,7 @@ class AuthModalForm extends Component {
 
     //Обрабочтик попытки авторизации
     loginHandler = async (login, email) => {
-        await this.props.auth(login, email, true,)
+        await this.props.auth(login, email, true, 'users')
         if (this.props.isAuth) {
             this.closeAuthWin()
         }
@@ -39,7 +39,7 @@ class AuthModalForm extends Component {
     //Обработчик попытки решистрации
     registerHandler = async (login, email) => {
 
-        await this.props.auth(login, email, false,)
+        await this.props.auth(login, email, false, 'users')
         if (this.props.isError !== true) {
             this.switchCurrentWin('userInfoInp')
         }
@@ -123,10 +123,10 @@ class AuthModalForm extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        auth: (email, password, login) => dispatch(auth(email, password, login)),
+        auth: (email, password, isLogin, collection) => dispatch(auth(email, password, isLogin, collection)),
         removeError: () => dispatch(removeError()),
         sendOrder: () => dispatch(sendOrder()),
-        setUserInfo: (info) => dispatch(setUserInfo(info))
+        setUserInfo: (info) => dispatch(setUserInfo(info)),
     }
 }
 

@@ -34,7 +34,7 @@ export default class InputInformation extends Component {
                     role: this.props.type,
                 }
 
-                if(this.props.userInfo.id !== undefined)
+                if(this.props.userInfo !== undefined)
                     info.id = this.props.userInfo.id
 
                 this.props.saveContactInformation(info)

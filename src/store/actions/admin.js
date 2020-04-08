@@ -1,4 +1,5 @@
 import {authWithFirebase, dataBase} from '../../firebase/firebase'
+import {dispatchAction} from './universalFunctions'
 import {
     AUTH_ADMIN_ERROR,
     AUTH_ERROR,
@@ -11,7 +12,7 @@ import {
     SET_USER_INFO_SUCCESS,
     SET_USER_INFO_ERROR,
 } from './actionTypes'
-import {dispatchAction} from './universalFunctions'
+
 
 export function authAdmin(email, password) {
     return async dispatch => {
@@ -147,14 +148,12 @@ export function setCourierInfo(info) {
             if (info.id === undefined)
                 id = localStorage.getItem('addedCourierId') ? JSON.parse(localStorage.getItem('addedCourierId')) : ''
             else
-            {
                 id = info.id
-                delete info.id
-            }
 
             dataBase.collection('couriers').doc(id).update({
                 name: info.name,
                 numberPhone: info.numberPhone,
+                address: info.address
             })
             dispatch(dispatchAction(SET_USER_INFO_SUCCESS, null))
             localStorage.removeItem('addedCourierId')

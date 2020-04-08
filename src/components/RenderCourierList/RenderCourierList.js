@@ -31,11 +31,11 @@ export default class RenderCourierList extends Component {
                     <i className="fa fa-caret-down" aria-hidden="true"/>
                 </span>
 
-                    <div className={this.state.courierListIsOpen ? '' : 'hide'}>
+                    <div className={this.state.courierListIsOpen ? 'list__content' : 'hide'}>
                         {
                             this.props.couriers.length > 0
-                                ? this.props.couriers.map((courier) =>
-                                    <div className={'list__item'} key={courier.id}>
+                                ? this.props.couriers.map((courier, index) =>
+                                    <div className={'list__item'} key={courier.id || 'courier' + index}>
                                         <Courier
                                             courierInfo={courier}
                                             removeCourier={this.props.removeCourier}
