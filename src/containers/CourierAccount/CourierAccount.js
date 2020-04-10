@@ -8,7 +8,7 @@ import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
 import {auth, logout} from '../../store/actions/auth'
 import {passwordChange} from '../../store/actions/userInformation'
 import CourierPanel from '../../components/CourierPanel/CourierPanel'
-import {getActiveOrders, itsTroll, takeOrder} from '../../store/actions/courier'
+import {fetchActiveOrders, itsTroll, takeOrder, subscribe} from '../../store/actions/courier'
 
 class CourierAccount extends Component {
     state = {
@@ -51,10 +51,13 @@ class CourierAccount extends Component {
 
 
                     <CourierPanel
-                        getActiveOrders={this.props.getActiveOrders}
+                        fetchActiveOrders={this.props.fetchActiveOrders}
                         ordersList={this.props.ordersList}
                         takeOrder={this.props.takeOrder}
                         itsTroll={this.props.itsTroll}
+                        subscribe={this.props.subscribe}
+                        loading={this.props.loading}
+                        deliveredOrder={this.props.deliveredOrder}
                     />
 
                     <br/>
@@ -113,7 +116,9 @@ function mapStateToProps(state) {
         error: state.authReducer.isError,
         userInfo: state.userInfReducer.info,
         errorPassword: state.userInfReducer.error,
-        ordersList: state.courier.ordersList
+        ordersList: state.courier.ordersList,
+        deliveredOrder: state.courier.deliveredOrder,
+        loading: state.courier.loading
     }
 }
 
@@ -122,9 +127,10 @@ function mapDispatchToProps(dispatch) {
         logout: () => dispatch(logout()),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
         auth: (email, password, isLogin, collection) => dispatch(auth(email, password, isLogin, collection)),
-        getActiveOrders: () => dispatch(getActiveOrders()),
+        fetchActiveOrders: () => dispatch(fetchActiveOrders()),
         itsTroll: (order) => dispatch(itsTroll(order)),
-        takeOrder: (order) => dispatch(takeOrder(order))
+        takeOrder: (order) => dispatch(takeOrder(order)),
+        subscribe: (listening) => dispatch(subscribe(listening)),
     }
 }
 

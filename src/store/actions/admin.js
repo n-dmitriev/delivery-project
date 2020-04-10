@@ -122,7 +122,7 @@ export function registrNewCourier(email, password) {
                         address: '',
                         email: email,
                         role: 'courier',
-                        executableOrders: [],
+                        deliveredOrder: {},
                         completedOrders: [],
                     }
                     dataBase.collection('couriers').doc(user.uid).set(info)

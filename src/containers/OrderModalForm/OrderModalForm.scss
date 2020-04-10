@@ -52,7 +52,10 @@
     }
 
     &__name{
-      padding: 5px 0 7px 20px;
+      display: flex;
+      flex-direction: row;
+      padding: 5px 10px 5px 20px;
+      align-items: center;
       font-size: 27px;
       border-bottom: 1px solid gray;
       border-radius: 5px;

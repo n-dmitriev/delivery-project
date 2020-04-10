@@ -16,7 +16,7 @@ export default class Order extends Component {
             <>
                 {
                     this.props.orderInfo.orders.map((orderItem) => (
-                        <div key={orderItem.id}>
+                        <div className={'list__item'} key={orderItem.id}>
                             <h4 className={'mb-15'}>Заказ {orderItem.id}</h4>
                             <ul>
                                 <li className={'mb-15'}>Имя клиента: {this.props.orderInfo.name}</li>
@@ -42,6 +42,9 @@ export default class Order extends Component {
                                             <div key={product.id} className={'list__unwrapping-item'}>
                                                 <ul className={'list__product-list'}>
                                                     <li>{product.name}</li>
+                                                    {
+                                                        product.brand !== undefined ? <li>{product.brand}</li> : ''
+                                                    }
                                                     <li>{product.quantity}</li>
                                                     <li>{product.price}</li>
                                                     <li>{product.description}</li>

@@ -115,7 +115,7 @@ class OrderModalForm extends Component {
                 {list.map((item, count) => (
                     <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
                         {item.name}, {item.quantity}, {item.brand}
-                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}></span>
+                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}/>
                     </div>
                 ))}
             </div>
@@ -129,7 +129,7 @@ class OrderModalForm extends Component {
                 {this.props.restaurantOrder.map((item, count) => (
                     <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
                         {item.name} {item.quantity} {item.price} {item.description}
-                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}></span>
+                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}/>
                     </div>
                 ))}
             </div>
@@ -155,6 +155,7 @@ class OrderModalForm extends Component {
                                     }
                                 }}>
                                 {this.props.isEdit === true ? this.props.editItem.name : this.props.nameOfShop}
+                                <i className="fa fa-pencil-square-o" aria-hidden="true"/>
                             </div>
                             {this.renderShopOrder()}
                         </>
@@ -212,7 +213,7 @@ class OrderModalForm extends Component {
                     <span className="dagger dagger_delete" onClick={() => {
                         this.props.onClose()
                         this.props.deleteOrder()
-                    }}></span>
+                    }}/>
                     {
                         this.props.isEdit === true
                             ? null

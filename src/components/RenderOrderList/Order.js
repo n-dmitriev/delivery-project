@@ -35,7 +35,7 @@ export default class Order extends Component {
                                                 {this.state.productListIsOpen
                                                     ? 'Скрыть подробности заказа'
                                                     : 'Показать подробности заказа'}
-                    <i className="fa fa-caret-down" aria-hidden="true"></i>
+                    <i className="fa fa-caret-down" aria-hidden="true"/>
                                             </span>
                 <div className={this.state.productListIsOpen ? '' : 'hide'}>
                     {
@@ -45,6 +45,9 @@ export default class Order extends Component {
                                 <div key={product.id} className={'list__unwrapping-item'}>
                                     <ul className={'list__product-list'}>
                                         <li>{product.name}</li>
+                                        {
+                                            product.brand !== undefined ? <li>{product.brand}</li> : ''
+                                        }
                                         <li>{product.quantity}</li>
                                         <li>{product.price}</li>
                                         <li>{product.description}</li>

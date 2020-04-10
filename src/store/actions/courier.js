@@ -1,11 +1,16 @@
 import {dataBase} from '../../firebase/firebase'
 import {dispatchAction} from './universalFunctions'
-import {FETCH_ACTIVE_ORDERS_ERROR, FETCH_ACTIVE_ORDERS_SUCCESS} from './actionTypes'
-import * as firebase from 'firebase'
+import * as firebase from 'firebase/app'
+import {
+    FETCH_ACTIVE_ORDERS_ERROR,
+    FETCH_ACTIVE_ORDERS_SUCCESS, FETCH_DELIVERED_ORDER, FETCH_O_START,
+} from './actionTypes'
 
-export function getActiveOrders() {
+
+export function fetchActiveOrders() {
     return (dispatch) => {
         try {
+            dispatch(dispatchAction(FETCH_O_START,null))
             dataBase.collection('users').get().then((answer) => {
                 const docArray = []
                 answer.forEach((doc) => {
@@ -30,7 +35,46 @@ export function getActiveOrders() {
     }
 }
 
+export function subscribe(listening) {
+    return (dispatch) => {
+        const unsubscribe = dataBase.collection("users")
+            .onSnapshot(() => {
+                dispatch(fetchActiveOrders())
+            })
+        if(!listening)
+            unsubscribe()
+    }
+}
 
+export function fetchDeliveredOrder() {
+    return async (dispatch, getState) => {
+        dispatch(dispatchAction(FETCH_O_START,null))
+        try {
+            const orderInfo = getState().userInfReducer.info.deliveredOrder
+
+            const docRef = dataBase.collection('users').doc(orderInfo.userId)
+            const answer = await docRef.get()
+            const data = answer.data()
+
+            const info = {
+                address: data.address,
+                name: data.name,
+                numberPhone: data.numberPhone,
+            }
+
+
+            for(let order of data.listOfCurrentOrders){
+                if(order.id === orderInfo.orderId)
+                {
+                    info.orderInfo = order
+                    dispatch(dispatchAction(FETCH_DELIVERED_ORDER, info))
+                }
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+}
 
 export function takeOrder(info) {
     return (dispatch, getState) => {
@@ -43,7 +87,7 @@ export function takeOrder(info) {
                 orderId: info.selectedOrder.id
             }
 
-            dataBase.collection('couriers').doc(id).update({executableOrders:  firebase.firestore.FieldValue.arrayUnion(order)})
+            dataBase.collection('couriers').doc(id).update({deliveredOrder:  order})
 
             const orderInfo = {
                 id: info.selectedOrder.id,
@@ -63,6 +107,7 @@ export function takeOrder(info) {
             dataBase.collection('users').doc(order.userId).update({
                 listOfCurrentOrders: firebase.firestore.FieldValue.arrayUnion(orderInfo),
             })
+            dispatch(fetchDeliveredOrder())
         }
         catch (e) {
             console.log(e)

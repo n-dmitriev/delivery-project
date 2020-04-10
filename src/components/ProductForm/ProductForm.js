@@ -133,6 +133,7 @@ export default class productForm extends Component {
                 quantity: this.inputQuantity.current.value,
                 price: this.inputPrice.current.value,
                 description: this.text.current.value,
+                purchased: ''
             }
 
             // Если магазин, то в объект добавляем название бренда

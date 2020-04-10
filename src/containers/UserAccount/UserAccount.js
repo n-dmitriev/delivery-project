@@ -5,7 +5,7 @@ import InputInformation from '../../components/InputInformation/InputInformation
 import {logout} from '../../store/actions/auth'
 import {NavLink, Redirect} from 'react-router-dom'
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
-import {passwordChange, setUserInfo} from '../../store/actions/userInformation'
+import {passwordChange, setUserInfo, subscribe} from '../../store/actions/userInformation'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
 import {cancelOrder} from '../../store/actions/currentOrder'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
@@ -15,6 +15,9 @@ class UserAccount extends Component {
         cpfIsOpen: false,
         isOrderModalOpen: false,
         editItem: null
+    }
+
+    componentDidMount() {
     }
 
     interactionWithOrderModal = () => {
@@ -116,6 +119,7 @@ function mapDispatchToProps(dispatch) {
         setUserInfo: (info) => dispatch(setUserInfo(info)),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
         cancelOrder: (order) => dispatch(cancelOrder(order)),
+        subscribe: (listening) => dispatch(subscribe(listening))
     }
 }
 

@@ -1,6 +1,6 @@
 import {dataBase, authWithFirebase} from '../../firebase/firebase'
 import {
-    ADD_P_TO_SENT_ORDER, EDIT_SENT_ORDER_ITEM,
+    ADD_P_TO_SENT_ORDER, EDIT_SENT_ORDER_ITEM, FETCH_O_STOP,
     FETCH_USER_INFO_ERROR,
     FETCH_USER_INFO_START,
     FETCH_USER_INFO_SUCCESS, REMOVE_P_FROM_SENT_ORDER,
@@ -9,20 +9,37 @@ import {
 } from './actionTypes'
 import {cancelOrder} from './currentOrder'
 import {dispatchAction, getElementById} from './universalFunctions'
+import {fetchDeliveredOrder} from './courier'
 
 export function fetchUserInfo() {
     return async (dispatch, getState) => {
         try {
             dispatch(dispatchAction(FETCH_USER_INFO_START, null))
-            const collection = JSON.parse(localStorage.getItem('path')) === '/user-account/' ? 'users' : 'couriers'
+            const path = JSON.parse(localStorage.getItem('path'))
+            const collection = path === '/user-account/' ? 'users' : 'couriers'
 
             const docRef = dataBase.collection(collection).doc(getState().authReducer.id)
             const answer = await docRef.get()
             const data = answer.data()
             dispatch(dispatchAction(FETCH_USER_INFO_SUCCESS, data))
+            if(collection === 'couriers' && Object.keys(data.deliveredOrder).length > 0)
+                dispatch(fetchDeliveredOrder())
+            else if(collection === 'couriers')
+                dispatch(dispatchAction(FETCH_O_STOP, null))
         } catch (e) {
             dispatch(dispatchAction(FETCH_USER_INFO_ERROR, e))
         }
+    }
+}
+
+export function subscribe(listening) {
+    return (dispatch) => {
+        const unsubscribe = dataBase.collection("users")
+            .onSnapshot(() => {
+                dispatch(fetchUserInfo())
+            })
+        if(!listening)
+            unsubscribe()
     }
 }
 
