@@ -10,7 +10,7 @@ import {passwordChange} from '../../store/actions/userInformation'
 import CourierPanel from '../../components/CourierPanel/CourierPanel'
 import {
     changeOrderData,
-    fetchActiveOrders,
+    fetchActiveOrders, interactWithPurchased, subscribeOrderInfo,
     subscribeUsers,
 } from '../../store/actions/courier'
 
@@ -45,9 +45,11 @@ class CourierAccount extends Component {
                         fetchActiveOrders={this.props.fetchActiveOrders}
                         ordersList={this.props.ordersList}
                         subscribeUsers={this.props.subscribeUsers}
+                        subscribeOrderInfo={this.props.subscribeOrderInfo}
                         loading={this.props.loading}
                         deliveredOrder={this.props.deliveredOrder}
                         changeOrderData={this.props.changeOrderData}
+                        interactWithPurchased={this.props.interactWithPurchased}
                     />
 
                     <br/>
@@ -120,7 +122,9 @@ function mapDispatchToProps(dispatch) {
         auth: (email, password, isLogin, collection) => dispatch(auth(email, password, isLogin, collection)),
         fetchActiveOrders: () => dispatch(fetchActiveOrders()),
         subscribeUsers: (listening) => dispatch(subscribeUsers(listening)),
+        subscribeOrderInfo:(listening, id) => dispatch(subscribeOrderInfo(listening, id)),
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
+        interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag))
     }
 }
 

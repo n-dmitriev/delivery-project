@@ -1,11 +1,34 @@
 import {dataBase} from '../../firebase/firebase'
-import {dispatchAction} from './universalFunctions'
+import {dispatchAction, getElementById} from './universalFunctions'
 import * as firebase from 'firebase/app'
 import {
     FETCH_ACTIVE_ORDERS_ERROR,
     FETCH_ACTIVE_ORDERS_SUCCESS, FETCH_DELIVERED_ORDER, FETCH_O_START,
 } from './actionTypes'
 import {fetchUserInfo} from './userInformation'
+
+export function subscribeUsers(listening) {
+    return (dispatch) => {
+        const unsubscribe = dataBase.collection("users")
+            .onSnapshot(() => {
+                dispatch(fetchActiveOrders())
+            })
+        if(!listening)
+            unsubscribe()
+
+    }
+}
+
+export function subscribeOrderInfo(listening, id) {
+    return (dispatch) => {
+        const unsubscribe = dataBase.collection("users").doc(id)
+            .onSnapshot(() => {
+                dispatch(fetchUserInfo())
+            })
+        if(!listening)
+            unsubscribe()
+    }
+}
 
 
 export function fetchActiveOrders() {
@@ -33,30 +56,6 @@ export function fetchActiveOrders() {
         } catch (e) {
             dispatch(dispatchAction(FETCH_ACTIVE_ORDERS_ERROR, null))
         }
-    }
-}
-
-export function subscribeUsers(listening) {
-    return (dispatch) => {
-        const unsubscribe = dataBase.collection("users")
-            .onSnapshot(() => {
-                dispatch(fetchActiveOrders())
-            })
-        if(!listening)
-            unsubscribe()
-
-    }
-}
-
-export function subscribeOrderInfo(listening) {
-    return (dispatch, getState) => {
-        const id = getState().userInfReducer.info.deliveredOrder.userId
-        const unsubscribe = dataBase.collection("couriers").doc(id)
-            .onSnapshot(() => {
-                dispatch(fetchUserInfo())
-            })
-        if(!listening)
-            unsubscribe()
     }
 }
 
@@ -168,6 +167,16 @@ export function changeOrderData(status, data) {
         }
         catch (e) {
             console.log(e)
+        }
+    }
+}
+
+export function interactWithPurchased(id, flag) {
+    return (dispatch, getState) => {
+        const arr = getState().courier.deliveredOrder.orderInfo.order
+        const index = getElementById(arr, id)
+        if(index !== -1) {
+            arr[index].purchased = flag
         }
     }
 }

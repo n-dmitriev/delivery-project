@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import './CourierPanel.scss'
-import Order from './Order'
+import OrderItem from './auxiliary/OrderItem'
+import DeliveredOrder from './auxiliary/DeliveredOrder'
 
 export default class CourierPanel extends Component {
     constructor(props) {
@@ -14,10 +15,21 @@ export default class CourierPanel extends Component {
         }
     }
 
-    interactWithOrder = () => {
+    interactWithOrder =  (e) => {
+        e.preventDefault()
         this.setState({
             orderIsOpen: !this.state.orderIsOpen,
         })
+        this.props.subscribeOrderInfo(!this.state.orderIsOpen, this.props.deliveredOrder.uid)
+    }
+
+    interactWithCheckBox = (e) => {
+        this.props.interactWithPurchased(e.target.id, e.target.checked)
+    }
+
+
+    finishBuy = () => {
+        this.props.changeOrderData(2, this.props.deliveredOrder)
     }
 
     interactionWithList = async () => {
@@ -70,8 +82,8 @@ export default class CourierPanel extends Component {
                         this.props.ordersList.length > 0
                             ? this.props.ordersList.map((orderInfo) => (
                                 <div key={orderInfo.id}>
-                                    <Order orderInfo={orderInfo}
-                                           changeOrderData={this.props.changeOrderData}
+                                    <OrderItem orderInfo={orderInfo}
+                                               changeOrderData={this.props.changeOrderData}
                                     />
                                 </div>
                             ))
@@ -84,10 +96,6 @@ export default class CourierPanel extends Component {
         )
     }
 
-    interactWithCheckBox = (e) => {
-
-    }
-
     renderDeliveredOrder = () => {
         return (
             <div className={'courier-panel__delivered'}>
@@ -98,12 +106,12 @@ export default class CourierPanel extends Component {
                     {
                         this.state.orderIsOpen
                             ?
-                                <span>
+                            <span>
                                     <i className="fa fa-arrow-left" aria-hidden="true"/>
                                     Вернуться к информации
                                 </span>
                             :
-                                <span>
+                            <span>
                                     Перейти к заказу
                                     <i className="fa fa-arrow-right" aria-hidden="true"/>
                                 </span>
@@ -125,8 +133,8 @@ export default class CourierPanel extends Component {
                                                     <div className={'checkbox'}>
                                                         <input
                                                             onClick={this.interactWithCheckBox}
-                                                            defaultChecked={product.chosen === true ? 'checked' : ''}
-                                                            type="checkbox" id="checkbox" name="todo"/>
+                                                            defaultChecked={product.purchased === true ? 'checked' : ''}
+                                                            type="checkbox" id={product.id} name="todo"/>
                                                         <label htmlFor="todo" data-content={item}>
                                                             {item}
                                                         </label>
@@ -150,10 +158,8 @@ export default class CourierPanel extends Component {
                             </ul>
                     }
                     <div className="button-section button-section_bottom">
-                        <button className="main-item-style mr-15" onClick={() => {
-                            this.props.changeOrderData(2, this.props.deliveredOrder)
-                        }}>
-                           Закончить закупку
+                        <button className="main-item-style mr-15" onClick={this.finishBuy}>
+                            Закончить закупку
                         </button>
                         <button className="main-item-style main-item-style_danger" onClick={() => {
                             this.props.changeOrderData(4, this.props.deliveredOrder)
@@ -165,7 +171,6 @@ export default class CourierPanel extends Component {
             </div>
         )
     }
-
 
     render() {
         return (
