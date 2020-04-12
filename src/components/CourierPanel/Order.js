@@ -43,7 +43,7 @@ export default class Order extends Component {
                                                 <ul className={'list__product-list'}>
                                                     <li>{product.name}</li>
                                                     {
-                                                        product.brand !== undefined ? <li>{product.brand}</li> : ''
+                                                        product.brand !== undefined ? <li>{product.brand}</li> : null
                                                     }
                                                     <li>{product.quantity}</li>
                                                     <li>{product.price}</li>
@@ -58,17 +58,17 @@ export default class Order extends Component {
                             <div className="button-section mt-30">
                                 <button
                                     className={`main-item-style mr-15`}
-                                    onClick={() => this.props.takeOrder({
+                                    onClick={() => this.props.changeOrderData(1, {
                                         uid: this.props.orderInfo.id,
-                                        selectedOrder: orderItem
+                                        orderInfo: orderItem
                                     })}>
                                     Взять заказ
                                 </button>
                                 <button
                                     className={`main-item-style main-item-style_danger`}
-                                    onClick={() => this.props.itsTroll({
+                                    onClick={() => this.props.changeOrderData(-1, {
                                         uid: this.props.orderInfo.id,
-                                        selectedOrder: orderItem
+                                        orderInfo: orderItem
                                     })}>
                                         Это тролль!
                                 </button>

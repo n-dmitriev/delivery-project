@@ -32,7 +32,7 @@ export default class CourierPanel extends Component {
                 positionIsValid: true,
             })
             await this.props.fetchActiveOrders()
-            !this.state.listIsOpen ? this.props.subscribe(false) : this.props.subscribe(true)
+            !this.state.listIsOpen ? this.props.subscribeUsers(false) : this.props.subscribeUsers(true)
         }
     }
 
@@ -71,8 +71,7 @@ export default class CourierPanel extends Component {
                             ? this.props.ordersList.map((orderInfo) => (
                                 <div key={orderInfo.id}>
                                     <Order orderInfo={orderInfo}
-                                           takeOrder={this.props.takeOrder}
-                                           itsTroll={this.props.itsTroll}
+                                           changeOrderData={this.props.changeOrderData}
                                     />
                                 </div>
                             ))
@@ -85,6 +84,10 @@ export default class CourierPanel extends Component {
         )
     }
 
+    interactWithCheckBox = (e) => {
+
+    }
+
     renderDeliveredOrder = () => {
         return (
             <div className={'courier-panel__delivered'}>
@@ -94,12 +97,13 @@ export default class CourierPanel extends Component {
                     <h5>Текущий заказ {this.props.deliveredOrder.orderInfo.id}</h5>
                     {
                         this.state.orderIsOpen
-                            ? <span>
+                            ?
+                                <span>
                                     <i className="fa fa-arrow-left" aria-hidden="true"/>
                                     Вернуться к информации
                                 </span>
                             :
-                            <span>
+                                <span>
                                     Перейти к заказу
                                     <i className="fa fa-arrow-right" aria-hidden="true"/>
                                 </span>
@@ -109,53 +113,51 @@ export default class CourierPanel extends Component {
                 <div className={'courier-panel__delivered-content'}>
                     {
                         this.state.orderIsOpen
-                            ? <>
+                            ? <div className={'courier-panel__delivered-content_scroll'}>
                                 {
                                     this.props.deliveredOrder.orderInfo.order.length > 0
                                         ?
-                                        this.props.deliveredOrder.orderInfo.order.map((product) => (
-                                            <div className="courier-panel__item" key={product.id}>
-                                                <ul className={'courier-panel__delivered-list'}>
-                                                    <li>{product.name}</li>
-                                                    {
-                                                        product.brand !== undefined ? <li>{product.brand}</li> : ''
-                                                    }
-                                                    <li>{product.quantity}</li>
-                                                    <li>{product.price}</li>
-                                                    <li>{product.description}</li>
-                                                </ul>
-                                                <div className={'dropdown'}>
-                                                    {
-                                                        product.purchased === ''
-                                                            ? <i className="fa fa-square-o" aria-hidden="true"/>
-                                                            : product.purchased
-                                                            ? <i className="fa fa-check-square-o" aria-hidden="true"/>
-                                                            :<i className="fa fa-times" aria-hidden="true"/>
-                                                    }
-                                                    <div className="dropdown__content">
-                                                        <span className={'dropdown__item'}>Купил</span>
-                                                        <span className={'dropdown__item'}>Нет в наличии</span>
+                                        this.props.deliveredOrder.orderInfo.order.map((product) => {
+                                            const item = `${product.name} ${product.brand !== undefined ? product.brand : ''} 
+                                                ${product.quantity} ${product.price} ${product.description}`
+                                            return (
+                                                <div className="courier-panel__item" key={product.id}>
+                                                    <div className={'checkbox'}>
+                                                        <input
+                                                            onClick={this.interactWithCheckBox}
+                                                            defaultChecked={product.chosen === true ? 'checked' : ''}
+                                                            type="checkbox" id="checkbox" name="todo"/>
+                                                        <label htmlFor="todo" data-content={item}>
+                                                            {item}
+                                                        </label>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))
+                                            )
+                                        })
                                         :
-                                        <span>Ваш заказ пуст!:(</span>
+                                        <span>Оу заказ пуст!:(</span>
                                 }
-                            </>
+                            </div>
                             :
                             <ul className={'courier-panel__delivered-info'}>
-                                <li className={'mb-15'}>Имя клиента: {this.props.deliveredOrder.name}</li>
-                                <li className={'mb-15'}>Адресс доставки: {this.props.deliveredOrder.address}</li>
-                                <li className={'mb-15'}>Контактный телефон: {this.props.deliveredOrder.numberPhone}</li>
                                 <li className={'mb-15'}>Откуда: {this.props.deliveredOrder.orderInfo.name}</li>
+                                <li className={'mb-15'}>Адресс доставки: {this.props.deliveredOrder.address}</li>
+                                <li className={'mb-15'}>Имя клиента: {this.props.deliveredOrder.name}</li>
+                                <li className={'mb-15'}>Контактный телефон: {this.props.deliveredOrder.numberPhone}</li>
                                 <li className={'mb-15'}>Время начала
                                     заказа: {this.props.deliveredOrder.orderInfo.startTime.split(' ').slice(1, 5).join(' ')}
                                 </li>
                             </ul>
                     }
                     <div className="button-section button-section_bottom">
-                        <button className="main-item-style main-item-style_danger" onClick={this.interactionWithList}>
+                        <button className="main-item-style mr-15" onClick={() => {
+                            this.props.changeOrderData(2, this.props.deliveredOrder)
+                        }}>
+                           Закончить закупку
+                        </button>
+                        <button className="main-item-style main-item-style_danger" onClick={() => {
+                            this.props.changeOrderData(4, this.props.deliveredOrder)
+                        }}>
                             Отказаться от заказа
                         </button>
                     </div>
@@ -190,6 +192,14 @@ export default class CourierPanel extends Component {
         )
     }
 }
+
+// <div className={'dropdown'}>
+//
+//     <div className="dropdown__content">
+//         <span className={'dropdown__item'}>Купил</span>
+//         <span className={'dropdown__item'}>Нет в наличии</span>
+//     </div>
+// </div>
 
 /*<div class="holder">
   <div class="preloader"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>

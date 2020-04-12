@@ -5,6 +5,7 @@ import {
     FETCH_ACTIVE_ORDERS_ERROR,
     FETCH_ACTIVE_ORDERS_SUCCESS, FETCH_DELIVERED_ORDER, FETCH_O_START,
 } from './actionTypes'
+import {fetchUserInfo} from './userInformation'
 
 
 export function fetchActiveOrders() {
@@ -35,11 +36,24 @@ export function fetchActiveOrders() {
     }
 }
 
-export function subscribe(listening) {
+export function subscribeUsers(listening) {
     return (dispatch) => {
         const unsubscribe = dataBase.collection("users")
             .onSnapshot(() => {
                 dispatch(fetchActiveOrders())
+            })
+        if(!listening)
+            unsubscribe()
+
+    }
+}
+
+export function subscribeOrderInfo(listening) {
+    return (dispatch, getState) => {
+        const id = getState().userInfReducer.info.deliveredOrder.userId
+        const unsubscribe = dataBase.collection("couriers").doc(id)
+            .onSnapshot(() => {
+                dispatch(fetchUserInfo())
             })
         if(!listening)
             unsubscribe()
@@ -52,91 +66,105 @@ export function fetchDeliveredOrder() {
         try {
             const orderInfo = getState().userInfReducer.info.deliveredOrder
 
-            const docRef = dataBase.collection('users').doc(orderInfo.userId)
-            const answer = await docRef.get()
-            const data = answer.data()
+            if(Object.keys(orderInfo).length > 0){
+                const docRef = dataBase.collection('users').doc(orderInfo.userId)
+                const answer = await docRef.get()
+                const data = answer.data()
 
-            const info = {
-                address: data.address,
-                name: data.name,
-                numberPhone: data.numberPhone,
-            }
+                const info = {
+                    uid: orderInfo.userId,
+                    address: data.address,
+                    name: data.name,
+                    numberPhone: data.numberPhone,
+                }
 
 
-            for(let order of data.listOfCurrentOrders){
-                if(order.id === orderInfo.orderId)
-                {
-                    info.orderInfo = order
-                    dispatch(dispatchAction(FETCH_DELIVERED_ORDER, info))
+                for(let order of data.listOfCurrentOrders){
+                    if(order.id === orderInfo.orderId)
+                    {
+                        info.orderInfo = order
+                        dispatch(dispatchAction(FETCH_DELIVERED_ORDER, info))
+                    }
                 }
             }
+            else {
+                dispatch(dispatchAction(FETCH_DELIVERED_ORDER, {}))
+            }
+
         } catch (e) {
             console.log(e)
         }
     }
 }
 
-export function takeOrder(info) {
+// 6 статусов
+// 0 - заказ на обработке, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
+// 3 - заказ выполнен, 4 - заказ отменён курьером, -1 - подозрение на троллинг
+export function changeOrderData(status, data) {
     return (dispatch, getState) => {
         try {
             const state = getState()
-            const id = state.authReducer.id
+            let courierId = state.authReducer.id,
+                finalStatus = status,
+                description = data.orderInfo.description,
+                endTime = ''
 
-            const order = {
-                userId: info.uid,
-                orderId: info.selectedOrder.id
+            switch (status) {
+                case 1: {
+                    const order = {
+                        userId: data.uid,
+                        orderId: data.orderInfo.id
+                    }
+                    dataBase.collection('couriers').doc(courierId).update({deliveredOrder:  order})
+                    description = `Курьер ${state.userInfReducer.info.name} принял ваш заказ.Контактный номер курьера: ${state.userInfReducer.info.numberPhone}`
+                    break
+                }
+                case 2: {
+                    description = `Курьер ${state.userInfReducer.info.name} доставляет ваш заказ.
+                    Контактный номер курьера: ${state.userInfReducer.info.numberPhone}`
+                    break
+                }
+                case 3: {
+                    const courier = dataBase.collection('couriers').doc(courierId)
+                    courier.update({completedOrders: firebase.firestore.FieldValue.arrayUnion(state.userInfReducer.info.deliveredOrder)})
+                    courier.update({deliveredOrder:  {}})
+                    description = `Заказ завершён!`
+                    endTime = `${new Date()}`
+                    break
+                }
+                case 4: {
+                    dataBase.collection('couriers').doc(courierId).update({deliveredOrder:  {}})
+                    description = 'Курьер ещё не принял заказ'
+                    finalStatus = 0
+                    break
+                }
+                case -1: {
+                    courierId = ''
+                    description = 'Ваш заказ проверяется на корректность'
+                    break
+                }
             }
-
-            dataBase.collection('couriers').doc(id).update({deliveredOrder:  order})
 
             const orderInfo = {
-                id: info.selectedOrder.id,
-                name: info.selectedOrder.name,
-                order: info.selectedOrder.order,
-                startTime: info.selectedOrder.startTime,
-                endTime: '',
-                status: 1,
-                courierId: id,
-                description: `Курьер ${state.userInfReducer.info.name} принял ваш заказ. Контактный номер курьера: ${state.userInfReducer.info.numberPhone}`,
+                id: data.orderInfo.id,
+                name: data.orderInfo.name,
+                order: data.orderInfo.order,
+                startTime: data.orderInfo.startTime,
+                endTime: endTime,
+                status: finalStatus,
+                courierId: courierId,
+                description: description,
             }
 
-            dataBase.collection('users').doc(order.userId).update({
-                listOfCurrentOrders: firebase.firestore.FieldValue.arrayRemove(info.selectedOrder),
+
+            dataBase.collection('users').doc(data.uid).update({
+                listOfCurrentOrders: firebase.firestore.FieldValue.arrayRemove(data.orderInfo),
             })
 
-            dataBase.collection('users').doc(order.userId).update({
+            dataBase.collection('users').doc(data.uid).update({
                 listOfCurrentOrders: firebase.firestore.FieldValue.arrayUnion(orderInfo),
             })
-            dispatch(fetchDeliveredOrder())
-        }
-        catch (e) {
-            console.log(e)
-        }
-    }
-}
-
-export function itsTroll(info) {
-    return (dispatch) => {
-        try {
-            const orderInfo = {
-                id: info.selectedOrder.id,
-                name: info.selectedOrder.name,
-                order: info.selectedOrder.order,
-                startTime: info.selectedOrder.startTime,
-                courierId: info.selectedOrder.courierId,
-                endTime: '',
-                status: 4,
-                description: 'Ваш заказ проверяется на корректность',
-            }
-
-            dataBase.collection('users').doc(info.uid).update({
-                listOfCurrentOrders: firebase.firestore.FieldValue.arrayRemove(info.selectedOrder),
-            })
-
-            dataBase.collection('users').doc(info.uid).update({
-                listOfCurrentOrders: firebase.firestore.FieldValue.arrayUnion(orderInfo),
-            })
-
+            dispatch(fetchUserInfo())
         }
         catch (e) {
             console.log(e)

@@ -1,16 +1,10 @@
-@import "normalize.css";
-@import "mixins";
-@import "preloaders";
+@import "css/normalize.css";
+@import "css/mixins";
+@import "css/preloaders";
+@import "css/checkbox";
 
 .app {
   height: 100vh;
-
-  *,
-  *::before,
-  *::after {
-    box-sizing: content-box !important;
-  }
-
 
   & h1, & h2, & h3, & h4, & h5 {
     cursor: default;
@@ -162,6 +156,11 @@
       padding: 5px;
     }
 
+    &__checkbox {
+      margin-left: auto;
+      font-size: 21px;
+    }
+
     &__item {
       padding: 20px;
       margin: 0 5px 20px 0;
@@ -178,11 +177,12 @@
     &__unwrapping-item {
       position: relative;
       padding-left: 30px;
+      display: flex;
 
       &:before {
         content: '';
         position: absolute;
-        top: 4px;
+        top: 7px;
         left: 10px;
         width: 10px;
         height: 10px;
@@ -195,6 +195,7 @@
       display: flex;
       & li {
         margin-right: 10px;
+        white-space: nowrap;
       }
     }
 
@@ -265,11 +266,6 @@
       background-color: lightgray;
     }
   }
-
-  .dropdown:hover .dropdown__content {
-    display: block;
-  }
-
 
   & .bg {
     z-index: 9998;

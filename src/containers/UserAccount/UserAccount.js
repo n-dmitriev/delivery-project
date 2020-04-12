@@ -48,7 +48,6 @@ class UserAccount extends Component {
         else
             return (
                 <div className={'user-account'}>
-                    <h1 className={'mb-30'}>Личный кабинет</h1>
 
                     <PasswordChangeForm errorPassword={this.props.errorPassword}
                                         passwordChange={this.props.passwordChange}

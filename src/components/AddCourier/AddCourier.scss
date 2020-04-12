@@ -1,4 +1,4 @@
-@import "../../mixins";
+@import "../../css/mixins";
 
 .add-courier {
   @include modal();
@@ -15,6 +15,6 @@
   & .dagger {
     margin-left: auto;
     top: 15px;
-    right: 0px;
+    right: 0;
   }
 }

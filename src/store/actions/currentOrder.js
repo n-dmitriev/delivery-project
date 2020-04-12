@@ -71,8 +71,7 @@ export function cancelOrder(order) {
                 listOfDeliveredOrders: firebase.firestore.FieldValue.arrayUnion(order),
             })
             dispatch(fetchUserInfo())
-        }
-        catch (e) {
+        } catch (e) {
             console.log(e)
         }
     }
@@ -135,7 +134,9 @@ export function addOrderToOrderList() {
     return async (dispatch, getState) => {
         const state = getState().currentOrder
         const orderInfo = {
-            // 5 статусов 0 - заказ на обработке, 1 - курьер принял заказ, 2 - заказ выполнен, 3 - заказ отменён пользователем, 4 - подозрение на троллинг
+            // 6 статусов
+            // 0 - заказ на обработке, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
+            // 3 - заказ выполнен, 4 - заказ отменён курьером, -1 - подозрение на троллинг
             status: 0,
             startTime: `${new Date()}`,
             courierId: '',

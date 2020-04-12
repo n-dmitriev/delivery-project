@@ -37,8 +37,6 @@ export function auth(email, password, isLogin, collectionType) {
                         dispatch(fetchUserInfo())
                     }
 
-                    console.log(collectionType)
-
                     const path = collectionType === 'users' ? '/user-account/' : '/courier-account/'
 
                     dispatch(dispatchAction(AUTH_SUCCESS, {id: user.uid, path}))

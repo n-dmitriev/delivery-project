@@ -133,7 +133,7 @@ export default class productForm extends Component {
                 quantity: this.inputQuantity.current.value,
                 price: this.inputPrice.current.value,
                 description: this.text.current.value,
-                purchased: ''
+                purchased: false
             }
 
             // Если магазин, то в объект добавляем название бренда
@@ -192,7 +192,7 @@ export default class productForm extends Component {
                 <small className={this.state.orderFormIsValid ? '' : 'error'}>Поля
                     помеченные * обязательные для заполнения</small>
 
-                <div className="button-section button-section_bottom">
+                <div className="">
                     <button className="main-item-style" onClick={this.addAndEditOrder}>
                         {isEdit ? 'Применить' : 'Сохранить'}
                     </button>

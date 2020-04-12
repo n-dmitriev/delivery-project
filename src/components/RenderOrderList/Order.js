@@ -14,7 +14,7 @@ export default class Order extends Component {
     render() {
         return (
             <>
-                <h4>Заказ {this.props.orderInfo.id}</h4>
+                <h4 className={'mb-15'}>Заказ {this.props.orderInfo.id}</h4>
                 <ul>
                     <li className={'mb-15'}>Откуда: {this.props.orderInfo.name}</li>
                     <li className={'mb-15'}>Состояние: {this.props.orderInfo.description}</li>
@@ -22,7 +22,7 @@ export default class Order extends Component {
                         {this.props.orderInfo.startTime.split(' ').slice(1, 5).join(' ')}
                     </li>
                     {
-                        this.props.orderInfo.status > 4
+                        this.props.orderInfo.status > 2
                             ?
                             <li>
                                 Время завершения: {this.props.orderInfo.endTime.split(' ').slice(1, 5).join(' ')}
@@ -52,6 +52,15 @@ export default class Order extends Component {
                                         <li>{product.price}</li>
                                         <li>{product.description}</li>
                                     </ul>
+                                    <div className={'list__checkbox'}>
+                                        {
+                                            this.props.orderInfo.status < 2
+                                                ? <i className="fa fa-square-o" aria-hidden="true"/>
+                                                : product.purchased
+                                                ? <i className="fa fa-check-square-o" aria-hidden="true"/>
+                                                :<i className="fa fa-times" aria-hidden="true"/>
+                                        }
+                                    </div>
                                 </div>
                             ))
                             :

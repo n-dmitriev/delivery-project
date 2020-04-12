@@ -22,7 +22,7 @@ export function fetchUserInfo() {
             const answer = await docRef.get()
             const data = answer.data()
             dispatch(dispatchAction(FETCH_USER_INFO_SUCCESS, data))
-            if(collection === 'couriers' && Object.keys(data.deliveredOrder).length > 0)
+            if(collection === 'couriers')
                 dispatch(fetchDeliveredOrder())
             else if(collection === 'couriers')
                 dispatch(dispatchAction(FETCH_O_STOP, null))
