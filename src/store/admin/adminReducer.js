@@ -5,7 +5,7 @@ import {
     CREATE_NEW_COURIER_E, CREATE_NEW_COURIER_S,
     FETCH_PERS_SUCCESS,
     FETCH_USERS_SUCCESS, REMOVE_ERROR,
-} from '../actions/actionTypes'
+} from './actionTypes'
 
 const adminId = localStorage.getItem('adminId') ? JSON.parse(localStorage.getItem('adminId')) : null
 localStorage.setItem('adminId', JSON.stringify(adminId))

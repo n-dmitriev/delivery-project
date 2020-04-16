@@ -8,9 +8,9 @@ import {Route, Switch} from 'react-router-dom'
 import UserAccount from './containers/UserAccount/UserAccount'
 import CourierAccount from './containers/CourierAccount/CourierAccount'
 import MainPage from './components/MainPage/MainPage'
-import {fetchUserInfo} from './store/actions/userInformation'
+import {fetchUserInfo} from './store/userInformation/userActions'
 import Admin from './containers/Admin/Admin'
-import {autoLogin} from './store/actions/admin'
+import {autoLogin} from './store/admin/adminActions'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 
@@ -28,9 +28,9 @@ class App extends Component {
     }
 
     // Метод на случай, если пользователь попытается сделать заказ не авторизовавшись
-    trySendOrder = (falg) => {
+    trySendOrder = (flag) => {
         this.setState({
-            trySendOrderNotAuth: falg,
+            trySendOrderNotAuth: flag,
         })
     }
 
@@ -50,7 +50,7 @@ class App extends Component {
                     logout={this.props.logout} isAuth={this.props.isAuth}
                     openOrderForm={this.interactionWithOrderModal} openAuthForm={this.interactionWithAuthModal}
                     id={this.props.id}
-                    name={this.props.userInfo? this.props.userInfo.name : 'Безымянный пользователь'}
+                    name={this.props.userInfo ? this.props.userInfo.name : 'Безымянный пользователь'}
                     path={this.props.path}
                 />
                 <OrderModalForm
@@ -65,7 +65,7 @@ class App extends Component {
                     onClose={this.interactionWithAuthModal}/>
                 <div className="app__main-content">
                     <Switch>
-                        <Route path='/'  component={MainPage} exact/>
+                        <Route path='/' component={MainPage} exact/>
                         <Route path='/user-account/:number' component={UserAccount}/>
                         <Route path='/courier-account/:number' component={CourierAccount}/>
                         <Route path='/admin' component={Admin}/>
@@ -82,14 +82,14 @@ function mapStateToProps(state) {
         isError: state.authReducer.isError,
         id: state.authReducer.id,
         userInfo: state.userInfReducer.info,
-        path: state.authReducer.path
+        path: state.authReducer.path,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         fetchUserInfo: () => dispatch(fetchUserInfo()),
-        autoLogin: () => dispatch(autoLogin())
+        autoLogin: () => dispatch(autoLogin()),
     }
 }
 

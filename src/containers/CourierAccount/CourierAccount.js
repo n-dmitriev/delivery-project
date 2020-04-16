@@ -5,14 +5,14 @@ import AuthShape from '../../components/AuthShape/AuthShape'
 import {NavLink, Redirect} from 'react-router-dom'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
-import {auth, logout} from '../../store/actions/auth'
-import {passwordChange} from '../../store/actions/userInformation'
+import {authActions, logout} from '../../store/authentication/authActions'
+import {fetchOrderList, passwordChange} from '../../store/userInformation/userActions'
 import CourierPanel from '../../components/CourierPanel/CourierPanel'
 import {
     changeOrderData,
-    fetchActiveOrders, interactWithPurchased, subscribeOrderInfo,
-    subscribeUsers,
-} from '../../store/actions/courier'
+    interactWithPurchased, subscribeOrderInfo,
+} from '../../store/courier/courierAction'
+import  {subscribe} from '../../store/userInformation/userActions'
 
 class CourierAccount extends Component {
     state = {
@@ -42,20 +42,24 @@ class CourierAccount extends Component {
 
 
                     <CourierPanel
-                        fetchActiveOrders={this.props.fetchActiveOrders}
-                        ordersList={this.props.ordersList}
-                        subscribeUsers={this.props.subscribeUsers}
+                        fetchOrderList={this.props.fetchOrderList}
+                        ordersList={this.props.listOfCurrentOrders}
+                        subscribeUsers={this.props.subscribe}
                         subscribeOrderInfo={this.props.subscribeOrderInfo}
-                        loading={this.props.loading}
-                        deliveredOrder={this.props.deliveredOrder}
+                        loading={this.props.listLoading}
+                        deliveredOrder={{}}
                         changeOrderData={this.props.changeOrderData}
                         interactWithPurchased={this.props.interactWithPurchased}
                     />
 
                     <br/>
                     <RenderOrderList description={'завершённых заказов'}
-                                     orderList={this.props.userInfo.listOfDeliveredOrders || []}
+                                     orderList={this.props.listOfDeliveredOrders}
                                      type={'finish'}
+                                     soughtId={'courierId'}
+                                     statusList={[3, 4]}
+                                     fetchOrderList={this.props.fetchOrderList}
+                                     subscribe={this.props.subscribe}
                     />
 
                     <div className="button-section mt-30">
@@ -71,7 +75,7 @@ class CourierAccount extends Component {
             )
     }
 
-    auth = async (login, email) => {
+    authAction = async (login, email) => {
         await this.props.auth(login, email, true, 'couriers')
     }
 
@@ -83,7 +87,7 @@ class CourierAccount extends Component {
                         ?
                         <AuthShape
                             isError={this.props.error}
-                            auth={this.auth}
+                            auth={this.authAction}
                             thisReg={false}
                         />
                         : this.props.isAuth
@@ -109,9 +113,10 @@ function mapStateToProps(state) {
         error: state.authReducer.isError,
         userInfo: state.userInfReducer.info,
         errorPassword: state.userInfReducer.error,
-        ordersList: state.courier.ordersList,
-        deliveredOrder: state.courier.deliveredOrder,
         loading: state.courier.loading,
+        listLoading: state.userInfReducer.loading,
+        listOfCurrentOrders: state.userInfReducer.listOfCurrentOrders,
+        listOfDeliveredOrders: state.userInfReducer.listOfDeliveredOrders
     }
 }
 
@@ -119,12 +124,12 @@ function mapDispatchToProps(dispatch) {
     return {
         logout: () => dispatch(logout()),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
-        auth: (email, password, isLogin, collection) => dispatch(auth(email, password, isLogin, collection)),
-        fetchActiveOrders: () => dispatch(fetchActiveOrders()),
-        subscribeUsers: (listening) => dispatch(subscribeUsers(listening)),
+        auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
+        subscribe: (listening, listType, typeId, soughtId, statusList) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList)),
         subscribeOrderInfo:(listening, id) => dispatch(subscribeOrderInfo(listening, id)),
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
-        interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag))
+        interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),
+        fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
     }
 }
 

@@ -1,19 +1,17 @@
 import {authWithFirebase, dataBase} from '../../firebase/firebase'
-import {dispatchAction} from './universalFunctions'
+import {dispatchAction} from '../universalFunctions'
 import {
     AUTH_ADMIN_ERROR,
-    AUTH_ERROR,
     AUTH_ADMIN_SUCCESS,
     AUTH_ADMIN_LOGOUT,
     FETCH_PERS_SUCCESS,
     FETCH_USERS_SUCCESS,
     CREATE_NEW_COURIER_S,
     CREATE_NEW_COURIER_E,
-    SET_USER_INFO_SUCCESS,
-    SET_USER_INFO_ERROR,
 } from './actionTypes'
+import {SET_USER_INFO_ERROR, SET_USER_INFO_SUCCESS} from '../userInformation/actionTypes'
 
-
+// Функция аунтификации
 export function authAdmin(email, password) {
     return async dispatch => {
         try {
@@ -38,12 +36,13 @@ export function authAdmin(email, password) {
             })
         } catch (e) {
             console.log(e)
-            dispatch(dispatchAction(AUTH_ERROR, null))
+            dispatch(dispatchAction(AUTH_ADMIN_ERROR, null))
         }
 
     }
 }
 
+// Функция авто выхода
 export function autoLogOut(time) {
     return dispatch => {
         setTimeout(() => {
@@ -52,6 +51,7 @@ export function autoLogOut(time) {
     }
 }
 
+// Функция подтверждения аунтификации
 export function authSuccess(adminId) {
     return {
         type: AUTH_ADMIN_SUCCESS,
@@ -59,6 +59,7 @@ export function authSuccess(adminId) {
     }
 }
 
+//Функция выхода
 export function logout() {
     localStorage.removeItem('adminId')
     localStorage.removeItem('expirationDate')
@@ -67,6 +68,7 @@ export function logout() {
     }
 }
 
+//Функция атво входа
 export function autoLogin() {
     return dispatch => {
         const adminId = localStorage.getItem('adminId')
@@ -84,28 +86,23 @@ export function autoLogin() {
     }
 }
 
+// Запрос информации о пользователях
 export function fetchDataBase(collection) {
     return async (dispatch) => {
+        let type = ''
         collection === 'users'
-            ?
-            dataBase.collection('users').get().then((answer) => {
-                const docArray = []
-                answer.forEach((doc, count = 0) => {
-                    docArray.push(doc.data())
-                    docArray[count].id = doc.id
-                    count++
-                })
-                dispatch(dispatchAction(FETCH_USERS_SUCCESS, docArray))
+            ? type = FETCH_USERS_SUCCESS
+            : type = FETCH_PERS_SUCCESS
+
+        dataBase.collection(collection).get().then((answer) => {
+            const docArray = []
+            answer.forEach((doc, count = 0) => {
+                docArray.push(doc.data())
+                docArray[count].id = doc.id
+                count++
             })
-            : dataBase.collection('couriers').get().then((answer) => {
-                const docArray = []
-                answer.forEach((doc, count = 0) => {
-                    docArray.push(doc.data())
-                    docArray[count].id = doc.id
-                    count++
-                })
-                dispatch(dispatchAction(FETCH_PERS_SUCCESS, docArray))
-            })
+            dispatch(dispatchAction(type, docArray))
+        })
     }
 }
 
@@ -122,8 +119,6 @@ export function registrNewCourier(email, password) {
                         address: '',
                         email: email,
                         role: 'courier',
-                        deliveredOrder: {},
-                        completedOrders: [],
                     }
                     dataBase.collection('couriers').doc(user.uid).set(info)
                     localStorage.setItem('addedCourierId', JSON.stringify(user.uid))

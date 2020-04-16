@@ -2,22 +2,19 @@ import React, {Component} from 'react'
 import './UserAccount.scss'
 import {connect} from 'react-redux'
 import InputInformation from '../../components/InputInformation/InputInformation'
-import {logout} from '../../store/actions/auth'
+import {logout} from '../../store/authentication/authActions'
 import {NavLink, Redirect} from 'react-router-dom'
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
-import {passwordChange, setUserInfo, subscribe} from '../../store/actions/userInformation'
+import {fetchOrderList, passwordChange, setUserInfo, subscribe} from '../../store/userInformation/userActions'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
-import {cancelOrder} from '../../store/actions/currentOrder'
+import {cancelOrder} from '../../store/currentOrder/orderActions'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
 
 class UserAccount extends Component {
     state = {
         cpfIsOpen: false,
         isOrderModalOpen: false,
-        editItem: null
-    }
-
-    componentDidMount() {
+        editItem: null,
     }
 
     interactionWithOrderModal = () => {
@@ -37,7 +34,7 @@ class UserAccount extends Component {
 
     setEditItem = (item) => {
         this.setState({
-            editItem: item
+            editItem: item,
         })
         this.interactionWithOrderModal()
     }
@@ -60,42 +57,56 @@ class UserAccount extends Component {
                         onClose={this.interactionWithOrderModal}
                         isEdit={true}
                         editItem={this.state.editItem}
+                        remove={this.props.remove}
                     />
 
                     <div className="row">
                         <div className="col-lg-6 col-sm-12 col-xs-12">
-                           <div className="user-account__input">
-                               <InputInformation
-                                   saveContactInformation={this.saveContactInformation}
-                                   userInfo={this.props.userInfo}
-                               />
-                               <hr/>
+                            <div className="user-account__input">
+                                <InputInformation
+                                    saveContactInformation={this.saveContactInformation}
+                                    userInfo={this.props.userInfo}
+                                />
+                                <hr/>
 
-                               <div className="button-section">
-                                   <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15" onClick={this.props.logout}>
-                                       Выйти
-                                   </NavLink>
-                                   <button className="main-item-style" onClick={this.interactionWithChangeModal}>
-                                       Сменить пароль
-                                   </button>
-                               </div>
-                           </div>
+                                <div className="button-section">
+                                    <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15"
+                                             onClick={this.props.logout}>
+                                        Выйти
+                                    </NavLink>
+                                    <button className="main-item-style" onClick={this.interactionWithChangeModal}>
+                                        Сменить пароль
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div className="col-lg-6 col-sm-12 col-xs-12">
                             <h2>
                                 Заказы
                             </h2>
                             <hr/>
-                            <RenderOrderList description={'активных заказов'}
-                                             orderList={this.props.userInfo.listOfCurrentOrders || []}
-                                             type={'active'}
-                                             cancelOrder={this.props.cancelOrder}
-                                             setEditItem={this.setEditItem}
+                            <RenderOrderList
+                                fetchOrderList={this.props.fetchOrderList}
+                                orderList={this.props.listOfCurrentOrders}
+                                cancelOrder={this.props.cancelOrder}
+                                setEditItem={this.setEditItem}
+                                type={'active'}
+                                description={'активных заказов'}
+                                loading={this.props.loading}
+                                soughtId={'userId'}
+                                statusList={[-1, 0, 1, 2]}
+                                subscribe={this.props.subscribe}
                             />
-                           <br/>
-                            <RenderOrderList description={'завершённых заказов'}
-                                             orderList={this.props.userInfo.listOfDeliveredOrders || []}
-                                             type={'finish'}
+                            <br/>
+                            <RenderOrderList
+                                fetchOrderList={this.props.fetchOrderList}
+                                orderList={this.props.listOfDeliveredOrders}
+                                type={'finish'}
+                                description={'завершённых заказов'}
+                                loading={this.props.loading}
+                                soughtId={'userId'}
+                                statusList={[3, 4]}
+                                subscribe={this.props.subscribe}
                             />
                         </div>
                     </div>
@@ -109,6 +120,10 @@ function mapStateToProps(state) {
         id: state.authReducer.id,
         userInfo: state.userInfReducer.info,
         errorPassword: state.userInfReducer.error,
+        listOfDeliveredOrders: state.userInfReducer.listOfDeliveredOrders,
+        listOfCurrentOrders: state.userInfReducer.listOfCurrentOrders,
+        loading: state.userInfReducer.loading,
+        remove: state.userInfReducer.remove,
     }
 }
 
@@ -117,8 +132,9 @@ function mapDispatchToProps(dispatch) {
         logout: () => dispatch(logout()),
         setUserInfo: (info) => dispatch(setUserInfo(info)),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
-        cancelOrder: (order) => dispatch(cancelOrder(order)),
-        subscribe: (listening) => dispatch(subscribe(listening))
+        cancelOrder: (id) => dispatch(cancelOrder(id)),
+        subscribe: (listening, listType, typeId, soughtId, statusList) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList)),
+        fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
     }
 }
 

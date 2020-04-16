@@ -7,14 +7,14 @@ import {
     editOrderItem,
     removeProductFromOrder,
     sendOrder,
-} from '../../store/actions/currentOrder'
+} from '../../store/currentOrder/orderActions'
 import ProductForm from '../../components/ProductForm/ProductForm'
 import {
     addProductToSentOrder,
     editSentOrder,
     editSentOrderItem,
     removeProductFromSentOrder,
-} from '../../store/actions/userInformation'
+} from '../../store/currentOrder/orderActions'
 
 //Данный контэйнер отвечает за рендеринг модального окна и отправку функций/перменных в качестве пропсов дочерним эл-там
 class OrderModalForm extends Component {
@@ -22,14 +22,6 @@ class OrderModalForm extends Component {
         activeTab: 'shop-tab', // текущее вкладка 2 состояния shop-tab и restaurant-tab
         formIsOpen: false, // флаг отвечающий за форму ввода, если false - рендерится заказ, true - рендерится форма ввода
         activeItem: null, // В переменной хранится текуший элемент, который выбран для редактирования
-        update: true
-    }
-
-
-    removeUpdate = () => {
-        this.setState({
-            update: !this.state.update
-        })
     }
 
     //Функция открывающая/закрывающая форму ввода
@@ -51,7 +43,7 @@ class OrderModalForm extends Component {
     sendOrder = () => {
         this.props.onClose()
         if (this.props.isEdit === true) {
-            this.props.editSentOrder()
+            this.props.editSentOrder(this.props.editItem)
         } else {
             if (this.props.isAuth === true)
                 this.props.sendOrder()
@@ -93,7 +85,7 @@ class OrderModalForm extends Component {
         this.props.addProductToSentOrder(this.props.editItem.id, item)
     }
 
-    editSentOrder = (item) => {
+    editSentOrderItem = (item) => {
         this.props.editSentOrderItem(this.props.editItem.id, item)
     }
 
@@ -106,38 +98,10 @@ class OrderModalForm extends Component {
             this.props.removeProductFromOrder(e.target.id, this.state.activeTab)
     }
 
-    // Функция, рендерит заказ из магазина
-    renderShopOrder() {
-        let list
-        this.props.isEdit === true ? list = this.props.editItem.order : list = this.props.shopOrder
-        return (
-            <div className={'order-constructor__order-list'}>
-                {list.map((item, count) => (
-                    <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
-                        {item.name}, {item.quantity}, {item.brand}
-                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}/>
-                    </div>
-                ))}
-            </div>
-        )
-    }
-
-    // Функция, рендерит заказ из ресторана
-    renderRestaurantOrder() {
-        return (
-            <div className={'order-constructor__order-list'}>
-                {this.props.restaurantOrder.map((item, count) => (
-                    <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
-                        {item.name} {item.quantity} {item.price} {item.description}
-                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}/>
-                    </div>
-                ))}
-            </div>
-        )
-    }
-
     // Функция, рендерит заказ и навигационное меню
     renderOrderListAndNavigationMenu() {
+        let list
+        this.props.isEdit ? list = this.props.editItem.order : list = this.props.shopOrder
         return (
             <div className={'order-constructor__content'}>
                 {
@@ -154,10 +118,17 @@ class OrderModalForm extends Component {
                                         this.interactionWithDagger()
                                     }
                                 }}>
-                                {this.props.isEdit === true ? this.props.editItem.name : this.props.nameOfShop}
+                                {this.props.isEdit ? this.props.editItem.name : this.props.nameOfShop}
                                 <i className="fa fa-pencil-square-o" aria-hidden="true"/>
                             </div>
-                            {this.renderShopOrder()}
+                            <div className={'order-constructor__order-list'}>
+                                {list.map((item, count) => (
+                                    <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
+                                        {item.name}, {item.quantity}, {item.brand}
+                                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}/>
+                                    </div>
+                                ))}
+                            </div>
                         </>
                         : null
                         : this.props.nameOfRestaurant !== ''
@@ -171,8 +142,16 @@ class OrderModalForm extends Component {
                                 }}
                             >
                                 {this.props.nameOfRestaurant}
+                                <i className="fa fa-pencil-square-o" aria-hidden="true"/>
                             </div>
-                            {this.renderRestaurantOrder()}
+                            <div className={'order-constructor__order-list'}>
+                                {this.props.restaurantOrder.map((item, count) => (
+                                    <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
+                                        {item.name} {item.quantity} {item.price} {item.description}
+                                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}/>
+                                    </div>
+                                ))}
+                            </div>
                         </>
                         : null
                 }
@@ -252,7 +231,7 @@ class OrderModalForm extends Component {
                                 changeRestaurantName={this.props.changeRestaurantName}
                                 isEdit={this.props.isEdit || false}
                                 addSentOrder={this.addSentOrder}
-                                editSentOrder={this.editSentOrder}
+                                editSentOrder={this.editSentOrderItem}
                             />
                             : this.renderOrderListAndNavigationMenu()
                         }
@@ -287,7 +266,7 @@ function mapDispatchToProps(dispatch) {
         removeProductFromSentOrder: (listid, id) => dispatch(removeProductFromSentOrder(listid, id)),
         addProductToSentOrder: (listid, item) => dispatch(addProductToSentOrder(listid, item)),
         editSentOrderItem: (listid, item) => dispatch(editSentOrderItem(listid, item)),
-        editSentOrder: () => dispatch(editSentOrder())
+        editSentOrder: (orderInfo) => dispatch(editSentOrder(orderInfo))
     }
 }
 

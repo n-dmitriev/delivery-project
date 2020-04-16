@@ -193,14 +193,14 @@ export default class productForm extends Component {
                     помеченные * обязательные для заполнения</small>
 
                 <div className="">
-                    <button className="main-item-style" onClick={this.addAndEditOrder}>
-                        {isEdit ? 'Применить' : 'Сохранить'}
-                    </button>
                     <button className="main-item-style" onClick={() => {
                         this.props.resetActiveItem()
                         this.props.interactionWithDagger()
                     }}>
                         {isEdit ? 'Назад' : 'Отменить'}
+                    </button>
+                    <button className="main-item-style" onClick={this.addAndEditOrder}>
+                        {isEdit ? 'Применить' : 'Сохранить'}
                     </button>
                 </div>
             </>

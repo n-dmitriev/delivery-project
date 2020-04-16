@@ -2,10 +2,10 @@ import {
     ADD_P_TO_RESTAURANT_ORDER,
     ADD_P_TO_SHOP_ORDER, CHANGE_RESTAURANT_NAME, CHANGE_SHOP_NAME,
     DELETE_ORDER, EDIT_ORDER_RESTAURANT_ITEM,
-    EDIT_ORDER_SHOP_ITEM, REMOVE_NAMES, REMOVE_P_FROM_RESTAURANT_ORDER,
+    EDIT_ORDER_SHOP_ITEM, REMOVE_P_FROM_RESTAURANT_ORDER,
     REMOVE_P_FROM_SHOP_ORDER,
     SEND_ORDER,
-} from '../actions/actionTypes'
+} from './actionTypes'
 
 const shopOrder = localStorage.getItem('shopOrder') ? JSON.parse(localStorage.getItem('shopOrder')) : []
 localStorage.setItem('shopOrder', JSON.stringify(shopOrder))
@@ -56,12 +56,6 @@ export default function eateriesReducer(state = initialState, action) {
         case CHANGE_SHOP_NAME:
             return {
                 ...state, nameOfShop: action.item,
-            }
-        case REMOVE_NAMES:
-            return {
-                ...state,
-                nameOfRestaurant: '',
-                nameOfShop: '',
             }
         case SEND_ORDER:
             return {

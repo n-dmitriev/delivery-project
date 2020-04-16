@@ -22,7 +22,7 @@ export default class Order extends Component {
                         {this.props.orderInfo.startTime.split(' ').slice(1, 5).join(' ')}
                     </li>
                     {
-                        this.props.orderInfo.status > 2
+                        this.props.type === 'finish'
                             ?
                             <li>
                                 Время завершения: {this.props.orderInfo.endTime.split(' ').slice(1, 5).join(' ')}
@@ -54,7 +54,7 @@ export default class Order extends Component {
                                     </ul>
                                     <div className={'list__checkbox'}>
                                         {
-                                            this.props.orderInfo.status < 2
+                                            this.props.type === 'active'
                                                 ? <i className="fa fa-square-o" aria-hidden="true"/>
                                                 : product.purchased
                                                 ? <i className="fa fa-check-square-o" aria-hidden="true"/>
@@ -64,7 +64,7 @@ export default class Order extends Component {
                                 </div>
                             ))
                             :
-                            <span>Ваш заказ пуст!:(</span>
+                            <span>Ваш заказ пуст! :(</span>
                     }
                 </div>
                 {
@@ -73,14 +73,14 @@ export default class Order extends Component {
                         <div className="button-section mt-30">
                             <button
                                 className={`main-item-style mr-15 ${
-                                    this.props.orderInfo.status > 1 ? 'non-click' : ''
+                                    this.props.type === 'finish' ? 'non-click' : ''
                                 }`}
                                 onClick={() => this.props.setEditItem(this.props.orderInfo)}>
                                 Редактировать заказ
                             </button>
                             <button
                                 className={'main-item-style main-item-style_danger'}
-                                onClick={() => this.props.cancelOrder(this.props.orderInfo)}>
+                                onClick={() => this.props.cancelOrder(this.props.orderInfo.id)}>
                                 Отменить заказ
                             </button>
                         </div>

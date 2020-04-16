@@ -2,10 +2,10 @@ import React, {Component} from 'react'
 import './Admin.scss'
 import {connect} from 'react-redux'
 import AuthShape from '../../components/AuthShape/AuthShape'
-import {authAdmin, fetchDataBase, registrNewCourier, removeCourier, setCourierInfo} from '../../store/actions/admin'
+import {authAdmin, fetchDataBase, registrNewCourier, removeCourier, setCourierInfo} from '../../store/admin/adminActions'
 import AddCourier from '../../components/AddCourier/AddCourier'
-import {dispatchAction} from '../../store/actions/universalFunctions'
-import {REMOVE_ERROR} from '../../store/actions/actionTypes'
+import {dispatchAction} from '../../store/universalFunctions'
+import {REMOVE_ERROR} from '../../store/admin/actionTypes'
 import RenderCourierList from '../../components/RenderCourierList/RenderCourierList'
 import EditCourierModal from '../../components/RenderCourierList/EditCourierModal/EditCourierModal'
 
@@ -35,7 +35,7 @@ class Admin extends Component {
         this.interactionWithEditModal()
     }
 
-    auth = async (login, email) => {
+    authAction = async (login, email) => {
         await this.props.authAdmin(login, email)
     }
 
@@ -107,7 +107,7 @@ class Admin extends Component {
                         ?
                         <AuthShape
                             isError={this.props.error}
-                            auth={this.auth}
+                            auth={this.authAction}
                             thisReg={false}
                         />
                         : <>

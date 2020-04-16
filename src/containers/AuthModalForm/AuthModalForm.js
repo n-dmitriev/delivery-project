@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import './AuthModalForm.scss'
 import {connect} from 'react-redux'
-import {auth, removeError} from '../../store/actions/auth'
-import {sendOrder} from '../../store/actions/currentOrder'
+import {authActions, removeError} from '../../store/authentication/authActions'
+import {sendOrder} from '../../store/currentOrder/orderActions'
 import InputInformation from '../../components/InputInformation/InputInformation'
 import AuthShape from '../../components/AuthShape/AuthShape'
-import {setUserInfo} from '../../store/actions/userInformation'
+import {setUserInfo} from '../../store/userInformation/userActions'
 
 
 //Данный контейнер отвечает за авторизацию и регистрацию пользователей
@@ -123,7 +123,7 @@ class AuthModalForm extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        auth: (email, password, isLogin, collection) => dispatch(auth(email, password, isLogin, collection)),
+        auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
         removeError: () => dispatch(removeError()),
         sendOrder: () => dispatch(sendOrder()),
         setUserInfo: (info) => dispatch(setUserInfo(info)),

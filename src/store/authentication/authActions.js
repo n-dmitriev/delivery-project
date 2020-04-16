@@ -1,11 +1,16 @@
-import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS} from './actionTypes'
-import {fetchUserInfo} from './userInformation'
+import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS, AUTH_START} from './actionTypes'
+import {fetchUserInfo} from '../userInformation/userActions'
 import {authWithFirebase, dataBase} from '../../firebase/firebase'
-import {dispatchAction} from './universalFunctions'
+import {dispatchAction} from '../universalFunctions'
 
-export function auth(email, password, isLogin, collectionType) {
+
+//Функция авторизации
+//На вход email и password, isLogin - флаг, true - авторизация, false - регистрация
+//collectionType - кто авторизовывается курьер или пользователь
+export function authActions(email, password, isLogin, collectionType) {
     return async dispatch => {
         try {
+            dispatch(dispatchAction(AUTH_START, null))
             if(isLogin)
                 await authWithFirebase.signInWithEmailAndPassword(email, password)
             else
@@ -30,8 +35,7 @@ export function auth(email, password, isLogin, collectionType) {
                             address: '',
                             email: email,
                             role: 'user',
-                            listOfDeliveredOrders: [],
-                            listOfCurrentOrders: [],
+                            id: user.uid
                         }
                         await collection.doc(user.uid).set(info)
                         dispatch(fetchUserInfo())
@@ -51,29 +55,21 @@ export function auth(email, password, isLogin, collectionType) {
             console.log(e)
             dispatch(dispatchAction(AUTH_ERROR, null))
         }
-
     }
 }
 
+//Функция обнуления ошибки, используется при переключении между окнами
 export function removeError() {
     return {
         type: AUTH_OK,
     }
 }
 
+//Функция выхода из аккаунта
 export function logout() {
-    localStorage.clear()
+    localStorage.removeItem('id')
+    localStorage.removeItem('path')
     return {
         type: AUTH_LOGOUT,
     }
 }
-
-/*const authData = {
-                email, password,
-                returnSecureToken: true,
-            }
-            let url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${config.apiKey}`
-
-            if (isLogin)
-                url = `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${config.apiKey}`
-            const response = await axios.post(url, authData)*/
