@@ -57,7 +57,7 @@ export default class OrderItem extends Component {
                         className={`main-item-style mr-15`}
                         onClick={() => this.props.changeOrderData(1, {
                             uid: this.props.orderInfo.id,
-                            orderInfo: this.props.orderInfo,
+                            ...this.props.orderInfo,
                         })}>
                         Взять заказ
                     </button>
@@ -65,7 +65,7 @@ export default class OrderItem extends Component {
                         className={`main-item-style main-item-style_danger`}
                         onClick={() => this.props.changeOrderData(-1, {
                             uid: this.props.orderInfo.id,
-                            orderInfo: this.props.orderInfo,
+                            ...this.props.orderInfo,
                         })}>
                         Это тролль!
                     </button>

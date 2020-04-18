@@ -119,6 +119,11 @@ export function registrNewCourier(email, password) {
                         address: '',
                         email: email,
                         role: 'courier',
+                        // -1 - не работает
+                        // 0 - свободен/ищет заказ
+                        // 1 - осуществляет закупку
+                        // 2 - доставляет заказ
+                        courierStatus: -1,
                     }
                     dataBase.collection('couriers').doc(user.uid).set(info)
                     localStorage.setItem('addedCourierId', JSON.stringify(user.uid))

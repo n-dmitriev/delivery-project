@@ -62,6 +62,8 @@
         border-bottom-left-radius: 7px;
         background-color: #F0F0F0;
         transition: 0.6s;
+        white-space: nowrap;
+        max-height: 40px;
 
         &:hover {
           transition: 0.6s;

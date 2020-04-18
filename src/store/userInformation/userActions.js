@@ -11,7 +11,6 @@ import {
     FETCH_USER_FL_SUCCESS,
 } from './actionTypes'
 import {dispatchAction} from '../universalFunctions'
-import {fetchDeliveredOrder} from '../courier/courierAction'
 import {FETCH_O_STOP} from '../courier/actionTypes'
 
 //Фунцкция запрашивающая пользовательские данные
@@ -27,7 +26,7 @@ export function fetchUserInfo() {
             const data = answer.data()
             dispatch(dispatchAction(FETCH_USER_INFO_SUCCESS, data))
             if (collection === 'couriers') {
-                dispatch(fetchDeliveredOrder())
+                dispatch(fetchOrderList('active', 'courierId', null, [1]))
                 dispatch(dispatchAction(FETCH_O_STOP, null))
             }
         } catch (e) {
@@ -69,6 +68,10 @@ export function passwordChange(oldPassword, newPassword) {
 }
 
 //Функция запрашвающая список заказов
+//listType - состояния active/finish отвечает за массив доставленных или активных заказов
+//typeId - состояния courierId/userId/orderId отвечает за тип id
+//soughtId - искомый id
+//statusList - список желаемых статусов
 export function fetchOrderList(listType, typeId, soughtId, statusList) {
     return async (dispatch, getState) => {
         dispatch(dispatchAction(FETCH_USER_START, null))
@@ -77,16 +80,16 @@ export function fetchOrderList(listType, typeId, soughtId, statusList) {
         const answer = await dataBase.collection('user-orders')
             .where(typeId, '==', soughtId).where('status', 'in', statusList).get()
 
-        const listOrders = [], orderList = []
+        const listOrdersInfo = [], orderList = []
 
         answer.forEach((item) => {
-            listOrders.push(item.data())
+            listOrdersInfo.push(item.data())
         })
 
         const orderRef = dataBase.collection('orders')
         const userRef = dataBase.collection('users')
 
-        for (let item of listOrders) {
+        for (let item of listOrdersInfo) {
             const order = await orderRef.doc(item.orderId).get()
             const user = await userRef.doc(item.userId).get()
             const orderData = order.data()
@@ -110,15 +113,12 @@ export function fetchOrderList(listType, typeId, soughtId, statusList) {
 
 //Подписка
 export function subscribe(listening, listType, typeId, soughtId, statusList) {
-    return (dispatch, getState) => {
-        const state = getState().userInfReducer
-        for(let item of state.listOfDeliveredOrders){
-            const un = dataBase.collection('orders').doc(item.id)
-                .onSnapshot(() => {
-                    dispatch(fetchOrderList(listType, typeId, soughtId, statusList))
-                })
-            if(!listening)
-                un()
-        }
+    return (dispatch) => {
+        const un = dataBase.collection('orders')
+            .onSnapshot(() => {
+                dispatch(fetchOrderList(listType, typeId, soughtId, statusList))
+            })
+        if(!listening)
+            un()
     }
 }

@@ -47,7 +47,7 @@ class CourierAccount extends Component {
                         subscribeUsers={this.props.subscribe}
                         subscribeOrderInfo={this.props.subscribeOrderInfo}
                         loading={this.props.listLoading}
-                        deliveredOrder={{}}
+                        courierStatus={+ this.props.userInfo.courierStatus}
                         changeOrderData={this.props.changeOrderData}
                         interactWithPurchased={this.props.interactWithPurchased}
                     />
