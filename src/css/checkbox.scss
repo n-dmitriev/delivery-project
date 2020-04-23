@@ -48,6 +48,15 @@ $green: #06842c;
     }
   }
 
+  &_input_error{
+    border: 1px solid red !important;
+  }
+
+  &__label_mini{
+    font-size: 17px !important;
+    font-weight: 400 !important;
+  }
+
   & label {
     position: relative;
     cursor: pointer;

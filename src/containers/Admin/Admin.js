@@ -8,6 +8,8 @@ import {dispatchAction} from '../../store/universalFunctions'
 import {REMOVE_ERROR} from '../../store/admin/actionTypes'
 import RenderCourierList from '../../components/RenderCourierList/RenderCourierList'
 import EditCourierModal from '../../components/RenderCourierList/EditCourierModal/EditCourierModal'
+import AdminPanelWithOrders from '../../components/AdminPanelWithOrders/AdminPanelWithOrders'
+import {fetchOrderList} from '../../store/userInformation/userActions'
 
 class Admin extends Component {
     state = {
@@ -50,6 +52,15 @@ class Admin extends Component {
     renderAdminPanel = () => {
         return (
             <div>
+                <h2 className={'mb-15'}>Информация о заказах</h2>
+
+                <AdminPanelWithOrders
+                    fetchOrderList={this.props.fetchOrderList}
+                    orderList={this.props.orderList}
+                />
+
+                <hr/>
+
                 <h2 className={'mb-15'}>Информация о курьерах</h2>
 
                 <AddCourier
@@ -83,16 +94,6 @@ class Admin extends Component {
                         Добавить курьера
                     </button>
                 </div>
-
-
-                <hr/>
-
-                <h2>Информация о активных заказах</h2>
-                <p>...</p>
-                <hr/>
-
-                <h2>Информация о пользователях</h2>
-                <p>...</p>
             </div>
         )
     }
@@ -127,6 +128,7 @@ function mapStateToProps(state) {
         error: state.authAdmin.error,
         users: state.authAdmin.users,
         couriers: state.authAdmin.couriers,
+        orderList: state.authAdmin.orderList
     }
 }
 
@@ -137,7 +139,8 @@ function mapDispatchToProps(dispatch) {
         removeError: () => dispatch(dispatchAction(REMOVE_ERROR, null)),
         registrNewCourier: (email, password) => dispatch(registrNewCourier(email, password)),
         setCourierInfo: (info) => dispatch(setCourierInfo(info)),
-        removeCourier: (id) => dispatch(removeCourier(id))
+        removeCourier: (id) => dispatch(removeCourier(id)),
+        fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
     }
 }
 

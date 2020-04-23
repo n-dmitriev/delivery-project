@@ -18,15 +18,23 @@ export default class Order extends Component {
                 <ul>
                     <li className={'mb-15'}>Откуда: {this.props.orderInfo.name}</li>
                     <li className={'mb-15'}>Состояние: {this.props.orderInfo.description}</li>
-                    <li className={'mb-15'}>Время начала заказа:
-                        {this.props.orderInfo.startTime.split(' ').slice(1, 5).join(' ')}
-                    </li>
+                    <li className={'mb-15'}>Время начала заказа:{this.props.orderInfo.startTime}</li>
                     {
                         this.props.type === 'finish'
                             ?
-                            <li>
-                                Время завершения: {this.props.orderInfo.endTime.split(' ').slice(1, 5).join(' ')}
-                            </li>
+                            <li className={'mb-15'}>Время завершения: {this.props.orderInfo.endTime}</li>
+                            : null
+                    }
+                    {
+                        this.props.orderInfo.orderValue
+                            ?
+                            <>
+                                <li className={'mb-15'}>Стоимость заказа: {this.props.orderInfo.orderValue} ₽</li>
+                                <li className={'mb-15'}>Стоимость доставки: {this.props.orderInfo.deliveryValue} ₽</li>
+                                <li className={'mb-15'}>
+                                    <b>Итого: {parseInt(this.props.orderInfo.deliveryValue) + parseInt(this.props.orderInfo.orderValue)} ₽</b>
+                                </li>
+                            </>
                             : null
                     }
                 </ul>
@@ -54,11 +62,13 @@ export default class Order extends Component {
                                     </ul>
                                     <div className={'list__checkbox'}>
                                         {
-                                            this.props.type === 'active'
-                                                ? <i className="fa fa-square-o" aria-hidden="true"/>
-                                                : product.purchased
-                                                ? <i className="fa fa-check-square-o" aria-hidden="true"/>
-                                                :<i className="fa fa-times" aria-hidden="true"/>
+                                            this.props.orderInfo.orderValue
+                                                ?
+                                                product.purchased
+                                                    ? <i className="fa fa-check-square-o" aria-hidden="true"/>
+                                                    : <i className="fa fa-times" aria-hidden="true"/>
+                                                :
+                                                <i className="fa fa-square-o" aria-hidden="true"/>
                                         }
                                     </div>
                                 </div>

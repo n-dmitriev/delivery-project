@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import './RenderOrderList.scss'
-import Order from './Order'
+import List from './List'
 
 export default class RenderOrderList extends Component {
     state = {
@@ -38,24 +37,17 @@ export default class RenderOrderList extends Component {
                             <div></div>
                         </div>
                         :
-                        <div className={this.state.orderListIsOpen ? 'list__content' : 'hide'}>
-                            {
-                                this.props.orderList.length !== 0
-                                    ? this.props.orderList.map((orderInfo) => (
-                                        <div className={'list__item'} key={orderInfo.id}>
-                                            <Order orderInfo={orderInfo}
-                                                   type={this.props.type}
-                                                   cancelOrder={this.props.cancelOrder}
-                                                   setEditItem={this.props.setEditItem}
-                                                   remove={this.props.remove}
-                                            />
-                                        </div>
-                                    ))
-                                    : <>
-                                        <span>Оу, здесь пусто :(</span>
-                                    </>
-                            }
+                        <div className={this.state.orderListIsOpen ? '' : 'hide'}>
+                            <List
+                                orderList={this.props.orderList}
+                                soughtId={this.props.soughtId}
+                                type={this.props.type}
+                                cancelOrder={this.props.cancelOrder}
+                                setEditItem={this.props.setEditItem}
+                                remove={this.props.remove}
+                            />
                         </div>
+
                 }
             </div>
         )

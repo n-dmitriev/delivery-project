@@ -4,7 +4,7 @@ import {
     AUTH_ADMIN_ERROR,
     AUTH_ADMIN_SUCCESS,
     AUTH_ADMIN_LOGOUT,
-    FETCH_PERS_SUCCESS,
+    FETCH_COURIERS_SUCCESS,
     FETCH_USERS_SUCCESS,
     CREATE_NEW_COURIER_S,
     CREATE_NEW_COURIER_E,
@@ -92,7 +92,7 @@ export function fetchDataBase(collection) {
         let type = ''
         collection === 'users'
             ? type = FETCH_USERS_SUCCESS
-            : type = FETCH_PERS_SUCCESS
+            : type = FETCH_COURIERS_SUCCESS
 
         dataBase.collection(collection).get().then((answer) => {
             const docArray = []

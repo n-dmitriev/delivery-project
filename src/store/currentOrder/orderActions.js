@@ -8,7 +8,7 @@ import {
 } from './actionTypes'
 import {dataBase} from '../../firebase/firebase'
 import {fetchUserInfo} from '../userInformation/userActions'
-import {dispatchAction, getElementById} from '../universalFunctions'
+import {dispatchAction, getDate, getElementById} from '../universalFunctions'
 import {ADD_P_TO_SENT_ORDER, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} from '../userInformation/actionTypes'
 
 //Обновление localStorage при внесении изменений в заказ
@@ -35,7 +35,7 @@ export function sendOrder() {
         // 0 - заказ на обработке, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
         // 3 - заказ выполнен, 4 - заказ отменён пользователем, -1 - подозрение на троллинг
         const fullOrderInfo = {
-            startTime: `${new Date()}`,
+            startTime: getDate(),
             endTime: '',
             description: 'Курьер ещё не принял заказ',
         }
@@ -95,7 +95,7 @@ export function cancelOrder(id) {
 
             dataBase.collection('orders').doc(id).update({
                 description: 'Вы отменили заказ',
-                endTime: `${new Date()}`,
+                endTime: getDate()
             })
 
             dispatch(fetchUserInfo())

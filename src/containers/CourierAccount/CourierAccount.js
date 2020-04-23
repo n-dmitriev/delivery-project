@@ -10,7 +10,7 @@ import {fetchOrderList, passwordChange} from '../../store/userInformation/userAc
 import CourierPanel from '../../components/CourierPanel/CourierPanel'
 import {
     changeOrderData,
-    interactWithPurchased, subscribeOrderInfo,
+    interactWithPurchased, calculateThePrice, subscribeOrderInfo,
 } from '../../store/courier/courierAction'
 import  {subscribe} from '../../store/userInformation/userActions'
 
@@ -50,9 +50,11 @@ class CourierAccount extends Component {
                         courierStatus={+ this.props.userInfo.courierStatus}
                         changeOrderData={this.props.changeOrderData}
                         interactWithPurchased={this.props.interactWithPurchased}
+                        calculateThePrice={this.props.calculateThePrice}
                     />
 
-                    <br/>
+                    <div className={'mb-30'}></div>
+
                     <RenderOrderList description={'завершённых заказов'}
                                      orderList={this.props.listOfDeliveredOrders}
                                      type={'finish'}
@@ -130,6 +132,7 @@ function mapDispatchToProps(dispatch) {
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
+        calculateThePrice: (id, price, position) => dispatch(calculateThePrice(id, price, position))
     }
 }
 

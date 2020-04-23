@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import RenderOrderList from '../../RenderOrderList/RenderOrderList'
 
 export default class Courier extends Component {
     removeCourier = (e) => {
@@ -10,28 +9,13 @@ export default class Courier extends Component {
     render() {
         return (
             <>
-                <h4>Курьер {this.props.courierInfo.name}</h4>
+                <h4 className={'mb-15'}>Курьер {this.props.courierInfo.name}</h4>
                 <ul>
                     <li className={'mb-15'}>Номер телефона: {this.props.courierInfo.numberPhone}</li>
                     <li className={'mb-15'}>Ссылка на вк: {this.props.courierInfo.address}</li>
                     <li className={'mb-15'}>Почта: {this.props.courierInfo.email}</li>
                 </ul>
 
-                <hr/>
-
-                <RenderOrderList  description={'доставляемых заказов'}
-                                 orderList={this.props.courierInfo.executableOrders || []}
-                                 type={'active'}
-                                 cancelOrder={this.props.cancelOrder}
-                                 setEditItem={this.setEditItem}
-                />
-
-                <hr/>
-
-                <RenderOrderList description={'доставленных заказов'}
-                                 orderList={this.props.courierInfo.completedOrders || []}
-                                 type={'finish'}
-                />
 
                 <div className="button-section mt-30">
                     <button

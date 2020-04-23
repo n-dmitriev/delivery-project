@@ -3,8 +3,8 @@ import {
     AUTH_ADMIN_LOGOUT,
     AUTH_ADMIN_SUCCESS,
     CREATE_NEW_COURIER_E, CREATE_NEW_COURIER_S,
-    FETCH_PERS_SUCCESS,
-    FETCH_USERS_SUCCESS, REMOVE_ERROR,
+    FETCH_COURIERS_SUCCESS,
+    FETCH_USERS_SUCCESS, REMOVE_ERROR, SET_SAMPLE,
 } from './actionTypes'
 
 const adminId = localStorage.getItem('adminId') ? JSON.parse(localStorage.getItem('adminId')) : null
@@ -13,8 +13,9 @@ localStorage.setItem('adminId', JSON.stringify(adminId))
 const initialState = {
     adminId: adminId,
     error: false,
-    users: {},
-    couriers: {}
+    users: [],
+    couriers: [],
+    orderList: []
 }
 
 
@@ -30,7 +31,7 @@ export default function authAdmin(state = initialState, action) {
         case AUTH_ADMIN_ERROR: return  {
             ...state, error: true
         }
-        case FETCH_PERS_SUCCESS: {
+        case FETCH_COURIERS_SUCCESS: {
             return {
                 ...state, error: false, couriers: action.item
             }
@@ -48,6 +49,11 @@ export default function authAdmin(state = initialState, action) {
         case CREATE_NEW_COURIER_E: {
             return {
                 ...state, error: true
+            }
+        }
+        case SET_SAMPLE: {
+            return {
+                ...state, orderList: action.item
             }
         }
         case REMOVE_ERROR: {

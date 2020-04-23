@@ -12,6 +12,7 @@ import {
 } from './actionTypes'
 import {dispatchAction} from '../universalFunctions'
 import {FETCH_O_STOP} from '../courier/actionTypes'
+import {SET_SAMPLE} from '../admin/actionTypes'
 
 //Фунцкция запрашивающая пользовательские данные
 export function fetchUserInfo() {
@@ -26,7 +27,7 @@ export function fetchUserInfo() {
             const data = answer.data()
             dispatch(dispatchAction(FETCH_USER_INFO_SUCCESS, data))
             if (collection === 'couriers') {
-                dispatch(fetchOrderList('active', 'courierId', null, [1]))
+                dispatch(fetchOrderList('active', 'courierId', null, [1, 2]))
                 dispatch(dispatchAction(FETCH_O_STOP, null))
             }
         } catch (e) {
@@ -68,17 +69,26 @@ export function passwordChange(oldPassword, newPassword) {
 }
 
 //Функция запрашвающая список заказов
-//listType - состояния active/finish отвечает за массив доставленных или активных заказов
-//typeId - состояния courierId/userId/orderId отвечает за тип id
+//listType - состояния active/finish/sample отвечает за массив доставленных/активных/любых заказов
+//typeId - состояния courierId/userId/orderId отвечает за тип id, в случае all - выбирает всё
 //soughtId - искомый id
 //statusList - список желаемых статусов
 export function fetchOrderList(listType, typeId, soughtId, statusList) {
     return async (dispatch, getState) => {
         dispatch(dispatchAction(FETCH_USER_START, null))
-        if (soughtId === null)
-            soughtId = getState().authReducer.id
-        const answer = await dataBase.collection('user-orders')
-            .where(typeId, '==', soughtId).where('status', 'in', statusList).get()
+        let answer
+
+        if (typeId === 'all')
+            answer = await dataBase.collection('user-orders')
+                .where('status', 'in', statusList).get()
+        else
+        {
+            if (soughtId === null)
+                soughtId = getState().authReducer.id
+            answer = await dataBase.collection('user-orders')
+                .where(typeId, '==', soughtId).where('status', 'in', statusList).get()
+        }
+
 
         const listOrdersInfo = [], orderList = []
 
@@ -94,19 +104,21 @@ export function fetchOrderList(listType, typeId, soughtId, statusList) {
             const user = await userRef.doc(item.userId).get()
             const orderData = order.data()
 
-            if (typeId === 'courierId')
-                    orderList.push({
-                        ...user.data(), orderItem: orderData
-                    })
-            else if(typeId = 'userId')
+            if (typeId === 'courierId' || typeId === 'orderId' || typeId === 'all')
+                orderList.push({
+                    ...user.data(), orderItem: orderData,
+                })
+            else if (typeId === 'userId')
                 orderList.push(orderData)
         }
 
         let type
         if (listType === 'active')
             type = FETCH_USER_AL_SUCCESS
-        else
+        else if (listType === 'finish')
             type = FETCH_USER_FL_SUCCESS
+        else if (listType = 'sample')
+            type = SET_SAMPLE
         dispatch(dispatchAction(type, orderList))
     }
 }
@@ -118,7 +130,7 @@ export function subscribe(listening, listType, typeId, soughtId, statusList) {
             .onSnapshot(() => {
                 dispatch(fetchOrderList(listType, typeId, soughtId, statusList))
             })
-        if(!listening)
+        if (!listening)
             un()
     }
 }
