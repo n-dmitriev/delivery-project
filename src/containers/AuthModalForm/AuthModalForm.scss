@@ -2,7 +2,6 @@
 
 .auth-form{
   @include modal();
-  min-width: 500px;
   padding: 20px;
 
   & .dagger {
@@ -21,5 +20,11 @@
 
   & .button-section{
     margin: 20px 0 10px 0;
+  }
+}
+
+@media (min-width: 500px) {
+  .auth-form {
+    width: 500px !important;
   }
 }

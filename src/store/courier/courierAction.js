@@ -5,6 +5,7 @@ import {fetchOrderList, fetchUserInfo} from '../userInformation/userActions'
 // 6 статусов
 // 0 - заказ отменён курьером, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
 // 3 - заказ выполнен, 4 - заказ отменён пользователем, -1 - подозрение на троллинг
+// 5 - заказ омменён, так как он не корректно заполнен
 export function changeOrderData(status, data) {
     return async (dispatch, getState) => {
         try {
@@ -38,6 +39,12 @@ export function changeOrderData(status, data) {
                 }
                 case 4: {
                     description = 'Вы отменили заказ'
+                    endTime = getDate()
+                    break
+                }
+                case 5: {
+                    description = 'Ваш заказ некорректно заполнен!'
+                    courierId = ''
                     endTime = getDate()
                     break
                 }

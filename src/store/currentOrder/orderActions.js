@@ -260,3 +260,31 @@ export function editSentOrder(orderInfo) {
         }
     }
 }
+
+export function orderАgain(orderInfo) {
+    return async (dispatch, getState) => {
+        const userId = getState().authReducer.id
+
+        const fullOrderInfo = {
+            startTime: getDate(),
+            endTime: '',
+            description: 'Курьер ещё не принял заказ',
+            name: orderInfo.name,
+            order: orderInfo.order
+        }
+
+            const orders = dataBase.collection("orders")
+            const docRef = await orders.add(fullOrderInfo)
+            const orderId = docRef.id
+            await orders.doc(orderId).update({
+                id: orderId,
+            })
+
+            dataBase.collection('user-orders').add({
+                userId: userId,
+                orderId:orderId,
+                courierId: '',
+                status: 0
+            })
+    }
+}

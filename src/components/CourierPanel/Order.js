@@ -25,10 +25,17 @@ export default class Order extends Component {
                         this.props.type === 'finish'
                             ?
                             <>
-                                <li className={'mb-15'}>Время окончания заказа: {this.props.orderInfo.orderItem.endTime}</li>
-                                <li className={'mb-15'}>Стоимость заказа: {this.props.orderInfo.orderItem.orderValue} ₽</li>
-                                <li className={'mb-15'}>Стоимость доставки: {this.props.orderInfo.orderItem.deliveryValue} ₽</li>
-                                <li className={'mb-15'}><b>Итого: {parseInt(this.props.orderInfo.orderItem.deliveryValue) + parseInt(this.props.orderInfo.orderItem.orderValue)} ₽</b></li>
+                                <li className={'mb-15'}>Время окончания
+                                    заказа: {this.props.orderInfo.orderItem.endTime}</li>
+                                <li className={'mb-15'}>Стоимость
+                                    заказа: {this.props.orderInfo.orderItem.orderValue} ₽
+                                </li>
+                                <li className={'mb-15'}>Стоимость
+                                    доставки: {this.props.orderInfo.orderItem.deliveryValue} ₽
+                                </li>
+                                <li className={'mb-15'}>
+                                    <b>Итого: {parseInt(this.props.orderInfo.orderItem.deliveryValue) + parseInt(this.props.orderInfo.orderItem.orderValue)} ₽</b>
+                                </li>
                             </>
                             : null
                     }
@@ -60,7 +67,6 @@ export default class Order extends Component {
                                             product.purchased
                                                 ? <i className="fa fa-check-square-o" aria-hidden="true"/>
                                                 : <i className="fa fa-times" aria-hidden="true"/>
-
                                         }
                                     </div>
                                 </div>
@@ -70,7 +76,7 @@ export default class Order extends Component {
                     }
                 </div>
                 {
-                    this.props.type !== 'finish'
+                    this.props.type === 'active'
                         ? <div className="button-section mt-30">
                             <button
                                 className={`main-item-style mr-15`}
@@ -89,7 +95,11 @@ export default class Order extends Component {
                                 Это тролль!
                             </button>
                         </div>
-                        : null
+                        : this.props.type === 'all'
+                            ?
+                                <>
+                                </>
+                            : null
                 }
 
             </div>

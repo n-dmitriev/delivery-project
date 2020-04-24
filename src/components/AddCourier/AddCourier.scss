@@ -2,8 +2,6 @@
 
 .add-courier {
   @include modal();
-  min-width: 500px;
-  min-height: 200px;
   padding: 20px;
   &__content {
     display: flex;
@@ -16,5 +14,12 @@
     margin-left: auto;
     top: 15px;
     right: 0;
+  }
+}
+
+@media (min-width: 600px) {
+  .add-courier {
+    min-width: 500px;
+    min-height: 200px;
   }
 }

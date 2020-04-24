@@ -1,4 +1,7 @@
 .header {
+  top: 0;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   background-color: #F5F5F5;
   padding: 5px 15px 5px 25px;
@@ -8,12 +11,20 @@
     font-size: 35px;
     border-bottom: 2px solid #5CB85C;
     white-space: nowrap;
+
+    &-logo {
+      width: 150px;
+    }
   }
 
-  &__btn-section {
+  &__content-section {
     display: flex;
     margin-left: auto;
     flex-direction: row;
+
+    &_block {
+      display: block;
+    }
   }
 
   & .main-item-style{
@@ -35,6 +46,31 @@
     }
     &:hover {
       opacity: 1;
+    }
+  }
+  .toggle-menu {
+    box-shadow: none;
+    background: transparent;
+    border: 0;
+  }
+
+  .toggle-menu {
+    display: none;
+    font-size: 2rem;
+    color: gray;
+    transition: margin .2s;
+    margin-left: auto;
+  }
+
+  @media screen and (max-width: 500px) {
+    nav {
+      align-items: center;
+    }
+    .header__content-section {
+      display: none;
+    }
+    .toggle-menu {
+      display: block;
     }
   }
 }

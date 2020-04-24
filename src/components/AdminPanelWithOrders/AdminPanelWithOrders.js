@@ -27,7 +27,7 @@ export default class AdminPanelWithOrders extends Component {
         const filters = []
 
         if(this.statusTroll.current.checked)
-            filters.push(-1)
+            filters.push(-1, 5)
         if(this.statusZero.current.checked)
             filters.push(0)
         if(this.statusOne.current.checked)
@@ -45,9 +45,15 @@ export default class AdminPanelWithOrders extends Component {
     renderOrderList = () => {
         const orderList = this.selectSort.current && this.selectSort.current.value === 'ascendingOrder' ? this.props.orderList : this.props.orderList.reverse()
         return (
-            <>
-                
-            </>
+            <List
+                orderList={orderList}
+                soughtId={'courierId'}
+                type={'all'}
+                cancelOrder={this.props.cancelOrder}
+                setEditItem={this.props.setEditItem}
+                remove={this.props.remove}
+                changeOrderData={this.props.changeOrderData}
+            />
         )
     }
 
@@ -57,7 +63,7 @@ export default class AdminPanelWithOrders extends Component {
                 <div className={'admin-panel__main'}>
                     <div className={'admin-panel__search'}>
                         <input ref={this.findOrder} placeholder={'Поиск заказа по id'} type="text"/>
-                        <i className="fa fa-search" aria-hidden="true" onClick={this.find}></i>
+                        <i className="fa fa-search fa-animate" aria-hidden="true" onClick={this.find}></i>
                         <div className={'select mb-30'}>
                             <select ref={this.selectId} className="select__content">
                                 <option value={'orderId'}>заказа</option>

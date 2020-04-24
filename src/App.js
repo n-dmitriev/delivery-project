@@ -53,20 +53,26 @@ class App extends Component {
                     name={this.props.userInfo ? this.props.userInfo.name : 'Безымянный пользователь'}
                     path={this.props.path}
                 />
-                    <div className={'row'}>
-                        <div className="col-lg-3 col-sm-1 col-xs-0 add-column"></div>
-                        <div className={'col-lg-18 col-sm-22 col-xs-24'}>
-                            <div className="app__main-content">
-                                <Switch>
-                                    <Route path='/' component={MainPage} exact/>
+
+                <Switch>
+                    <Route path='/' component={MainPage} exact/>
+                    <div className="container app__container">
+                        <div className="row">
+                            <div className="col-lg-2 col-md-1 col-sm-0"></div>
+                            <div className="col-lg-20 col-md-22 col-sm-24">
+                                <div className="app__main-content">
                                     <Route path='/user-account/:number' component={UserAccount}/>
                                     <Route path='/courier-account/:number' component={CourierAccount}/>
                                     <Route path='/admin' component={Admin}/>
-                                </Switch>
+                                </div>
                             </div>
+                            <div className="col-lg-2 col-md-1 col-sm-0"></div>
                         </div>
-                        <div className="col-lg-3 col-sm-1 col-xs-0  add-column"></div>
                     </div>
+                </Switch>
+
+
+
                 <OrderModalForm
                     trySendOrder={this.trySendOrder} isAuth={this.props.isAuth}
                     isOpen={this.state.isOrderModalOpen} onOpenAuth={this.interactionWithAuthModal}

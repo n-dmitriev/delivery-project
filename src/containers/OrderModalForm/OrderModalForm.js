@@ -119,7 +119,7 @@ class OrderModalForm extends Component {
                                     }
                                 }}>
                                 {this.props.isEdit ? this.props.editItem.name : this.props.nameOfShop}
-                                <i className="fa fa-pencil-square-o" aria-hidden="true"/>
+                                <i className="fa fa-pencil-square-o fa-animate" aria-hidden="true"/>
                             </div>
                             <div className={'order-constructor__order-list'}>
                                 {list.map((item, count) => (
@@ -142,7 +142,7 @@ class OrderModalForm extends Component {
                                 }}
                             >
                                 {this.props.nameOfRestaurant}
-                                <i className="fa fa-pencil-square-o" aria-hidden="true"/>
+                                <i className="fa fa-pencil-square-o fa-animate" aria-hidden="true"/>
                             </div>
                             <div className={'order-constructor__order-list'}>
                                 {this.props.restaurantOrder.map((item, count) => (
@@ -203,7 +203,7 @@ class OrderModalForm extends Component {
                                         ? 'order-form__select order-form__select_active'
                                         : 'order-form__select'}
                                     onClick={this.clickItemHandler}>
-                                    <span className={'non-click'}>Заказать из магазина</span>
+                                    <span className={'non-click'}>Из магазина</span>
                                 </div>
                                 <div
                                     id={'restaurant-tab'}
@@ -211,7 +211,7 @@ class OrderModalForm extends Component {
                                         ? 'order-form__select order-form__select_active'
                                         : 'order-form__select'}
                                     onClick={this.clickItemHandler}>
-                                    <span className={'non-click'}>Заказать из заведения</span>
+                                    <span className={'non-click'}>Из заведения</span>
                                 </div>
                             </div>
                     }

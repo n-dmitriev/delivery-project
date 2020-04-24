@@ -92,7 +92,7 @@ class CourierAccount extends Component {
                             auth={this.authAction}
                             thisReg={false}
                         />
-                        : this.props.isAuth
+                        : this.props.isAuth &&  JSON.parse(localStorage.getItem('path')) === "/courier-account/"
                         ?
                         <>
                             <Redirect to={`/courier-account/${this.props.id}`}/>

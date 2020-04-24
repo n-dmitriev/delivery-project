@@ -45,6 +45,7 @@ export default class RenderOrderList extends Component {
                                 cancelOrder={this.props.cancelOrder}
                                 setEditItem={this.props.setEditItem}
                                 remove={this.props.remove}
+                                orderАgain={this.props.orderАgain}
                             />
                         </div>
 

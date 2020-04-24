@@ -7,7 +7,7 @@ import {NavLink, Redirect} from 'react-router-dom'
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
 import {fetchOrderList, passwordChange, setUserInfo, subscribe} from '../../store/userInformation/userActions'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
-import {cancelOrder} from '../../store/currentOrder/orderActions'
+import {cancelOrder, orderАgain} from '../../store/currentOrder/orderActions'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
 
 class UserAccount extends Component {
@@ -60,56 +60,54 @@ class UserAccount extends Component {
                         remove={this.props.remove}
                     />
 
-                    <div className="row">
-                        <div className="col-lg-6 col-sm-12 col-xs-12">
-                            <div className="user-account__input">
-                                <InputInformation
-                                    saveContactInformation={this.saveContactInformation}
-                                    userInfo={this.props.userInfo}
-                                />
-                                <hr/>
 
-                                <div className="button-section">
-                                    <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15"
-                                             onClick={this.props.logout}>
-                                        Выйти
-                                    </NavLink>
-                                    <button className="main-item-style" onClick={this.interactionWithChangeModal}>
-                                        Сменить пароль
-                                    </button>
-                                </div>
-                            </div>
+                    <div className="user-account__input">
+                        <InputInformation
+                            saveContactInformation={this.saveContactInformation}
+                            userInfo={this.props.userInfo}
+                        />
+                        <hr/>
+
+                        <div className="button-section">
+                            <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15"
+                                     onClick={this.props.logout}>
+                                Выйти
+                            </NavLink>
+                            <button className="main-item-style" onClick={this.interactionWithChangeModal}>
+                                Сменить пароль
+                            </button>
                         </div>
-                        <div className="col-lg-6 col-sm-12 col-xs-12">
-                            <h2>
-                                Заказы
-                            </h2>
-                            <hr/>
-                            <RenderOrderList
-                                fetchOrderList={this.props.fetchOrderList}
-                                orderList={this.props.listOfCurrentOrders}
-                                cancelOrder={this.props.cancelOrder}
-                                setEditItem={this.setEditItem}
-                                type={'active'}
-                                description={'активных заказов'}
-                                loading={this.props.loading}
-                                soughtId={'userId'}
-                                statusList={[-1, 0, 1, 2]}
-                                subscribe={this.props.subscribe}
-                            />
-                            <br/>
-                            <RenderOrderList
-                                fetchOrderList={this.props.fetchOrderList}
-                                orderList={this.props.listOfDeliveredOrders}
-                                type={'finish'}
-                                description={'завершённых заказов'}
-                                loading={this.props.loading}
-                                soughtId={'userId'}
-                                statusList={[3, 4]}
-                                subscribe={this.props.subscribe}
-                            />
-                        </div>
+
                     </div>
+
+                    <h2>
+                        Заказы
+                    </h2>
+                    <hr/>
+                    <RenderOrderList
+                        fetchOrderList={this.props.fetchOrderList}
+                        orderList={this.props.listOfCurrentOrders}
+                        cancelOrder={this.props.cancelOrder}
+                        setEditItem={this.setEditItem}
+                        type={'active'}
+                        description={'активных заказов'}
+                        loading={this.props.loading}
+                        soughtId={'userId'}
+                        statusList={[-1, 0, 1, 2]}
+                        subscribe={this.props.subscribe}
+                    />
+                    <br/>
+                    <RenderOrderList
+                        fetchOrderList={this.props.fetchOrderList}
+                        orderList={this.props.listOfDeliveredOrders}
+                        type={'finish'}
+                        description={'завершённых заказов'}
+                        loading={this.props.loading}
+                        soughtId={'userId'}
+                        statusList={[3, 4]}
+                        subscribe={this.props.subscribe}
+                        orderАgain={this.props.orderАgain}
+                    />
                 </div>
             )
     }
@@ -135,6 +133,7 @@ function mapDispatchToProps(dispatch) {
         cancelOrder: (id) => dispatch(cancelOrder(id)),
         subscribe: (listening, listType, typeId, soughtId, statusList) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
+        orderАgain: (orderInfo) => dispatch(orderАgain(orderInfo))
     }
 }
 

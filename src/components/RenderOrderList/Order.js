@@ -14,7 +14,17 @@ export default class Order extends Component {
     render() {
         return (
             <>
-                <h4 className={'mb-15'}>Заказ {this.props.orderInfo.id}</h4>
+                <div className="list__title">
+                    <h4 className={'mb-15'}>Заказ {this.props.orderInfo.id}</h4>
+                    {
+                        this.props.type === 'finish'
+                            ?
+                            <i className="fa fa-refresh fa-animate" aria-hidden="true"
+                                onClick={() => this.props.orderАgain(this.props.orderInfo)}
+                            ></i>
+                            : null
+                    }
+                </div>
                 <ul>
                     <li className={'mb-15'}>Откуда: {this.props.orderInfo.name}</li>
                     <li className={'mb-15'}>Состояние: {this.props.orderInfo.description}</li>
