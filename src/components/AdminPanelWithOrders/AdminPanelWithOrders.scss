@@ -18,27 +18,43 @@
     flex-direction: column;
   }
 
+  &__menu-mobile {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__search {
     height: 50px;
     border-bottom: 1px solid lightgray;
     display: flex;
     flex-direction: row;
 
-    .select {
-      height: 100%;
+    .admin-panel__search-string {
+      display: flex;
+      flex-direction: row;
+      flex: 2;
+
+      & input {
+        border: none;
+        width: 100%;
+        height: 100%;
+      }
+
+      .fa {
+        padding: 11px;
+        color: gray;
+        margin-left: auto;
+      }
+    }
+
+    &-select {
       border-left: 1px solid lightgray;
       display: flex;
-    }
 
-    & input {
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
-
-    .fa {
-      padding: 11px;
-      color: gray;
+      .select {
+        flex: 1;
+        height: 100%;
+      }
     }
   }
 
@@ -52,13 +68,22 @@
     }
   }
 
+  &__panel {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__filters {
     flex: 1;
     display: flex;
     flex-direction: column;
     border-left: 1px solid lightgray;
-    padding: 0 10px;
+    padding: 0 10px 27px 10px;
     white-space: nowrap;
+
+    .select {
+      margin-bottom: 30px;
+    }
 
     &-title {
       display: flex;
@@ -79,6 +104,7 @@
   }
 
   &__button {
+    margin-top: auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -89,9 +115,57 @@
     border-radius: 3px;
     @include animate();
 
-    &:hover{
+    &:hover {
       background-color: gray;
       color: white;
     }
+  }
+}
+
+@media (max-width: 650px) {
+  .admin-panel {
+    width: 65vmax !important;
+    height: 565px;
+  }
+}
+
+@media (max-width: 500px) {
+  .admin-panel {
+    font-size: 15px !important;
+    width: 53vmax !important;
+  }
+
+  .admin-panel__main {
+  }
+
+  .admin-panel__filters {
+    padding-bottom: 0;
+    border-left: none;
+
+    .select {
+      margin-bottom: 0;
+    }
+  }
+
+  .admin-panel__search {
+    flex-direction: column;
+    height: 110px;
+
+    &-select {
+      border-left: none;
+      border-top: 1px solid lightgray;
+    }
+
+    & .select {
+      &__content {
+        padding: 10px;
+      }
+    }
+  }
+}
+
+@media (min-height: 800px) and (max-width: 570px) {
+  .admin-panel {
+    width: 44vmax !important;
   }
 }

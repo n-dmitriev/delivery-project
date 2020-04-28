@@ -12,6 +12,7 @@ import {fetchUserInfo} from './store/userInformation/userActions'
 import Admin from './containers/Admin/Admin'
 import {autoLogin} from './store/admin/adminActions'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import Footer from './components/UI/Footer/Footer'
 
 
 class App extends Component {
@@ -53,24 +54,25 @@ class App extends Component {
                     name={this.props.userInfo ? this.props.userInfo.name : 'Безымянный пользователь'}
                     path={this.props.path}
                 />
-
                 <Switch>
                     <Route path='/' component={MainPage} exact/>
-                    <div className="container app__container">
-                        <div className="row">
-                            <div className="col-lg-2 col-md-1 col-sm-0"></div>
-                            <div className="col-lg-20 col-md-22 col-sm-24">
-                                <div className="app__main-content">
-                                    <Route path='/user-account/:number' component={UserAccount}/>
-                                    <Route path='/courier-account/:number' component={CourierAccount}/>
-                                    <Route path='/admin' component={Admin}/>
+                    <div className="app__container">
+                        <div className={'container'}>
+                            <div className="row">
+                                <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                                <div className="col-lg-10 col-md-10 col-sm-12">
+                                    <div className="app__main-content">
+                                        <Route path='/user-account/:number' component={UserAccount}/>
+                                        <Route path='/courier-account/:number' component={CourierAccount}/>
+                                        <Route path='/admin' component={Admin}/>
+                                    </div>
+                                    <Footer/>
                                 </div>
+                                <div className="col-lg-1 col-md-1 col-sm-0"></div>
                             </div>
-                            <div className="col-lg-2 col-md-1 col-sm-0"></div>
                         </div>
                     </div>
                 </Switch>
-
 
 
                 <OrderModalForm

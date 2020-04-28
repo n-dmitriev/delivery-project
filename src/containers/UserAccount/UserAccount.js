@@ -12,7 +12,6 @@ import OrderModalForm from '../OrderModalForm/OrderModalForm'
 
 class UserAccount extends Component {
     state = {
-        cpfIsOpen: false,
         isOrderModalOpen: false,
         editItem: null,
     }
@@ -20,12 +19,6 @@ class UserAccount extends Component {
     interactionWithOrderModal = () => {
         window.scrollTo(0, 0)
         this.setState({isOrderModalOpen: !this.state.isOrderModalOpen})
-    }
-
-    interactionWithChangeModal = () => {
-        this.setState({
-            cpfIsOpen: !this.state.cpfIsOpen,
-        })
     }
 
     saveContactInformation = (info) => {
@@ -45,12 +38,6 @@ class UserAccount extends Component {
         else
             return (
                 <div className={'user-account'}>
-
-                    <PasswordChangeForm errorPassword={this.props.errorPassword}
-                                        passwordChange={this.props.passwordChange}
-                                        isOpen={this.state.cpfIsOpen}
-                                        onClose={this.interactionWithChangeModal}/>
-
                     <OrderModalForm
                         trySendOrder={false} isAuth={true}
                         isOpen={this.state.isOrderModalOpen}
@@ -62,12 +49,9 @@ class UserAccount extends Component {
 
 
                     <div className="user-account__input">
-                        <InputInformation
-                            saveContactInformation={this.saveContactInformation}
-                            userInfo={this.props.userInfo}
-                        />
-                        <hr/>
-
+                        <h1 className={'mb-30'}>
+                            Личный кабинет
+                        </h1>
                         <div className="button-section">
                             <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15"
                                      onClick={this.props.logout}>
@@ -78,6 +62,13 @@ class UserAccount extends Component {
                             </button>
                         </div>
 
+                        <hr/>
+
+                        <InputInformation
+                            saveContactInformation={this.saveContactInformation}
+                            userInfo={this.props.userInfo}
+                        />
+                        <hr/>
                     </div>
 
                     <h2>

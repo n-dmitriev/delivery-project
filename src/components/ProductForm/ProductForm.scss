@@ -1,4 +1,4 @@
-.product-form{
+.product-form {
   display: flex;
   flex-direction: column;
   padding: 10px 20px 0 20px;
@@ -7,15 +7,69 @@
     margin-bottom: 30px;
   }
 
-  &__input-field{
+  &__input-field {
     display: flex;
     margin-bottom: 30px;
+
     & label {
       margin-right: 10px;
     }
 
     &_name {
       flex-direction: column;
+      height: 550px;
+
+      & input {
+        max-height: 40px !important;
+      }
     }
+  }
+}
+
+@media (max-width: 500px) {
+
+
+  .product-form__input-field {
+
+    & label {
+      font-size: 15px !important;
+      margin-right: 0;
+    }
+
+  }
+
+  & input {
+    font-size: 18px !important;
+  }
+
+
+}
+
+@media (max-width: 370px) {
+  .product-form {
+    padding: 5px 10px 0 10px;
+  }
+
+  .product-form__input-field {
+    margin-bottom: 5px;
+    flex-direction: column;
+
+    & label {
+      font-size: 14px !important;
+      margin-right: 0;
+    }
+
+    &_name {
+      height: 70vh;
+      width: 40vmax;
+    }
+  }
+
+  & input {
+    font-size: 14px !important;
+  }
+
+  .product-form small {
+    margin-bottom: 10px;
   }
 }

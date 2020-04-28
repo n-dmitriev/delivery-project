@@ -96,12 +96,12 @@ export default class Order extends Component {
                                     this.props.type === 'finish' ? 'non-click' : ''
                                 }`}
                                 onClick={() => this.props.setEditItem(this.props.orderInfo)}>
-                                Редактировать заказ
+                                Редактировать
                             </button>
                             <button
                                 className={'main-item-style main-item-style_danger'}
                                 onClick={() => this.props.cancelOrder(this.props.orderInfo.id)}>
-                                Отменить заказ
+                                Отменить
                             </button>
                         </div>
                         : null

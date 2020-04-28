@@ -75,43 +75,6 @@ export function passwordChange(oldPassword, newPassword) {
 //statusList - список желаемых статусов
 export function fetchOrderList(listType, typeId, soughtId, statusList) {
     return async (dispatch, getState) => {
-        dispatch(dispatchAction(FETCH_USER_START, null))
-        let answer
-
-        if (typeId === 'all')
-            answer = await dataBase.collection('user-orders')
-                .where('status', 'in', statusList).get()
-        else
-        {
-            if (soughtId === null)
-                soughtId = getState().authReducer.id
-            answer = await dataBase.collection('user-orders')
-                .where(typeId, '==', soughtId).where('status', 'in', statusList).get()
-        }
-
-
-        const listOrdersInfo = [], orderList = []
-
-        answer.forEach((item) => {
-            listOrdersInfo.push(item.data())
-        })
-
-        const orderRef = dataBase.collection('orders')
-        const userRef = dataBase.collection('users')
-
-        for (let item of listOrdersInfo) {
-            const order = await orderRef.doc(item.orderId).get()
-            const user = await userRef.doc(item.userId).get()
-            const orderData = order.data()
-
-            if (typeId === 'courierId' || typeId === 'orderId' || typeId === 'all')
-                orderList.push({
-                    ...user.data(), orderItem: orderData,
-                })
-            else if (typeId === 'userId')
-                orderList.push(orderData)
-        }
-
         let type
         if (listType === 'active')
             type = FETCH_USER_AL_SUCCESS
@@ -119,7 +82,48 @@ export function fetchOrderList(listType, typeId, soughtId, statusList) {
             type = FETCH_USER_FL_SUCCESS
         else if (listType = 'sample')
             type = SET_SAMPLE
-        dispatch(dispatchAction(type, orderList))
+
+        if(statusList.length > 0) {
+            dispatch(dispatchAction(FETCH_USER_START, null))
+            let answer
+
+            if (typeId === 'all')
+                answer = await dataBase.collection('user-orders')
+                    .where('status', 'in', statusList).get()
+            else
+            {
+                if (soughtId === null)
+                    soughtId = getState().authReducer.id
+                answer = await dataBase.collection('user-orders')
+                    .where(typeId, '==', soughtId).where('status', 'in', statusList).get()
+            }
+
+
+            const listOrdersInfo = [], orderList = []
+
+            answer.forEach((item) => {
+                listOrdersInfo.push(item.data())
+            })
+
+            const orderRef = dataBase.collection('orders')
+            const userRef = dataBase.collection('users')
+
+            for (let item of listOrdersInfo) {
+                const order = await orderRef.doc(item.orderId).get()
+                const user = await userRef.doc(item.userId).get()
+                const orderData = order.data()
+
+                if (typeId === 'courierId' || typeId === 'orderId' || typeId === 'all')
+                    orderList.push({
+                        ...user.data(), orderItem: orderData,
+                    })
+                else if (typeId === 'userId')
+                    orderList.push(orderData)
+            }
+            dispatch(dispatchAction(type, orderList))
+        }
+        else
+            dispatch(dispatchAction(type, []))
     }
 }
 

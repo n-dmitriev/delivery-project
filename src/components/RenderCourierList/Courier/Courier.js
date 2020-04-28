@@ -24,13 +24,13 @@ export default class Courier extends Component {
                             this.props.editCourier(this.props.courierInfo)
                         }}
                     >
-                        Редактировать данные курьера
+                        Редактировать
                     </button>
                     <button
                         onClick={this.removeCourier}
                         className="main-item-style main-item-style_danger"
                     >
-                        Удалить курьера
+                        Удалить
                     </button>
                 </div>
             </>

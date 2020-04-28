@@ -18,7 +18,7 @@ export default class productForm extends Component {
             listOfShopQuestions: [
                 {
                     id: 'name',
-                    question: 'Наименование продукта*',
+                    question: 'Название продукта*',
                     required: true,
                     ref: this.inputName,
                     type: 'input',
@@ -56,7 +56,7 @@ export default class productForm extends Component {
             listOfRestaurantQuestions: [
                 {
                     id: 'name',
-                    question: 'Наименование блюда*',
+                    question: 'Название блюда*',
                     required: true,
                     ref: this.inputName,
                     type: 'input',
@@ -192,7 +192,7 @@ export default class productForm extends Component {
                 <small className={this.state.orderFormIsValid ? '' : 'error'}>Поля
                     помеченные * обязательные для заполнения</small>
 
-                <div className="">
+                <div className="button-section">
                     <button className="main-item-style" onClick={() => {
                         this.props.resetActiveItem()
                         this.props.interactionWithDagger()
@@ -216,7 +216,7 @@ export default class productForm extends Component {
             if (this.props.nameOfShop === '' && !isEdit && this.props.isEdit !== true)
                 return (
                     <div className={'product-form__input-field product-form__input-field_name'}>
-                        <h2 className={'mb-30'}>Введите название магазина</h2>
+                        <h3 className={'mb-15'}>Введите название магазина</h3>
                         <input type="text" ref={this.shopNameInput} className={'mb-15'}/>
                         <small className={'mb-30'}>Это поле необязательное для заполнения</small>
                         <button
@@ -232,7 +232,7 @@ export default class productForm extends Component {
             if (this.props.nameOfRestaurant === '' && !isEdit)
                 return (
                     <div className={'product-form__input-field product-form__input-field_name'}>
-                        <h2 className={'mb-30'}>Введите название ресторана</h2>
+                        <h4 className={'mb-30'}>Введите название ресторана</h4>
                         <input className={this.state.restIsValid === true ? 'mb-15' : 'input-error mb-15'} type="text"
                                ref={this.restaurantNameInput}/>
                         <small className={this.state.restIsValid === true ? 'mb-30' : 'error mb-30'}>Это поле

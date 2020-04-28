@@ -13,6 +13,7 @@ import {
     interactWithPurchased, calculateThePrice, subscribeOrderInfo,
 } from '../../store/courier/courierAction'
 import  {subscribe} from '../../store/userInformation/userActions'
+import Footer from '../../components/UI/Footer/Footer'
 
 class CourierAccount extends Component {
     state = {
@@ -39,7 +40,6 @@ class CourierAccount extends Component {
                                         passwordChange={this.props.passwordChange}
                                         isOpen={this.state.cpfIsOpen}
                                         onClose={this.interactionWithChangeModal}/>
-
 
                     <CourierPanel
                         fetchOrderList={this.props.fetchOrderList}

@@ -84,7 +84,7 @@ export default class Order extends Component {
                                     uid: this.props.orderInfo.id,
                                     ...this.props.orderInfo,
                                 })}>
-                                Взять заказ
+                                Взять
                             </button>
                             <button
                                 className={`main-item-style main-item-style_danger`}
@@ -92,7 +92,7 @@ export default class Order extends Component {
                                     uid: this.props.orderInfo.id,
                                     ...this.props.orderInfo,
                                 })}>
-                                Это тролль!
+                                Тролль!
                             </button>
                         </div>
                         : this.props.type === 'all'

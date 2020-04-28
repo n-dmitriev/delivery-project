@@ -1,3 +1,5 @@
+@import "../../css/mixins";
+
 .header {
   top: 0;
   width: 100%;
@@ -6,71 +8,66 @@
   background-color: #F5F5F5;
   padding: 5px 15px 5px 25px;
 
-  &__title{
+  &__title {
     cursor: pointer;
     font-size: 35px;
-    border-bottom: 2px solid #5CB85C;
     white-space: nowrap;
 
     &-logo {
-      width: 150px;
+      width: 200px;
     }
   }
 
-  &__content-section {
+  .header__navigation-section {
     display: flex;
     margin-left: auto;
-    flex-direction: row;
 
-    &_block {
-      display: block;
+    &_mobile {
+
+      & .mobile-content {
+        display: flex;
+        flex-direction: column;
+      }
     }
   }
 
-  & .main-item-style{
+  & .main-item-style {
     margin: 10px;
   }
 
-  &__user{
+  &__user {
     margin: 10px 20px 0 20px;
     justify-content: center;
     cursor: pointer;
     opacity: 0.8;
+    white-space: nowrap;
 
-    & .fa.fa-user-circle-o{
+    & .fa {
       font-size: 30px;
     }
+
     .name {
       font-size: 23px;
       margin: 0 10px 0 10px;
     }
+
     &:hover {
       opacity: 1;
     }
   }
-  .toggle-menu {
-    box-shadow: none;
-    background: transparent;
-    border: 0;
-  }
+}
 
-  .toggle-menu {
-    display: none;
-    font-size: 2rem;
-    color: gray;
-    transition: margin .2s;
-    margin-left: auto;
+@media (max-width: 500px) {
+  .header__title-logo {
+    width: 150px;
   }
+  .header__user {
+    & .fa {
+      font-size: 27px;
+    }
 
-  @media screen and (max-width: 500px) {
-    nav {
-      align-items: center;
-    }
-    .header__content-section {
-      display: none;
-    }
-    .toggle-menu {
-      display: block;
+    .name {
+      font-size: 20px;
     }
   }
 }

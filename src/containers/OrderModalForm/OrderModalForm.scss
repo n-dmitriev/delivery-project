@@ -134,9 +134,17 @@
   .order-form__select {
     font-size: 20px;
   }
+  .order-constructor__content {
+    height: 500px;
+    width: 300px;
+  }
 }
 
 @media (max-width: 400px) {
+  .order-form {
+    padding: 3px 15px 15px 15px;
+  }
+
   .order-form__select {
     font-size: 15px;
   }
@@ -144,6 +152,19 @@
     font-size: 13px;
   }
   .order-constructor__content {
-    height: 400px;
+    height: 420px;
+    width: 250px;
+  }
+
+  .dagger.dagger_delete{
+    top: 10px;
+  }
+
+  .order-constructor__name {
+    font-size: 20px !important;
+  }
+
+  .order-constructor__tab {
+    font-size: 17px !important;
   }
 }
