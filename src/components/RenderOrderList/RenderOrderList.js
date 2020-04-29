@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import List from './List'
+import MiniPreloader from '../UI/Preloaders/MiniPrleloader'
 
 export default class RenderOrderList extends Component {
     state = {
@@ -29,13 +30,9 @@ export default class RenderOrderList extends Component {
                 </span>
 
                 {
-                    this.props.loading
-                        ? <div className={this.state.orderListIsOpen ? 'lds-ellipsis' : 'hide'}>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                        </div>
+                    this.props.loading && this.state.orderListIsOpen
+                        ?
+                        <MiniPreloader/>
                         :
                         <div className={this.state.orderListIsOpen ? '' : 'hide'}>
                             <List

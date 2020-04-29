@@ -49,7 +49,7 @@ export default class PasswordChangeForm extends Component {
                         <h2>Смена пароля</h2>
                         <hr className={'mt-15 mb-30'}/>
                         <label className={'mb-15'}>Введите старый пароль</label>
-                        <input className={!this.state.oldPasswordIsValid ? 'input-error' : ''} type="login"
+                        <input className={!this.state.oldPasswordIsValid ? 'input-error mb-15' : 'mb-15'} type="login"
                                ref={this.oldPassword}/>
                         <label className={'mb-15'}>Придумайте новый пароль</label>
                         <input className={!this.state.newPasswordIsValid ? 'input-error' : ''} type="login"

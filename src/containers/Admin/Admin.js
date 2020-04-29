@@ -2,7 +2,13 @@ import React, {Component} from 'react'
 import './Admin.scss'
 import {connect} from 'react-redux'
 import AuthShape from '../../components/AuthShape/AuthShape'
-import {authAdmin, fetchDataBase, registrNewCourier, removeCourier, setCourierInfo} from '../../store/admin/adminActions'
+import {
+    authAdmin,
+    fetchDataBase,
+    registrNewCourier,
+    removeCourier,
+    setCourierInfo,
+} from '../../store/admin/adminActions'
 import AddCourier from '../../components/AddCourier/AddCourier'
 import {dispatchAction} from '../../store/universalFunctions'
 import {REMOVE_ERROR} from '../../store/admin/actionTypes'
@@ -15,7 +21,7 @@ class Admin extends Component {
     state = {
         isAddCourierOpen: false,
         editModalIsOpen: false,
-        editingCourier: null
+        editingCourier: null,
     }
 
     interactionWithEditModal = () => {
@@ -32,7 +38,7 @@ class Admin extends Component {
     editCourier = (courier) => {
         window.scrollTo(0, 0)
         this.setState({
-            editingCourier: courier
+            editingCourier: courier,
         })
         this.interactionWithEditModal()
     }
@@ -63,21 +69,6 @@ class Admin extends Component {
 
                 <h2 className={'mb-15'}>Информация о курьерах</h2>
 
-                <AddCourier
-                    add={this.props.registrNewCourier}
-                    removeError={this.props.removeError}
-                    isOpen={this.state.isAddCourierOpen}
-                    ocClose={this.interactionWithCourierModal}
-                    setCourierInfo={this.props.setCourierInfo}
-                />
-
-                <EditCourierModal
-                    isOpen={this.state.editModalIsOpen}
-                    onClose={this.interactionWithEditModal}
-                    setCourierInfo={this.props.setCourierInfo}
-                    userInfo={this.state.editingCourier}
-                />
-
                 <RenderCourierList
                     fetchDb={this.fetchDb}
                     couriers={this.props.couriers}
@@ -101,22 +92,46 @@ class Admin extends Component {
     render() {
         return (
             <div className={'admin'}>
-                <h1>Панель админа</h1>
-                <hr/>
-                {
-                    this.props.adminId === null
-                        ?
-                        <AuthShape
-                            isError={this.props.error}
-                            auth={this.authAction}
-                            thisReg={false}
-                        />
-                        : <>
-                            {
-                                this.renderAdminPanel()
-                            }
-                        </>
-                }
+                <AddCourier
+                    add={this.props.registrNewCourier}
+                    removeError={this.props.removeError}
+                    isOpen={this.state.isAddCourierOpen}
+                    ocClose={this.interactionWithCourierModal}
+                    setCourierInfo={this.props.setCourierInfo}
+                />
+
+                <EditCourierModal
+                    isOpen={this.state.editModalIsOpen}
+                    onClose={this.interactionWithEditModal}
+                    setCourierInfo={this.props.setCourierInfo}
+                    userInfo={this.state.editingCourier}
+                />
+                <div className={'container'}>
+                    <div className="row">
+                        <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                        <div className="col-lg-10 col-md-10 col-sm-12">
+                            <div className="app__main-content">
+                                <h1>Панель админа</h1>
+                                <hr/>
+                                {
+                                    this.props.adminId === null
+                                        ?
+                                        <AuthShape
+                                            isError={this.props.error}
+                                            auth={this.authAction}
+                                            thisReg={false}
+                                        />
+                                        : <>
+                                            {
+                                                this.renderAdminPanel()
+                                            }
+                                        </>
+                                }
+                            </div>
+                        </div>
+                        <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -128,7 +143,7 @@ function mapStateToProps(state) {
         error: state.authAdmin.error,
         users: state.authAdmin.users,
         couriers: state.authAdmin.couriers,
-        orderList: state.authAdmin.orderList
+        orderList: state.authAdmin.orderList,
     }
 }
 

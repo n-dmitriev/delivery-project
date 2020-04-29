@@ -21,7 +21,7 @@ export default class Order extends Component {
                             ?
                             <i className="fa fa-refresh fa-animate" aria-hidden="true"
                                 onClick={() => this.props.orderАgain(this.props.orderInfo)}
-                            ></i>
+                            />
                             : null
                     }
                 </div>
@@ -57,7 +57,7 @@ export default class Order extends Component {
                                             </span>
                 <div className={this.state.productListIsOpen ? '' : 'hide'}>
                     {
-                        this.props.orderInfo.order.length > 0
+                        this.props.orderInfo.order && this.props.orderInfo.order.length > 0
                             ?
                             this.props.orderInfo.order.map((product) => (
                                 <div key={product.id} className={'list__unwrapping-item'}>

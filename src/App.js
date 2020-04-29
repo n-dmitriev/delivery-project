@@ -12,7 +12,6 @@ import {fetchUserInfo} from './store/userInformation/userActions'
 import Admin from './containers/Admin/Admin'
 import {autoLogin} from './store/admin/adminActions'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import Footer from './components/UI/Footer/Footer'
 
 
 class App extends Component {
@@ -35,7 +34,6 @@ class App extends Component {
         })
     }
 
-
     interactionWithOrderModal = () => {
         this.setState({isOrderModalOpen: !this.state.isOrderModalOpen})
     }
@@ -46,7 +44,7 @@ class App extends Component {
 
     render() {
         return (
-            <div className={'app'}>
+            <div className={`app`}>
                 <Header
                     logout={this.props.logout} isAuth={this.props.isAuth}
                     openOrderForm={this.interactionWithOrderModal} openAuthForm={this.interactionWithAuthModal}
@@ -54,26 +52,14 @@ class App extends Component {
                     name={this.props.userInfo ? this.props.userInfo.name : 'Безымянный пользователь'}
                     path={this.props.path}
                 />
-                <Switch>
-                    <Route path='/' component={MainPage} exact/>
-                    <div className="app__container">
-                        <div className={'container'}>
-                            <div className="row">
-                                <div className="col-lg-1 col-md-1 col-sm-0"></div>
-                                <div className="col-lg-10 col-md-10 col-sm-12">
-                                    <div className="app__main-content">
-                                        <Route path='/user-account/:number' component={UserAccount}/>
-                                        <Route path='/courier-account/:number' component={CourierAccount}/>
-                                        <Route path='/admin' component={Admin}/>
-                                    </div>
-                                    <Footer/>
-                                </div>
-                                <div className="col-lg-1 col-md-1 col-sm-0"></div>
-                            </div>
-                        </div>
-                    </div>
-                </Switch>
-
+                <div className="app__container">
+                    <Switch>
+                        <Route path='/' component={MainPage} exact/>
+                        <Route path='/user-account/:number' component={UserAccount}/>
+                        <Route path='/courier-account/:number' component={CourierAccount}/>
+                        <Route path='/admin' component={Admin}/>
+                    </Switch>
+                </div>
 
                 <OrderModalForm
                     trySendOrder={this.trySendOrder} isAuth={this.props.isAuth}

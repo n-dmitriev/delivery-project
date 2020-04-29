@@ -12,8 +12,7 @@ import {
     changeOrderData,
     interactWithPurchased, calculateThePrice, subscribeOrderInfo,
 } from '../../store/courier/courierAction'
-import  {subscribe} from '../../store/userInformation/userActions'
-import Footer from '../../components/UI/Footer/Footer'
+import {subscribe} from '../../store/userInformation/userActions'
 
 class CourierAccount extends Component {
     state = {
@@ -33,21 +32,15 @@ class CourierAccount extends Component {
             return null
         else
             return (
-                <div className={'courier'}>
+                <>
                     <h1 className={'mb-30'}>Личный кабинет курьера</h1>
-
-                    <PasswordChangeForm errorPassword={this.props.errorPassword}
-                                        passwordChange={this.props.passwordChange}
-                                        isOpen={this.state.cpfIsOpen}
-                                        onClose={this.interactionWithChangeModal}/>
-
                     <CourierPanel
                         fetchOrderList={this.props.fetchOrderList}
                         ordersList={this.props.listOfCurrentOrders}
                         subscribeUsers={this.props.subscribe}
                         subscribeOrderInfo={this.props.subscribeOrderInfo}
                         loading={this.props.listLoading}
-                        courierStatus={+ this.props.userInfo.courierStatus}
+                        courierStatus={+this.props.userInfo.courierStatus}
                         changeOrderData={this.props.changeOrderData}
                         interactWithPurchased={this.props.interactWithPurchased}
                         calculateThePrice={this.props.calculateThePrice}
@@ -73,7 +66,7 @@ class CourierAccount extends Component {
                             Сменить пароль
                         </button>
                     </div>
-                </div>
+                </>
             )
     }
 
@@ -84,25 +77,40 @@ class CourierAccount extends Component {
     render() {
         return (
             <div className={'courier'}>
-                {
-                    this.props.match.params.number === 'auth' && !this.props.isAuth
-                        ?
-                        <AuthShape
-                            isError={this.props.error}
-                            auth={this.authAction}
-                            thisReg={false}
-                        />
-                        : this.props.isAuth &&  JSON.parse(localStorage.getItem('path')) === "/courier-account/"
-                        ?
-                        <>
-                            <Redirect to={`/courier-account/${this.props.id}`}/>
-                            {
-                                this.renderCourierPanel()
-                            }
-                        </>
-                        :
-                        <Redirect to={'/'}/>
-                }
+                <PasswordChangeForm errorPassword={this.props.errorPassword}
+                                    passwordChange={this.props.passwordChange}
+                                    isOpen={this.state.cpfIsOpen}
+                                    onClose={this.interactionWithChangeModal}/>
+
+                <div className={'container'}>
+                    <div className="row">
+                        <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                        <div className="col-lg-10 col-md-10 col-sm-12">
+                            <div className="app__main-content">
+                                {
+                                    this.props.match.params.number === 'auth' && !this.props.isAuth
+                                        ?
+                                        <AuthShape
+                                            isError={this.props.error}
+                                            auth={this.authAction}
+                                            thisReg={false}
+                                        />
+                                        : this.props.isAuth && JSON.parse(localStorage.getItem('path')) === '/courier-account/'
+                                        ?
+                                        <>
+                                            <Redirect to={`/courier-account/${this.props.id}`}/>
+                                            {
+                                                this.renderCourierPanel()
+                                            }
+                                        </>
+                                        :
+                                        <Redirect to={'/'}/>
+                                }
+                            </div>
+                        </div>
+                        <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -118,7 +126,7 @@ function mapStateToProps(state) {
         loading: state.courier.loading,
         listLoading: state.userInfReducer.loading,
         listOfCurrentOrders: state.userInfReducer.listOfCurrentOrders,
-        listOfDeliveredOrders: state.userInfReducer.listOfDeliveredOrders
+        listOfDeliveredOrders: state.userInfReducer.listOfDeliveredOrders,
     }
 }
 
@@ -128,11 +136,11 @@ function mapDispatchToProps(dispatch) {
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
         auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
         subscribe: (listening, listType, typeId, soughtId, statusList) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList)),
-        subscribeOrderInfo:(listening, id) => dispatch(subscribeOrderInfo(listening, id)),
+        subscribeOrderInfo: (listening, id) => dispatch(subscribeOrderInfo(listening, id)),
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
-        calculateThePrice: (id, price, position) => dispatch(calculateThePrice(id, price, position))
+        calculateThePrice: (id, price, position) => dispatch(calculateThePrice(id, price, position)),
     }
 }
 

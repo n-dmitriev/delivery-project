@@ -9,16 +9,24 @@ import {fetchOrderList, passwordChange, setUserInfo, subscribe} from '../../stor
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
 import {cancelOrder, orderАgain} from '../../store/currentOrder/orderActions'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
+import Footer from '../../components/UI/Footer/Footer'
 
 class UserAccount extends Component {
     state = {
         isOrderModalOpen: false,
         editItem: null,
+        cpfIsOpen: false,
     }
 
     interactionWithOrderModal = () => {
         window.scrollTo(0, 0)
         this.setState({isOrderModalOpen: !this.state.isOrderModalOpen})
+    }
+
+    interactionWithChangeModal = () => {
+        this.setState({
+            cpfIsOpen: !this.state.cpfIsOpen,
+        })
     }
 
     saveContactInformation = (info) => {
@@ -38,6 +46,12 @@ class UserAccount extends Component {
         else
             return (
                 <div className={'user-account'}>
+
+                    <PasswordChangeForm errorPassword={this.props.errorPassword}
+                                        passwordChange={this.props.passwordChange}
+                                        isOpen={this.state.cpfIsOpen}
+                                        onClose={this.interactionWithChangeModal}/>
+
                     <OrderModalForm
                         trySendOrder={false} isAuth={true}
                         isOpen={this.state.isOrderModalOpen}
@@ -48,57 +62,68 @@ class UserAccount extends Component {
                     />
 
 
-                    <div className="user-account__input">
-                        <h1 className={'mb-30'}>
-                            Личный кабинет
-                        </h1>
-                        <div className="button-section">
-                            <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15"
-                                     onClick={this.props.logout}>
-                                Выйти
-                            </NavLink>
-                            <button className="main-item-style" onClick={this.interactionWithChangeModal}>
-                                Сменить пароль
-                            </button>
+                        <div className={'container'}>
+                            <div className="row">
+                                <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                                <div className="col-lg-10 col-md-10 col-sm-12">
+                                    <div className="app__main-content">
+                                        <div className="user-account__input">
+                                            <h1 className={'mb-30'}>
+                                                Личный кабинет
+                                            </h1>
+                                            <div className="button-section">
+                                                <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15"
+                                                         onClick={this.props.logout}>
+                                                    Выйти
+                                                </NavLink>
+                                                <button className="main-item-style" onClick={this.interactionWithChangeModal}>
+                                                    Сменить пароль
+                                                </button>
+                                            </div>
+
+                                            <hr/>
+
+                                            <InputInformation
+                                                saveContactInformation={this.saveContactInformation}
+                                                userInfo={this.props.userInfo}
+                                            />
+                                            <hr/>
+                                        </div>
+
+                                        <h2>
+                                            Заказы
+                                        </h2>
+                                        <hr/>
+                                        <RenderOrderList
+                                            fetchOrderList={this.props.fetchOrderList}
+                                            orderList={this.props.listOfCurrentOrders}
+                                            cancelOrder={this.props.cancelOrder}
+                                            setEditItem={this.setEditItem}
+                                            type={'active'}
+                                            description={'активных заказов'}
+                                            loading={this.props.loading}
+                                            soughtId={'userId'}
+                                            statusList={[-1, 0, 1, 2]}
+                                            subscribe={this.props.subscribe}
+                                        />
+                                        <br/>
+                                        <RenderOrderList
+                                            fetchOrderList={this.props.fetchOrderList}
+                                            orderList={this.props.listOfDeliveredOrders}
+                                            type={'finish'}
+                                            description={'завершённых заказов'}
+                                            loading={this.props.loading}
+                                            soughtId={'userId'}
+                                            statusList={[3, 4]}
+                                            subscribe={this.props.subscribe}
+                                            orderАgain={this.props.orderАgain}
+                                        />
+                                    </div>
+                                    <Footer/>
+                                </div>
+                                <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                            </div>
                         </div>
-
-                        <hr/>
-
-                        <InputInformation
-                            saveContactInformation={this.saveContactInformation}
-                            userInfo={this.props.userInfo}
-                        />
-                        <hr/>
-                    </div>
-
-                    <h2>
-                        Заказы
-                    </h2>
-                    <hr/>
-                    <RenderOrderList
-                        fetchOrderList={this.props.fetchOrderList}
-                        orderList={this.props.listOfCurrentOrders}
-                        cancelOrder={this.props.cancelOrder}
-                        setEditItem={this.setEditItem}
-                        type={'active'}
-                        description={'активных заказов'}
-                        loading={this.props.loading}
-                        soughtId={'userId'}
-                        statusList={[-1, 0, 1, 2]}
-                        subscribe={this.props.subscribe}
-                    />
-                    <br/>
-                    <RenderOrderList
-                        fetchOrderList={this.props.fetchOrderList}
-                        orderList={this.props.listOfDeliveredOrders}
-                        type={'finish'}
-                        description={'завершённых заказов'}
-                        loading={this.props.loading}
-                        soughtId={'userId'}
-                        statusList={[3, 4]}
-                        subscribe={this.props.subscribe}
-                        orderАgain={this.props.orderАgain}
-                    />
                 </div>
             )
     }
