@@ -12,6 +12,10 @@ import {fetchUserInfo} from './store/userInformation/userActions'
 import Admin from './containers/Admin/Admin'
 import {autoLogin} from './store/admin/adminActions'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import toast from 'toasted-notes'
+import 'toasted-notes/src/styles.css';
+
+toast.notify('Hello world!')
 
 
 class App extends Component {
