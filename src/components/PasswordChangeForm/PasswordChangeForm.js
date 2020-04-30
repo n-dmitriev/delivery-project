@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import './PasswordChangeForm.scss'
+import toaster from 'toasted-notes'
 
 
 export default class PasswordChangeForm extends Component {
@@ -27,7 +28,10 @@ export default class PasswordChangeForm extends Component {
            await this.validateUserData()
            if (this.state.newPasswordIsValid && this.state.oldPasswordIsValid){
                this.props.passwordChange(this.oldPassword.current.value, this.newPassword.current.value)
-               console.log(this.oldPassword.current.value, this.newPassword.current.value, this.oldPassword.current.value,this.props.passwordChange)
+               toaster.notify('Ваш пароль успешно изменён!', {
+                   position: 'bottom-right',
+                   duration: null
+               })
            }
        }
     }

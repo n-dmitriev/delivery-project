@@ -1,5 +1,5 @@
 import {dataBase} from '../../firebase/firebase'
-import {dispatchAction, getDate, getElementById} from '../universalFunctions'
+import {getDate, getElementById} from '../universalFunctions'
 import {fetchOrderList, fetchUserInfo} from '../userInformation/userActions'
 
 // 6 статусов
@@ -10,8 +10,8 @@ export function changeOrderData(status, data) {
     return async (dispatch, getState) => {
         try {
             const state = getState()
+            const order = data.orderItem.order
             let courierId = state.authReducer.id,
-                finalStatus = status,
                 description = '',
                 endTime = '',
                 courierStatus = 0
@@ -20,6 +20,9 @@ export function changeOrderData(status, data) {
                 case 0: {
                     courierId = ''
                     description = 'Курьер ещё не принял заказ'
+                    for (let item of order) {
+                        order.purchased = false
+                    }
                     break
                 }
                 case 1: {
@@ -33,12 +36,12 @@ export function changeOrderData(status, data) {
                     break
                 }
                 case 3: {
-                    description = `Заказ завершён!`
+                    description = `Заказ завершён.`
                     endTime = getDate()
                     break
                 }
                 case 4: {
-                    description = 'Вы отменили заказ'
+                    description = 'Вы отменили заказ.'
                     endTime = getDate()
                     break
                 }
@@ -50,7 +53,7 @@ export function changeOrderData(status, data) {
                 }
                 case -1: {
                     courierId = ''
-                    description = 'Ваш заказ проверяется на корректность'
+                    description = 'Ваш заказ проверяется на корректность.'
                     break
                 }
             }
@@ -63,11 +66,12 @@ export function changeOrderData(status, data) {
             const answer = await userOrders.where('orderId', '==', data.orderItem.id).get()
             answer.forEach((doc) => {
                 userOrders.doc(doc.id).update({
-                    courierId, status: finalStatus,
+                    courierId, status: status,
                 })
             })
 
             const orderInfo = {
+                order: order,
                 endTime: endTime,
                 description: description,
             }

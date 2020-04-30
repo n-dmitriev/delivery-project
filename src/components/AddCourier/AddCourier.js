@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import './AddCourier.scss'
 import AuthShape from '../AuthShape/AuthShape'
 import InputInformation from '../InputInformation/InputInformation'
+import toaster from 'toasted-notes'
 
 export default class AddCourier extends Component {
     state = {
@@ -23,6 +24,10 @@ export default class AddCourier extends Component {
     registrHandler = (email, password) => {
         this.props.add(email, password)
         this.switchCurrentWin('input')
+        toaster.notify('Курьер зарегестрирован!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
     }
 
     renderRegistForm = () => {
@@ -38,6 +43,10 @@ export default class AddCourier extends Component {
     saveContactInformation = (info)  => {
         this.props.setCourierInfo(info)
         this.close()
+        toaster.notify('Данные курьера сохранены!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
     }
 
     renderCourierInfoForm = () => {

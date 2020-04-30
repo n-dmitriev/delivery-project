@@ -6,6 +6,7 @@ import {sendOrder} from '../../store/currentOrder/orderActions'
 import InputInformation from '../../components/InputInformation/InputInformation'
 import AuthShape from '../../components/AuthShape/AuthShape'
 import {setUserInfo} from '../../store/userInformation/userActions'
+import toaster from 'toasted-notes'
 
 
 //Данный контейнер отвечает за авторизацию и регистрацию пользователей
@@ -26,6 +27,14 @@ class AuthModalForm extends Component {
     loginHandler = async (login, email) => {
         await this.props.auth(login, email, true, 'users')
         if (this.props.isAuth) {
+            if (this.props.trySendOrderNotAuth) {
+                this.props.trySendOrder(false)
+                this.props.sendOrder()
+            }
+            toaster.notify('Вы успешно авторизовались!', {
+                position: 'bottom-right',
+                duration: 3000,
+            })
             this.closeAuthWin()
         }
     }
@@ -34,6 +43,10 @@ class AuthModalForm extends Component {
     saveContactInformation = async (info) => {
         this.props.setUserInfo(info)
         this.closeAuthWin('successRegistration')
+        toaster.notify('Ваши данные сохранены!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
     }
 
     //Обработчик попытки решистрации
@@ -41,6 +54,14 @@ class AuthModalForm extends Component {
 
         await this.props.auth(login, email, false, 'users')
         if (this.props.isError !== true) {
+            if (this.props.trySendOrderNotAuth) {
+                this.props.trySendOrder(false)
+                this.props.sendOrder()
+            }
+            toaster.notify('Вы успешно зарегестрировались!', {
+                position: 'bottom-right',
+                duration: 3000,
+            })
             this.switchCurrentWin('userInfoInp')
         }
     }
@@ -49,10 +70,6 @@ class AuthModalForm extends Component {
     closeAuthWin = () => {
         this.props.onClose()
         this.switchCurrentWin('signIn')
-        if (this.props.trySendOrderNotAuth) {
-            this.props.trySendOrder(false)
-            this.props.sendOrder()
-        }
     }
 
 

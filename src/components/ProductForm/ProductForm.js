@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import './ProductForm.scss'
+import toaster from 'toasted-notes'
 
 export default class productForm extends Component {
     constructor(props) {
@@ -102,6 +103,10 @@ export default class productForm extends Component {
             this.setState({
                 restIsValid: true,
             })
+            toaster.notify('Навзвание ресторана изменено!', {
+                position: 'bottom-right',
+                duration: 3000,
+            })
         } else {
             this.setState({
                 restIsValid: false,
@@ -117,6 +122,10 @@ export default class productForm extends Component {
         } else {
             this.props.changeShopName('В любом магазине')
         }
+        toaster.notify('Навзвание магазина изменено!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
         this.props.interactionWithDagger()
     }
 

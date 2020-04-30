@@ -15,6 +15,7 @@ import {
     editSentOrderItem,
     removeProductFromSentOrder,
 } from '../../store/currentOrder/orderActions'
+import toaster from 'toasted-notes'
 
 //Данный контэйнер отвечает за рендеринг модального окна и отправку функций/перменных в качестве пропсов дочерним эл-там
 class OrderModalForm extends Component {
@@ -44,12 +45,24 @@ class OrderModalForm extends Component {
         this.props.onClose()
         if (this.props.isEdit === true) {
             this.props.editSentOrder(this.props.editItem)
+            toaster.notify('Ваш заказ отредактирован!', {
+                position: 'bottom-right',
+                duration: null,
+            })
         } else {
-            if (this.props.isAuth === true)
+            if (this.props.isAuth === true) {
                 this.props.sendOrder()
-            else {
+                toaster.notify('Ваш заказ отправлен!', {
+                    position: 'bottom-right',
+                    duration: null,
+                })
+            } else {
                 this.props.trySendOrder(true)
                 this.props.onOpenAuth()
+                toaster.notify('Сперва зарегестируйтесь!', {
+                    position: 'bottom-right',
+                    duration: null,
+                })
             }
         }
     }
@@ -83,19 +96,32 @@ class OrderModalForm extends Component {
 
     addSentOrder = (item) => {
         this.props.addProductToSentOrder(this.props.editItem.id, item)
+        toaster.notify('Продукт добавлен в заказ!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
     }
 
     editSentOrderItem = (item) => {
         this.props.editSentOrderItem(this.props.editItem.id, item)
+        toaster.notify('Продукт отредактирован!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
     }
 
     // Обработчик, удаляет выбранный продукт из заказа
     deleteItem = (e) => {
         e.stopPropagation()
-        if(this.props.isEdit === true)
+        if (this.props.isEdit === true)
             this.props.removeProductFromSentOrder(this.props.editItem.id, e.target.id)
         else
             this.props.removeProductFromOrder(e.target.id, this.state.activeTab)
+
+        toaster.notify('Продукт удалён из заказа!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
     }
 
     // Функция, рендерит заказ и навигационное меню
@@ -113,7 +139,7 @@ class OrderModalForm extends Component {
                                 className={'order-constructor__name'}
                                 //При нажатии на название, сбрасываем его и открываем форму редактирования
                                 onClick={() => {
-                                    if (this.props.isEdit !== true){
+                                    if (this.props.isEdit !== true) {
                                         this.props.changeShopName('')
                                         this.interactionWithDagger()
                                     }
@@ -123,9 +149,11 @@ class OrderModalForm extends Component {
                             </div>
                             <div className={'order-constructor__order-list'}>
                                 {list.map((item, count) => (
-                                    <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
+                                    <div key={item.id} id={count} className={'order-constructor__tab'}
+                                         onClick={this.editItem}>
                                         {item.name}, {item.quantity}, {item.brand}
-                                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}/>
+                                        <span id={item.id} className={'dagger dagger_delete'}
+                                              onClick={this.deleteItem}/>
                                     </div>
                                 ))}
                             </div>
@@ -146,9 +174,11 @@ class OrderModalForm extends Component {
                             </div>
                             <div className={'order-constructor__order-list'}>
                                 {this.props.restaurantOrder.map((item, count) => (
-                                    <div key={item.id} id={count} className={'order-constructor__tab'} onClick={this.editItem}>
+                                    <div key={item.id} id={count} className={'order-constructor__tab'}
+                                         onClick={this.editItem}>
                                         {item.name} {item.quantity} {item.price} {item.description}
-                                        <span id={item.id} className={'dagger dagger_delete'} onClick={this.deleteItem}/>
+                                        <span id={item.id} className={'dagger dagger_delete'}
+                                              onClick={this.deleteItem}/>
                                     </div>
                                 ))}
                             </div>
@@ -266,7 +296,7 @@ function mapDispatchToProps(dispatch) {
         removeProductFromSentOrder: (listid, id) => dispatch(removeProductFromSentOrder(listid, id)),
         addProductToSentOrder: (listid, item) => dispatch(addProductToSentOrder(listid, item)),
         editSentOrderItem: (listid, item) => dispatch(editSentOrderItem(listid, item)),
-        editSentOrder: (orderInfo) => dispatch(editSentOrder(orderInfo))
+        editSentOrder: (orderInfo) => dispatch(editSentOrder(orderInfo)),
     }
 }
 

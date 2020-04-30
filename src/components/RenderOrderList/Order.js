@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import toaster from 'toasted-notes'
 
 export default class Order extends Component {
     state = {
@@ -20,7 +21,13 @@ export default class Order extends Component {
                         this.props.type === 'finish'
                             ?
                             <i className="fa fa-refresh fa-animate" aria-hidden="true"
-                                onClick={() => this.props.orderАgain(this.props.orderInfo)}
+                               onClick={() => {
+                                   this.props.orderАgain(this.props.orderInfo)
+                                   toaster.notify('Заказ возобновлён!', {
+                                       position: 'bottom-right',
+                                       duration: 3000,
+                                   })
+                               }}
                             />
                             : null
                     }
@@ -100,7 +107,13 @@ export default class Order extends Component {
                             </button>
                             <button
                                 className={'main-item-style main-item-style_danger'}
-                                onClick={() => this.props.cancelOrder(this.props.orderInfo.id)}>
+                                onClick={() => {
+                                    this.props.cancelOrder(this.props.orderInfo.id)
+                                    toaster.notify('Заказ отменён!', {
+                                        position: 'bottom-right',
+                                        duration: 3000,
+                                    })
+                                }}>
                                 Отменить
                             </button>
                         </div>

@@ -265,12 +265,18 @@ export function orderАgain(orderInfo) {
     return async (dispatch, getState) => {
         const userId = getState().authReducer.id
 
+        const order = orderInfo.order
+
+        for (let item of order) {
+            order.purchased = false
+        }
+
         const fullOrderInfo = {
             startTime: getDate(),
             endTime: '',
             description: 'Курьер ещё не принял заказ',
             name: orderInfo.name,
-            order: orderInfo.order
+            order: order
         }
 
             const orders = dataBase.collection("orders")

@@ -16,6 +16,7 @@ import RenderCourierList from '../../components/RenderCourierList/RenderCourierL
 import EditCourierModal from '../../components/RenderCourierList/EditCourierModal/EditCourierModal'
 import AdminPanelWithOrders from '../../components/AdminPanelWithOrders/AdminPanelWithOrders'
 import {fetchOrderList} from '../../store/userInformation/userActions'
+import toaster from 'toasted-notes'
 
 class Admin extends Component {
     state = {
@@ -40,6 +41,10 @@ class Admin extends Component {
         this.setState({
             editingCourier: courier,
         })
+        toaster.notify('Данные курьера отредактированы!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
         this.interactionWithEditModal()
     }
 
@@ -52,6 +57,10 @@ class Admin extends Component {
     }
 
     removeCourier = (id) => {
+        toaster.notify('Курьер удалён!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
         this.props.removeCourier(id)
     }
 

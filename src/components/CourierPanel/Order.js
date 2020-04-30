@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import toaster from 'toasted-notes'
 
 export default class Order extends Component {
     state = {
@@ -80,26 +81,38 @@ export default class Order extends Component {
                         ? <div className="button-section mt-30">
                             <button
                                 className={`main-item-style mr-15`}
-                                onClick={() => this.props.changeOrderData(1, {
-                                    uid: this.props.orderInfo.id,
-                                    ...this.props.orderInfo,
-                                })}>
+                                onClick={() => {
+                                    this.props.changeOrderData(1, {
+                                        uid: this.props.orderInfo.id,
+                                        ...this.props.orderInfo,
+                                    })
+                                    toaster.notify('Вы приняли заказ!', {
+                                        position: 'bottom-right',
+                                        duration: null,
+                                    })
+                                }}>
                                 Взять
                             </button>
                             <button
                                 className={`main-item-style main-item-style_danger`}
-                                onClick={() => this.props.changeOrderData(-1, {
-                                    uid: this.props.orderInfo.id,
-                                    ...this.props.orderInfo,
-                                })}>
+                                onClick={() => {
+                                    this.props.changeOrderData(-1, {
+                                        uid: this.props.orderInfo.id,
+                                        ...this.props.orderInfo,
+                                    })
+                                    toaster.notify('Заказ скрыт!', {
+                                        position: 'bottom-right',
+                                        duration: 3000,
+                                    })
+                                }}>
                                 Тролль!
                             </button>
                         </div>
                         : this.props.type === 'all'
-                            ?
-                                <>
-                                </>
-                            : null
+                        ?
+                        <>
+                        </>
+                        : null
                 }
 
             </div>
