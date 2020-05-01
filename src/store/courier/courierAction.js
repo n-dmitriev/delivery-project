@@ -21,7 +21,7 @@ export function changeOrderData(status, data) {
                     courierId = ''
                     description = 'Курьер ещё не принял заказ'
                     for (let item of order) {
-                        order.purchased = false
+                        item.purchased = false
                     }
                     break
                 }

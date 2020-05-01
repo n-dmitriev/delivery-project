@@ -34,7 +34,7 @@ export default class InputInformation extends Component {
                     role: this.props.type,
                 }
 
-                if(this.props.userInfo !== undefined)
+                if (this.props.userInfo !== undefined)
                     info.id = this.props.userInfo.id
 
                 this.props.saveContactInformation(info)
@@ -52,29 +52,46 @@ export default class InputInformation extends Component {
 
                 <h2 className={'mb-30'}>{isEdit ? 'Контактная информация' : 'Укажите контактную ифнормацию'}</h2>
 
-                <label className={'mb-15'}>Имя*</label>
-                <input className={this.state.nameIsValid === false ? 'input-error mb-30' : 'mb-30'}
-                       type="text"
-                       ref={this.name}
-                       defaultValue={isEdit ? this.props.userInfo.name : null}
-                />
-                <label className={'mb-15'}>Номер телефона*</label>
-                <input className={this.state.numberPhoneIsValid === false ? 'input-error mb-30' : 'mb-30'}
-                       type="text"
-                       ref={this.numberPhone}
-                       defaultValue={isEdit ? this.props.userInfo.numberPhone : null}/>
-                <label className={'mb-15'}> {
-                    this.props.type === 'courier'
-                        ?
-                            'Ссылка на вк'
-                        :
-                            'Адрес*'
-                }</label>
 
-                <input className={this.state.addressIsValid === false ? 'input-error mb-15' : 'mb-30'}
-                       type="text"
-                       ref={this.address}
-                       defaultValue={isEdit ? this.props.userInfo.address : null}/>
+                <div className={'input-field'}>
+                    <label className={'mb-15'}>Имя*</label>
+                    <input className={this.state.nameIsValid === false ? 'input-error mb-30' : 'mb-30'}
+                           type="text"
+                           ref={this.name}
+                           defaultValue={isEdit ? this.props.userInfo.name : null}
+                    />
+                </div>
+
+                <div className={'input-field'}>
+                    <label className={'mb-15'}>Номер телефона*</label>
+                    <input className={this.state.numberPhoneIsValid === false ? 'input-error mb-30' : 'mb-30'}
+                           type="text"
+                           ref={this.numberPhone}
+                           defaultValue={isEdit ? this.props.userInfo.numberPhone : null}
+                    />
+                </div>
+
+                <div className={'input-field'}>
+                    <label className={'mb-15'}>
+                        {
+                            this.props.type === 'courier'
+                                ?
+                                'Ссылка на вк'
+                                :
+                                'Адрес*'
+                        }
+                    </label>
+
+                    <input className={this.state.addressIsValid === false ? 'input-error mb-15' : 'mb-30'}
+                           type="text"
+                           ref={this.address}
+                           defaultValue={isEdit ? this.props.userInfo.address : null}
+                           placeholder={
+                               this.props.type !== 'courier' ? 'Город улица дом' : 'Адрес*'
+                           }
+                    />
+                </div>
+
                 <small
                     className={this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid ? 'hide' : 'error'}>
                     Поля помеченные * обязательные для заполнения

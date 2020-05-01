@@ -268,8 +268,10 @@ export function orderАgain(orderInfo) {
         const order = orderInfo.order
 
         for (let item of order) {
-            order.purchased = false
+            item.purchased = false
         }
+
+        console.log(order)
 
         const fullOrderInfo = {
             startTime: getDate(),
@@ -282,15 +284,15 @@ export function orderАgain(orderInfo) {
             const orders = dataBase.collection("orders")
             const docRef = await orders.add(fullOrderInfo)
             const orderId = docRef.id
-            await orders.doc(orderId).update({
-                id: orderId,
-            })
-
-            dataBase.collection('user-orders').add({
-                userId: userId,
-                orderId:orderId,
-                courierId: '',
-                status: 0
-            })
+            // await orders.doc(orderId).update({
+            //     id: orderId,
+            // })
+            //
+            // dataBase.collection('user-orders').add({
+            //     userId: userId,
+            //     orderId:orderId,
+            //     courierId: '',
+            //     status: 0
+            // })
     }
 }
