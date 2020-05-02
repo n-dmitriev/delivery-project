@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Order2 from '../CourierPanel/Order'
+import Order2 from '../CourierPanel/AdditionalComponents/Order'
 import Order1 from './Order'
 
 export default class List extends Component {

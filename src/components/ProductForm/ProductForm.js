@@ -40,7 +40,7 @@ export default class productForm extends Component {
                 },
                 {
                     id: 'price',
-                    question: 'Примерная, ожидаемая цена',
+                    question: 'Примерная цена',
                     required: false,
                     ref: this.inputPrice,
                     type: 'input',
@@ -201,15 +201,15 @@ export default class productForm extends Component {
                 <small className={this.state.orderFormIsValid ? '' : 'error'}>Поля
                     помеченные * обязательные для заполнения</small>
 
-                <div className="button-section">
-                    <button className="main-item-style" onClick={() => {
+                <div className="button-section mb-2">
+                    <button className="main-item-style mr-15" onClick={this.addAndEditOrder}>
+                        {isEdit ? 'Применить' : 'Сохранить'}
+                    </button>
+                    <button className="main-item-style main-item-style_danger" onClick={() => {
                         this.props.resetActiveItem()
                         this.props.interactionWithDagger()
                     }}>
                         {isEdit ? 'Назад' : 'Отменить'}
-                    </button>
-                    <button className="main-item-style" onClick={this.addAndEditOrder}>
-                        {isEdit ? 'Применить' : 'Сохранить'}
                     </button>
                 </div>
             </>

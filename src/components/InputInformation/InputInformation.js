@@ -13,6 +13,7 @@ export default class InputInformation extends Component {
         }
     }
 
+
     //Валидация информации о пользователе
     validateUserInformation = () => {
         this.setState({
@@ -27,16 +28,17 @@ export default class InputInformation extends Component {
         if (this.name && this.numberPhone && this.address) {
             await this.validateUserInformation()
             if (this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid) {
+                const answer = await window.ymaps.geocode(this.address.current.value)
                 const info = {
                     name: this.name.current.value,
                     numberPhone: this.numberPhone.current.value,
                     address: this.address.current.value,
                     role: this.props.type,
+                    coordinate: answer.geoObjects.get(0).geometry.getCoordinates()
                 }
 
                 if (this.props.userInfo !== undefined)
                     info.id = this.props.userInfo.id
-
                 this.props.saveContactInformation(info)
             }
         }
@@ -49,7 +51,6 @@ export default class InputInformation extends Component {
         }
         return (
             <>
-
                 <h2 className={'mb-30'}>{isEdit ? 'Контактная информация' : 'Укажите контактную ифнормацию'}</h2>
 
 
@@ -59,6 +60,7 @@ export default class InputInformation extends Component {
                            type="text"
                            ref={this.name}
                            defaultValue={isEdit ? this.props.userInfo.name : null}
+                           placeholder={'Иван Иванович'}
                     />
                 </div>
 
@@ -68,6 +70,7 @@ export default class InputInformation extends Component {
                            type="text"
                            ref={this.numberPhone}
                            defaultValue={isEdit ? this.props.userInfo.numberPhone : null}
+                           placeholder={''}
                     />
                 </div>
 

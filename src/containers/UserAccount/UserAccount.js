@@ -86,6 +86,7 @@ class UserAccount extends Component {
                                             <InputInformation
                                                 saveContactInformation={this.saveContactInformation}
                                                 userInfo={this.props.userInfo}
+                                                type={'user'}
                                             />
                                             <hr/>
                                         </div>
@@ -149,7 +150,7 @@ function mapDispatchToProps(dispatch) {
         cancelOrder: (id) => dispatch(cancelOrder(id)),
         subscribe: (listening, listType, typeId, soughtId, statusList) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
-        orderАgain: (orderInfo) => dispatch(orderАgain(orderInfo))
+        orderАgain: (orderInfo) => dispatch(orderАgain(orderInfo)),
     }
 }
 

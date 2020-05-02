@@ -44,6 +44,7 @@ export function setUserInfo(info) {
                 name: info.name,
                 numberPhone: info.numberPhone,
                 address: info.address,
+                coordinate: info.coordinate
             })
             dispatch(dispatchAction(SET_USER_INFO_SUCCESS, null))
             dispatch(fetchUserInfo())

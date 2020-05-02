@@ -2,15 +2,20 @@ import React, {Component} from 'react'
 import {Map, Placemark, SearchControl, YMaps} from 'react-yandex-maps'
 
 export default class maps extends Component {
-    state = {coordinates: null}
+    // componentDidMount() {
+    //     window.addEventListener('load', this.handleLoad);
+    // }
 
-    componentDidMount() {
-        window.addEventListener('load', this.handleLoad);
+    constructor(props) {
+        super(props)
+        this.input = React.createRef()
     }
 
-    handleLoad() {
+    state = {coordinates: null}
+
+    handleLoad = () => {
         window.ymaps.ready(() => {
-            window.ymaps.geocode('Вологда ул Ленина').then(result => {
+            window.ymaps.geocode(this.input.current.value).then(result => {
                 console.log(result.geoObjects.get(0).geometry.getCoordinates())
                 this.setState({coordinates: result.geoObjects.get(0).geometry.getCoordinates()})
             })
@@ -51,6 +56,8 @@ export default class maps extends Component {
                         <SearchControl options={{float: 'right'}}/>
                     </Map>
                 </YMaps>
+                <input ref={this.input} type="text"/>
+                <button onClick={this.handleLoad}>Поиск</button>
             </div>
         )
     }

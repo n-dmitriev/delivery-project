@@ -16,6 +16,8 @@ import {
     removeProductFromSentOrder,
 } from '../../store/currentOrder/orderActions'
 import toaster from 'toasted-notes'
+import InputInformation from '../../components/InputInformation/InputInformation'
+import {setUserInfo} from '../../store/userInformation/userActions'
 
 //Данный контэйнер отвечает за рендеринг модального окна и отправку функций/перменных в качестве пропсов дочерним эл-там
 class OrderModalForm extends Component {
@@ -23,6 +25,7 @@ class OrderModalForm extends Component {
         activeTab: 'shop-tab', // текущее вкладка 2 состояния shop-tab и restaurant-tab
         formIsOpen: false, // флаг отвечающий за форму ввода, если false - рендерится заказ, true - рендерится форма ввода
         activeItem: null, // В переменной хранится текуший элемент, который выбран для редактирования
+        send: false,
     }
 
     //Функция открывающая/закрывающая форму ввода
@@ -42,8 +45,8 @@ class OrderModalForm extends Component {
 
     // Отправка заказа, если пользователь не авторизоывался, открывается окно авторизации, после чего заказ отправляется на сервер
     sendOrder = () => {
-        this.props.onClose()
         if (this.props.isEdit === true) {
+            this.props.onClose()
             this.props.editSentOrder(this.props.editItem)
             toaster.notify('Ваш заказ отредактирован!', {
                 position: 'bottom-right',
@@ -51,12 +54,11 @@ class OrderModalForm extends Component {
             })
         } else {
             if (this.props.isAuth === true) {
-                this.props.sendOrder()
-                toaster.notify('Ваш заказ отправлен!', {
-                    position: 'bottom-right',
-                    duration: null,
+                this.setState({
+                    send: true,
                 })
             } else {
+                this.props.onClose()
                 this.props.trySendOrder(true)
                 this.props.onOpenAuth()
                 toaster.notify('Сперва зарегестируйтесь!', {
@@ -121,6 +123,19 @@ class OrderModalForm extends Component {
         toaster.notify('Продукт удалён из заказа!', {
             position: 'bottom-right',
             duration: 3000,
+        })
+    }
+
+    saveContactInformation = (info) => {
+        this.props.setUserInfo(info)
+        this.props.sendOrder()
+        this.setState({
+            send: false,
+        })
+        this.props.onClose()
+        toaster.notify('Ваш заказ отправлен!', {
+            position: 'bottom-right',
+            duration: null,
         })
     }
 
@@ -189,11 +204,11 @@ class OrderModalForm extends Component {
                     // Вывод навигационной панели, если заказ пуст, нет кнопок
                     (this.state.activeTab === 'shop-tab' && Object.keys(this.props.shopOrder).length !== 0)
                     || (this.state.activeTab === 'restaurant-tab' && Object.keys(this.props.restaurantOrder).length !== 0) || this.props.isEdit === true
-                        ? <div className="button-section button-section_bottom">
-                            <button className="main-item-style" onClick={this.sendOrder}>
+                        ? <div className="button-section button-section_bottom mb-1">
+                            <button className="main-item-style mr-15 ml-1" onClick={this.sendOrder}>
                                 {this.props.isEdit === true ? 'Применить' : 'Заказать'}
                             </button>
-                            <button className="main-item-style" onClick={() =>
+                            <button className="main-item-style main-item-style_danger" onClick={() =>
                                 this.props.isEdit === true ? this.props.onClose() : this.props.deleteOrder()
                             }>Отменить
                             </button>
@@ -222,50 +237,65 @@ class OrderModalForm extends Component {
                     <span className="dagger dagger_delete" onClick={() => {
                         this.props.onClose()
                         this.props.deleteOrder()
+                        this.setState({
+                            send: false,
+                        })
                     }}/>
                     {
-                        this.props.isEdit === true
-                            ? null
-                            : <div className={'order-form__selector'}>
-                                <div
-                                    id={'shop-tab'}
-                                    className={this.state.activeTab === 'shop-tab'
-                                        ? 'order-form__select order-form__select_active'
-                                        : 'order-form__select'}
-                                    onClick={this.clickItemHandler}>
-                                    <span className={'non-click'}>Из магазина</span>
-                                </div>
-                                <div
-                                    id={'restaurant-tab'}
-                                    className={this.state.activeTab === 'restaurant-tab'
-                                        ? 'order-form__select order-form__select_active'
-                                        : 'order-form__select'}
-                                    onClick={this.clickItemHandler}>
-                                    <span className={'non-click'}>Из заведения</span>
-                                </div>
+                        this.state.send
+                            ? <div className={'user-inf-input'}>
+                                <InputInformation
+                                    saveContactInformation={this.saveContactInformation}
+                                    userInfo={this.props.userInfo}
+                                    type={'user'}
+                                />
                             </div>
-                    }
+                            : <>
+                                {
+                                    this.props.isEdit === true
+                                        ? null
+                                        : <div className={'order-form__selector'}>
+                                            <div
+                                                id={'shop-tab'}
+                                                className={this.state.activeTab === 'shop-tab'
+                                                    ? 'order-form__select order-form__select_active'
+                                                    : 'order-form__select'}
+                                                onClick={this.clickItemHandler}>
+                                                <span className={'non-click'}>Из магазина</span>
+                                            </div>
+                                            <div
+                                                id={'restaurant-tab'}
+                                                className={this.state.activeTab === 'restaurant-tab'
+                                                    ? 'order-form__select order-form__select_active'
+                                                    : 'order-form__select'}
+                                                onClick={this.clickItemHandler}>
+                                                <span className={'non-click'}>Из заведения</span>
+                                            </div>
+                                        </div>
+                                }
 
-                    <div className={'order-constructor'}>
-                        {this.state.formIsOpen === true
-                            ? <ProductForm
-                                activeTab={this.state.activeTab}
-                                interactionWithDagger={this.interactionWithDagger}
-                                addProductToOrder={this.props.addProductToOrder}
-                                editOrderItem={this.props.editOrderItem}
-                                item={this.state.activeItem}
-                                nameOfRestaurant={this.props.nameOfRestaurant}
-                                nameOfShop={this.props.nameOfShop}
-                                resetActiveItem={this.resetActiveItem}
-                                changeShopName={this.props.changeShopName}
-                                changeRestaurantName={this.props.changeRestaurantName}
-                                isEdit={this.props.isEdit || false}
-                                addSentOrder={this.addSentOrder}
-                                editSentOrder={this.editSentOrderItem}
-                            />
-                            : this.renderOrderListAndNavigationMenu()
-                        }
-                    </div>
+                                <div className={'order-constructor'}>
+                                    {this.state.formIsOpen === true
+                                        ? <ProductForm
+                                            activeTab={this.state.activeTab}
+                                            interactionWithDagger={this.interactionWithDagger}
+                                            addProductToOrder={this.props.addProductToOrder}
+                                            editOrderItem={this.props.editOrderItem}
+                                            item={this.state.activeItem}
+                                            nameOfRestaurant={this.props.nameOfRestaurant}
+                                            nameOfShop={this.props.nameOfShop}
+                                            resetActiveItem={this.resetActiveItem}
+                                            changeShopName={this.props.changeShopName}
+                                            changeRestaurantName={this.props.changeRestaurantName}
+                                            isEdit={this.props.isEdit || false}
+                                            addSentOrder={this.addSentOrder}
+                                            editSentOrder={this.editSentOrderItem}
+                                        />
+                                        : this.renderOrderListAndNavigationMenu()
+                                    }
+                                </div>
+                            </>
+                    }
                 </div>
                 <div className={'bg'} onClick={this.props.onClose}/>
             </>
@@ -279,6 +309,7 @@ function mapStateToProps(state) {
         restaurantOrder: state.currentOrder.restaurantOrder,
         nameOfRestaurant: state.currentOrder.nameOfRestaurant,
         nameOfShop: state.currentOrder.nameOfShop,
+        userInfo: state.userInfReducer.info,
     }
 }
 
@@ -297,6 +328,7 @@ function mapDispatchToProps(dispatch) {
         addProductToSentOrder: (listid, item) => dispatch(addProductToSentOrder(listid, item)),
         editSentOrderItem: (listid, item) => dispatch(editSentOrderItem(listid, item)),
         editSentOrder: (orderInfo) => dispatch(editSentOrder(orderInfo)),
+        setUserInfo: (info) => dispatch(setUserInfo(info)),
     }
 }
 
