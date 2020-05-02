@@ -43,10 +43,19 @@ class AuthModalForm extends Component {
     saveContactInformation = async (info) => {
         this.props.setUserInfo(info)
         this.closeAuthWin('successRegistration')
-        toaster.notify('Ваши данные сохранены!', {
-            position: 'bottom-right',
-            duration: 3000,
-        })
+        if (this.props.trySendOrderNotAuth) {
+            this.props.trySendOrder(false)
+            this.props.sendOrder(info)
+            toaster.notify('Ваши данные сохранены, заказ отправлен!', {
+                position: 'bottom-right',
+                duration: 3000,
+            })
+        }
+        else
+            toaster.notify('Ваши данные сохранены!', {
+                position: 'bottom-right',
+                duration: 3000,
+            })
     }
 
     //Обработчик попытки решистрации
@@ -54,10 +63,6 @@ class AuthModalForm extends Component {
 
         await this.props.auth(login, email, false, 'users')
         if (this.props.isError !== true) {
-            if (this.props.trySendOrderNotAuth) {
-                this.props.trySendOrder(false)
-                this.props.sendOrder()
-            }
             toaster.notify('Вы успешно зарегестрировались!', {
                 position: 'bottom-right',
                 duration: 3000,
@@ -142,7 +147,7 @@ function mapDispatchToProps(dispatch) {
     return {
         auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
         removeError: () => dispatch(removeError()),
-        sendOrder: () => dispatch(sendOrder()),
+        sendOrder: (info) => dispatch(sendOrder(info)),
         setUserInfo: (info) => dispatch(setUserInfo(info)),
     }
 }

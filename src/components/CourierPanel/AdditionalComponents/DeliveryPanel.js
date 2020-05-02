@@ -2,7 +2,50 @@ import React, {Component} from 'react'
 import toaster from 'toasted-notes'
 
 export default class DeliveryPanel extends Component {
-    render(){
+    constructor(props) {
+        super(props)
+        this.orderValue = React.createRef()
+        this.check = React.createRef()
+        this.courierPosition = React.createRef()
+        this.state = {
+            value: '',
+            valueIsValid: true,
+            coordinateCourier: '',
+            positionIsValid: true,
+            checkIsValid: true,
+        }
+    }
+
+    calculateThePrice = async () => {
+        const answer = await window.ymaps.geocode(this.courierPosition.current.value)
+        await this.setState({
+            positionIsValid: this.courierPosition.current.value.replace(/\s+/g, '') !== '' || answer.geoObjects.get(0) !== undefined,
+            valueIsValid: parseInt(this.orderValue.current.value),
+            checkIsValid: this.check.current.checked,
+        })
+        if (this.state.positionIsValid && this.state.valueIsValid && this.state.checkIsValid) {
+            const coordinate = answer.geoObjects.get(0).geometry.getCoordinates()
+            this.props.calculateThePrice(this.props.ordersList[0].orderItem.id, this.orderValue.current.value, this.courierPosition.current.value)
+        }
+    }
+
+    finishOrder = () => {
+        this.props.changeOrderData(3, this.props.ordersList[0])
+        toaster.notify('Заказ завершён!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
+    }
+
+    cancelOrder = () => {
+        this.props.changeOrderData(4, this.props.ordersList[0])
+        toaster.notify('Заказ возобновлён!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
+    }
+
+    render() {
         const deliveredOrder = this.props.ordersList[0]
         if (deliveredOrder)
             return (
@@ -24,11 +67,10 @@ export default class DeliveryPanel extends Component {
                                 </small>
                             </div>
 
-
                             <div className="form-group">
                                 <input
                                     placeholder={'Укажите ваше текущее местоположение'}
-                                    defaultValue={this.state.position}
+                                    defaultValue={this.props.position}
                                     className={!this.state.positionIsValid ? 'input-error' : ''}
                                     type="text"
                                     ref={this.courierPosition}
@@ -37,7 +79,7 @@ export default class DeliveryPanel extends Component {
                                     местоположение</label>
                                 <small
                                     className={this.state.positionIsValid ? 'hide' : 'error'}>
-                                    Ваше местоположение не может быть пустым!
+                                    Вы указали неверное местоположение!
                                 </small>
                             </div>
                             <div className={'checkbox mb-15'}>
@@ -68,19 +110,12 @@ export default class DeliveryPanel extends Component {
                             <h5>Текущий заказ {deliveredOrder.orderItem.id}</h5>
                         </div>
                         <div className={'courier-panel__delivered-content'}>
-                            {this.renderOrderInfo(deliveredOrder)}
+                            {this.props.renderOrderInfo(deliveredOrder)}
                             <div className="button-section button-section_bottom">
                                 <button className="main-item-style mr-15" onClick={this.finishOrder}>
                                     Доставлен
                                 </button>
-                                <button className="main-item-style main-item-style_danger"
-                                        onClick={() => {
-                                            this.props.changeOrderData(4, deliveredOrder)
-                                            toaster.notify('Заказ возобновлён!', {
-                                                position: 'bottom-right',
-                                                duration: 3000,
-                                            })
-                                        }}>
+                                <button className="main-item-style main-item-style_danger" onClick={this.cancelOrder}>
                                     Клиент отказался
                                 </button>
                             </div>
@@ -88,5 +123,7 @@ export default class DeliveryPanel extends Component {
                     </div>
                 </>
             )
+        else
+            return null
     }
 }

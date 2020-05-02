@@ -10,11 +10,12 @@ export function changeOrderData(status, data) {
     return async (dispatch, getState) => {
         try {
             const state = getState()
-            const order = data.orderItem.order
+            const order = data.order
             let courierId = state.authReducer.id,
                 description = '',
                 endTime = '',
-                courierStatus = 0
+                courierStatus = 0,
+                orderInfo = {}
 
             switch (status) {
                 case 0: {
@@ -23,6 +24,7 @@ export function changeOrderData(status, data) {
                     for (let item of order) {
                         item.purchased = false
                     }
+                    orderInfo.order = order
                     break
                 }
                 case 1: {
@@ -33,6 +35,7 @@ export function changeOrderData(status, data) {
                 case 2: {
                     description = `Курьер ${state.userInfReducer.info.name} доставляет ваш заказ. Контактный номер курьера: ${state.userInfReducer.info.numberPhone}`
                     courierStatus = 2
+                    orderInfo.order = order
                     break
                 }
                 case 3: {
@@ -63,23 +66,17 @@ export function changeOrderData(status, data) {
             })
 
             const userOrders = dataBase.collection('user-orders')
-            const answer = await userOrders.where('orderId', '==', data.orderItem.id).get()
+            const answer = await userOrders.where('orderId', '==', data.id).get()
             answer.forEach((doc) => {
                 userOrders.doc(doc.id).update({
                     courierId, status: status,
                 })
             })
 
-            const orderInfo = {
-                order: order,
-                endTime: endTime,
-                description: description,
-            }
+            orderInfo.endTime = endTime
+            orderInfo.description = description
 
-            if (status === 2)
-                orderInfo.order = data.orderItem.order
-
-            dataBase.collection('orders').doc(data.orderItem.id).update(orderInfo)
+            dataBase.collection('orders').doc(data.id).update(orderInfo)
 
             dispatch(fetchUserInfo())
         } catch (e) {
@@ -115,7 +112,7 @@ export function calculateThePrice(id, price, position) {
 export function interactWithPurchased(id, flag) {
     return (dispatch, getState) => {
         const state = getState(),
-            arr = state.userInfReducer.listOfCurrentOrders[0].orderItem.order,
+            arr = state.userInfReducer.listOfCurrentOrders[0].order,
             index = getElementById(arr, id)
         if (index !== -1) {
             arr[index].purchased = flag

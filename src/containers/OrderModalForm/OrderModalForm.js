@@ -128,7 +128,7 @@ class OrderModalForm extends Component {
 
     saveContactInformation = (info) => {
         this.props.setUserInfo(info)
-        this.props.sendOrder()
+        this.props.sendOrder(info)
         this.setState({
             send: false,
         })
@@ -320,7 +320,7 @@ function mapDispatchToProps(dispatch) {
         editOrderItem: (item, list) =>
             dispatch(editOrderItem(item, list)),
         removeProductFromOrder: (id, list) => dispatch(removeProductFromOrder(id, list)),
-        sendOrder: () => dispatch(sendOrder()),
+        sendOrder: (info) => dispatch(sendOrder(info)),
         deleteOrder: () => dispatch(deleteOrder()),
         changeShopName: (name) => dispatch(changeShopName(name)),
         changeRestaurantName: (name) => dispatch(changeRestaurantName(name)),

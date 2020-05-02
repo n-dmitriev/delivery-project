@@ -50,7 +50,7 @@ class CourierAccount extends Component {
 
                     <RenderOrderList description={'завершённых заказов'}
                                      orderList={this.props.listOfDeliveredOrders}
-                                     type={'finish'}
+                                     type={'finish-courier'}
                                      soughtId={'courierId'}
                                      statusList={[3, 4]}
                                      fetchOrderList={this.props.fetchOrderList}

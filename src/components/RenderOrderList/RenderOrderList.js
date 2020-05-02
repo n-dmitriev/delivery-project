@@ -45,7 +45,6 @@ export default class RenderOrderList extends Component {
                                 orderАgain={this.props.orderАgain}
                             />
                         </div>
-
                 }
             </div>
         )

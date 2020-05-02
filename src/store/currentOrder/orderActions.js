@@ -7,7 +7,7 @@ import {
     SEND_ORDER,
 } from './actionTypes'
 import {dataBase} from '../../firebase/firebase'
-import {fetchUserInfo} from '../userInformation/userActions'
+import {fetchOrderList, fetchUserInfo} from '../userInformation/userActions'
 import {dispatchAction, getDate, getElementById} from '../universalFunctions'
 import {ADD_P_TO_SENT_ORDER, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} from '../userInformation/actionTypes'
 
@@ -26,10 +26,11 @@ function updateLocalStorage(getState, list) {
 }
 
 //Отправка заказа на сервер
-export function sendOrder() {
+export function sendOrder(info) {
     return async (dispatch, getState) => {
         const state = getState().currentOrder
         const userId = getState().authReducer.id
+
 
         // 6 статусов
         // 0 - заказ на обработке, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
@@ -37,7 +38,12 @@ export function sendOrder() {
         const fullOrderInfo = {
             startTime: getDate(),
             endTime: '',
+            orderValue: '',
+            deliveryValue: '',
             description: 'Курьер ещё не принял заказ',
+            clientName: info.name,
+            clientNumberPhone: info.numberPhone,
+            clientAddress: info.address,
         }
         if (state.shopOrder.length !== 0) {
             fullOrderInfo.name = state.nameOfShop === '' ? 'Из любого магизна' : state.nameOfShop
@@ -98,7 +104,8 @@ export function cancelOrder(id) {
                 endTime: getDate()
             })
 
-            dispatch(fetchUserInfo())
+
+            dispatch(fetchOrderList('active', 'userId', null, [0, 1, 2]))
         } catch (e) {
             console.log(e)
         }
@@ -271,8 +278,6 @@ export function orderАgain(orderInfo) {
             item.purchased = false
         }
 
-        console.log(order)
-
         const fullOrderInfo = {
             startTime: getDate(),
             endTime: '',
@@ -284,15 +289,16 @@ export function orderАgain(orderInfo) {
             const orders = dataBase.collection("orders")
             const docRef = await orders.add(fullOrderInfo)
             const orderId = docRef.id
-            // await orders.doc(orderId).update({
-            //     id: orderId,
-            // })
-            //
-            // dataBase.collection('user-orders').add({
-            //     userId: userId,
-            //     orderId:orderId,
-            //     courierId: '',
-            //     status: 0
-            // })
+            await orders.doc(orderId).update({
+                id: orderId,
+            })
+
+            dataBase.collection('user-orders').add({
+                userId: userId,
+                orderId:orderId,
+                courierId: '',
+                status: 0
+            })
+        dispatch(fetchOrderList('active', 'userId', null, [0, 1, 2]))
     }
 }

@@ -12,38 +12,62 @@ export default class Order extends Component {
         })
     }
 
-    render() {
+    // type - тип списка
+    // active-user/finish-user - для пользователя
+    // active-courier/finish-courier - для курьера
+    // admin - универсальный для админа
+    renderTitle = () => {
         return (
             <>
-                <div className="list__title">
-                    <h4 className={'mb-15'}>Заказ {this.props.orderInfo.id}</h4>
-                    {
-                        this.props.type === 'finish'
-                            ?
-                            <i className="fa fa-refresh fa-animate" aria-hidden="true"
-                               onClick={() => {
-                                   this.props.orderАgain(this.props.orderInfo)
-                                   toaster.notify('Заказ возобновлён!', {
-                                       position: 'bottom-right',
-                                       duration: 3000,
-                                   })
-                               }}
-                            />
-                            : null
-                    }
-                </div>
+                <h4 className={'mb-15'}>Заказ {this.props.orderInfo.id}</h4>
+                {
+                    this.props.type === 'finish-user'
+                        ?
+                        <i className="fa fa-refresh fa-animate" aria-hidden="true"
+                           onClick={() => {
+                               this.props.orderАgain(this.props.orderInfo)
+                               toaster.notify('Заказ возобновлён!', {
+                                   position: 'bottom-right',
+                                   duration: 3000,
+                               })
+                           }}
+                        />
+                        : null
+                }
+            </>
+        )
+    }
+
+    renderBody = () => {
+        return (
+            <>
                 <ul>
                     <li className={'mb-15'}>Откуда: {this.props.orderInfo.name}</li>
-                    <li className={'mb-15'}>Состояние: {this.props.orderInfo.description}</li>
-                    <li className={'mb-15'}>Время начала заказа:{this.props.orderInfo.startTime}</li>
+                    <li className={'mb-15'}>Адресс доставки: {this.props.orderInfo.clientAddress}</li>
                     {
-                        this.props.type === 'finish'
-                            ?
-                            <li className={'mb-15'}>Время завершения: {this.props.orderInfo.endTime}</li>
+                        this.props.type === 'active-courier' || this.props.type === 'finish-courier' || this.props.type === 'admin'
+                            ? <>
+                                <li className={'mb-15'}>Имя клиента: {this.props.orderInfo.name}</li>
+                                <li className={'mb-15'}>Контактный телефон: {this.props.orderInfo.clientNumberPhone}</li>
+                            </>
                             : null
                     }
                     {
-                        this.props.orderInfo.orderValue
+                        this.props.type === 'active-user' || this.props.type === 'finish-user' || this.props.type === 'admin'
+                            ? <>
+                                <li className={'mb-15'}>Состояние: {this.props.orderInfo.description}</li>
+                            </>
+                            : null
+                    }
+                    <li className={'mb-15'}>Время начала заказа:{this.props.orderInfo.startTime}</li>
+                    {
+                        this.props.orderInfo.endTime !== ''
+                            ?
+                            <li className={'mb-15'}>Время окончания заказа: {this.props.orderInfo.endTime}</li>
+                            : null
+                    }
+                    {
+                        this.props.orderInfo.orderValue !== ''
                             ?
                             <>
                                 <li className={'mb-15'}>Стоимость заказа: {this.props.orderInfo.orderValue} ₽</li>
@@ -55,13 +79,14 @@ export default class Order extends Component {
                             : null
                     }
                 </ul>
-                <span className={'list__unwrapping-list mb-15'}
-                      onClick={this.interactionWithProductList}>
-                                                {this.state.productListIsOpen
-                                                    ? 'Скрыть подробности заказа'
-                                                    : 'Показать подробности заказа'}
+                <span className={'list__unwrapping-list mb-15'} onClick={this.interactionWithProductList}>
+                    {
+                        this.state.productListIsOpen
+                            ? 'Скрыть заказ'
+                            : 'Показать заказ'
+                    }
                     <i className="fa fa-caret-down" aria-hidden="true"/>
-                                            </span>
+                </span>
                 <div className={this.state.productListIsOpen ? '' : 'hide'}>
                     {
                         this.props.orderInfo.order && this.props.orderInfo.order.length > 0
@@ -79,7 +104,7 @@ export default class Order extends Component {
                                     </ul>
                                     <div className={'list__checkbox'}>
                                         {
-                                            this.props.orderInfo.orderValue
+                                            this.props.orderInfo.orderValue !== ''
                                                 ?
                                                 product.purchased
                                                     ? <i className="fa fa-check-square-o" aria-hidden="true"/>
@@ -94,14 +119,21 @@ export default class Order extends Component {
                             <span>Ваш заказ пуст! :(</span>
                     }
                 </div>
+            </>
+        )
+    }
+
+    renderButtonSection = () => {
+        return (
+            <>
                 {
-                    this.props.type === 'active'
+                    this.props.type === 'active-user'
                         ?
                         <div className="button-section mt-30">
                             <button
-                                className={`main-item-style mr-15 ${
-                                    this.props.type === 'finish' ? 'non-click' : ''
-                                }`}
+                                className={`main-item-style mr-15 ${this.props.orderInfo.orderValue !== ''
+                                    ? 'non-click'
+                                    : ''}`}
                                 onClick={() => this.props.setEditItem(this.props.orderInfo)}>
                                 Редактировать
                             </button>
@@ -119,7 +151,68 @@ export default class Order extends Component {
                         </div>
                         : null
                 }
+                {
+                    this.props.type === 'active-courier'
+                        ? <div className="button-section mt-30">
+                            <button
+                                className={`main-item-style mr-15`}
+                                onClick={() => {
+                                    this.props.changeOrderData(1, {
+                                        uid: this.props.orderInfo.id,
+                                        ...this.props.orderInfo,
+                                    })
+                                    toaster.notify('Вы приняли заказ!', {
+                                        position: 'bottom-right',
+                                        duration: null,
+                                    })
+                                }}>
+                                Взять
+                            </button>
+                            <button
+                                className={`main-item-style main-item-style_danger`}
+                                onClick={() => {
+                                    this.props.changeOrderData(-1, {
+                                        uid: this.props.orderInfo.id,
+                                        ...this.props.orderInfo,
+                                    })
+                                    toaster.notify('Заказ скрыт!', {
+                                        position: 'bottom-right',
+                                        duration: 3000,
+                                    })
+                                }}>
+                                Тролль!
+                            </button>
+                        </div>
+                        : null
+                }
+                {
+                    this.props.type === 'admin'
+                        ?
+                        <>
+                        </>
+                        : null
+                }
             </>
+        )
+    }
+
+    render() {
+        return (
+            <div className={'list__item'}>
+                <div className="list__title">
+                    {
+                        this.renderTitle()
+                    }
+                </div>
+                <div className="list__body">
+                    {
+                        this.renderBody()
+                    }
+                    {
+                        this.renderButtonSection()
+                    }
+                </div>
+            </div>
         )
     }
 }

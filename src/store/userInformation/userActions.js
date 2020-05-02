@@ -44,7 +44,7 @@ export function setUserInfo(info) {
                 name: info.name,
                 numberPhone: info.numberPhone,
                 address: info.address,
-                coordinate: info.coordinate
+                coordinate: info.coordinate,
             })
             dispatch(dispatchAction(SET_USER_INFO_SUCCESS, null))
             dispatch(fetchUserInfo())
@@ -73,7 +73,7 @@ export function passwordChange(oldPassword, newPassword) {
 //listType - состояния active/finish/sample отвечает за массив доставленных/активных/любых заказов
 //typeId - состояния courierId/userId/orderId отвечает за тип id, в случае all - выбирает всё
 //soughtId - искомый id
-//statusList - список желаемых статусов
+//statusList - список желаемых статусов, принимает значения от -1 до 4
 export function fetchOrderList(listType, typeId, soughtId, statusList) {
     return async (dispatch, getState) => {
         let type
@@ -84,21 +84,19 @@ export function fetchOrderList(listType, typeId, soughtId, statusList) {
         else if (listType = 'sample')
             type = SET_SAMPLE
 
-        if(statusList.length > 0) {
+        if (statusList.length > 0) {
             dispatch(dispatchAction(FETCH_USER_START, null))
             let answer
 
             if (typeId === 'all')
                 answer = await dataBase.collection('user-orders')
                     .where('status', 'in', statusList).get()
-            else
-            {
+            else {
                 if (soughtId === null)
                     soughtId = getState().authReducer.id
                 answer = await dataBase.collection('user-orders')
                     .where(typeId, '==', soughtId).where('status', 'in', statusList).get()
             }
-
 
             const listOrdersInfo = [], orderList = []
 
@@ -107,23 +105,15 @@ export function fetchOrderList(listType, typeId, soughtId, statusList) {
             })
 
             const orderRef = dataBase.collection('orders')
-            const userRef = dataBase.collection('users')
 
             for (let item of listOrdersInfo) {
                 const order = await orderRef.doc(item.orderId).get()
-                const user = await userRef.doc(item.userId).get()
                 const orderData = order.data()
-
-                if (typeId === 'courierId' || typeId === 'orderId' || typeId === 'all')
-                    orderList.push({
-                        ...user.data(), orderItem: orderData,
-                    })
-                else if (typeId === 'userId')
-                    orderList.push(orderData)
+                orderList.push(orderData)
             }
+
             dispatch(dispatchAction(type, orderList))
-        }
-        else
+        } else
             dispatch(dispatchAction(type, []))
     }
 }

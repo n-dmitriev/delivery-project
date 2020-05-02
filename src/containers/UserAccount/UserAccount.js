@@ -100,7 +100,7 @@ class UserAccount extends Component {
                                             orderList={this.props.listOfCurrentOrders}
                                             cancelOrder={this.props.cancelOrder}
                                             setEditItem={this.setEditItem}
-                                            type={'active'}
+                                            type={'active-user'}
                                             description={'активных заказов'}
                                             loading={this.props.loading}
                                             soughtId={'userId'}
@@ -111,7 +111,7 @@ class UserAccount extends Component {
                                         <RenderOrderList
                                             fetchOrderList={this.props.fetchOrderList}
                                             orderList={this.props.listOfDeliveredOrders}
-                                            type={'finish'}
+                                            type={'finish-user'}
                                             description={'завершённых заказов'}
                                             loading={this.props.loading}
                                             soughtId={'userId'}

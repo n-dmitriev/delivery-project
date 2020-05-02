@@ -59,7 +59,7 @@ export default class AdminPanelWithOrders extends Component {
             <List
                 orderList={orderList}
                 soughtId={'courierId'}
-                type={'all'}
+                type={'admin'}
                 cancelOrder={this.props.cancelOrder}
                 setEditItem={this.props.setEditItem}
                 remove={this.props.remove}
