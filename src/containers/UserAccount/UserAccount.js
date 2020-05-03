@@ -148,7 +148,7 @@ function mapDispatchToProps(dispatch) {
         setUserInfo: (info) => dispatch(setUserInfo(info)),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
         cancelOrder: (id) => dispatch(cancelOrder(id)),
-        subscribe: (listening, listType, typeId, soughtId, statusList) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList)),
+        subscribe: (listening, listType, typeId, soughtId, statusList, coordinates) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList, coordinates)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
         orderАgain: (orderInfo) => dispatch(orderАgain(orderInfo)),
     }

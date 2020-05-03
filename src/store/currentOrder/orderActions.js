@@ -44,6 +44,7 @@ export function sendOrder(info) {
             clientName: info.name,
             clientNumberPhone: info.numberPhone,
             clientAddress: info.address,
+            coordinate: info.coordinate
         }
         if (state.shopOrder.length !== 0) {
             fullOrderInfo.name = state.nameOfShop === '' ? 'Из любого магизна' : state.nameOfShop
@@ -281,9 +282,12 @@ export function orderАgain(orderInfo) {
         const fullOrderInfo = {
             startTime: getDate(),
             endTime: '',
+            orderValue: '',
+            deliveryValue: '',
             description: 'Курьер ещё не принял заказ',
             name: orderInfo.name,
-            order: order
+            order: order,
+            coordinate: orderInfo.coordinate
         }
 
             const orders = dataBase.collection("orders")

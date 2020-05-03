@@ -21,7 +21,7 @@ export default class RenderOrderList extends Component {
         if (!this.state.orderListIsOpen) {
             this.props.fetchOrderList(type, this.props.soughtId, null, this.props.statusList)
         }
-        this.props.subscribe(!this.state.orderListIsOpen, type, this.props.soughtId, null, this.props.statusList)
+        this.props.subscribe(!this.state.orderListIsOpen, type, this.props.soughtId, null, this.props.statusList, null)
     }
 
     render() {

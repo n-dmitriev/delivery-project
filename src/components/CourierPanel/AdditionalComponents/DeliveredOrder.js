@@ -31,6 +31,10 @@ export default class DeliveredOrder extends Component {
             this.setState({
                 quantityIsValid: false,
             })
+            toaster.notify('Преобретите как минимум 60% товаров!', {
+                position: 'bottom-right',
+                duration: 3000,
+            })
         } else {
             this.setState({
                 quantityIsValid: true,

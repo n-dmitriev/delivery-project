@@ -13,6 +13,7 @@ import {
 import {dispatchAction} from '../universalFunctions'
 import {FETCH_O_STOP} from '../courier/actionTypes'
 import {SET_SAMPLE} from '../admin/actionTypes'
+import {sortArrayByDistance} from '../courier/courierAction'
 
 //Фунцкция запрашивающая пользовательские данные
 export function fetchUserInfo() {
@@ -119,11 +120,13 @@ export function fetchOrderList(listType, typeId, soughtId, statusList) {
 }
 
 //Подписка
-export function subscribe(listening, listType, typeId, soughtId, statusList) {
-    return (dispatch) => {
+export function subscribe(listening, listType, typeId, soughtId, statusList, coordinates) {
+    return  (dispatch) => {
         const un = dataBase.collection('orders')
-            .onSnapshot(() => {
-                dispatch(fetchOrderList(listType, typeId, soughtId, statusList))
+            .onSnapshot(async () => {
+                await dispatch(fetchOrderList(listType, typeId, soughtId, statusList))
+                if(coordinates !== null)
+                    dispatch(sortArrayByDistance(coordinates))
             })
         if (!listening)
             un()

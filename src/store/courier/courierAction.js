@@ -1,6 +1,7 @@
 import {dataBase} from '../../firebase/firebase'
-import {getDate, getElementById} from '../universalFunctions'
+import {dispatchAction, getDate, getElementById} from '../universalFunctions'
 import {fetchOrderList, fetchUserInfo} from '../userInformation/userActions'
+import {SORT_ORDER_LIST} from './actionTypes'
 
 // 6 статусов
 // 0 - заказ отменён курьером, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
@@ -118,4 +119,27 @@ export function interactWithPurchased(id, flag) {
             arr[index].purchased = flag
         }
     }
+}
+
+export function sortArrayByDistance(coordinate) {
+   return async (dispatch, getState) => {
+       const arr = []
+       const ordersList = getState().userInfReducer.listOfCurrentOrders
+
+       for (let i of ordersList) {
+           const route = await window.ymaps.route([coordinate, i.coordinate])
+           const distance = Math.ceil(route.getLength())
+           i.distance = distance
+           arr.push(i)
+       }
+
+       arr.sort((a, b) => {
+           if (a.distance > b.distance) return 1;
+           if (a.distance === b.distance) return 0;
+           if (a.distance < b.distance) return -1;
+       })
+
+
+       dispatch(dispatchAction(SORT_ORDER_LIST, arr))
+   }
 }

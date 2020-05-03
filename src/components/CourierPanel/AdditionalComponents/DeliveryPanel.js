@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import toaster from 'toasted-notes'
+import {Map, YMaps, ZoomControl} from 'react-yandex-maps'
 
 export default class DeliveryPanel extends Component {
     constructor(props) {
@@ -11,21 +12,36 @@ export default class DeliveryPanel extends Component {
             value: '',
             valueIsValid: true,
             coordinateCourier: '',
-            positionIsValid: true,
             checkIsValid: true,
+            edit: false,
+            listIsOpen: true,
         }
     }
 
+    map = null
+    ymaps = null
+    route = null
+
+    handleApiAvaliable = ymaps => {
+        console.log('da')
+        this.ymaps = ymaps
+        ymaps
+            .route([ this.props.coordinate, this.props.ordersList[0].coordinate])
+            .then(route => {
+                this.map.geoObjects.add(route)
+            })
+    }
+
+
     calculateThePrice = async () => {
-        const answer = await window.ymaps.geocode(this.courierPosition.current.value)
+        await this.props.changePosition(this.courierPosition.current.value)
         await this.setState({
-            positionIsValid: this.courierPosition.current.value.replace(/\s+/g, '') !== '' || answer.geoObjects.get(0) !== undefined,
             valueIsValid: parseInt(this.orderValue.current.value),
             checkIsValid: this.check.current.checked,
         })
-        if (this.state.positionIsValid && this.state.valueIsValid && this.state.checkIsValid) {
-            const coordinate = answer.geoObjects.get(0).geometry.getCoordinates()
+        if (this.props.positionIsValid && this.state.valueIsValid && this.state.checkIsValid) {
             this.props.calculateThePrice(this.props.ordersList[0].id, this.orderValue.current.value, this.courierPosition.current.value)
+            this.editInfo()
         }
     }
 
@@ -45,16 +61,30 @@ export default class DeliveryPanel extends Component {
         })
     }
 
+    editInfo = () => {
+        this.setState({
+            edit: !this.state.edit,
+        })
+    }
+
+    interactionWithList = () => {
+        this.setState({
+            listIsOpen: !this.state.listIsOpen,
+        })
+    }
+
+
     render() {
         const deliveredOrder = this.props.ordersList[0]
         if (deliveredOrder)
             return (
                 <>
                     <div className="courier-panel__title">
-                        <div className={deliveredOrder.orderValue ? 'hide' : 'courier-panel__title_input'}>
+                        <div
+                            className={deliveredOrder.orderValue === '' || this.state.edit ? 'courier-panel__title_input' : 'hide'}>
                             <div className="form-group">
                                 <input placeholder={'Укажите стоимость закупки'}
-                                       defaultValue={this.state.value}
+                                       defaultValue={this.props.ordersList[0].orderValue}
                                        className={!this.state.valueIsValid ? 'input-error' : ''} type="text"
                                        ref={this.orderValue}
                                        type='number'
@@ -66,19 +96,18 @@ export default class DeliveryPanel extends Component {
                                     Цена не может быть пустой!
                                 </small>
                             </div>
-
                             <div className="form-group">
                                 <input
                                     placeholder={'Укажите ваше текущее местоположение'}
                                     defaultValue={this.props.position}
-                                    className={!this.state.positionIsValid ? 'input-error' : ''}
+                                    className={!this.props.positionIsValid ? 'input-error' : ''}
                                     type="text"
                                     ref={this.courierPosition}
                                     id="dynamic-label-input-2"/>
                                 <label className={'label'} htmlFor="dynamic-label-input-2">Ваше текущее
                                     местоположение</label>
                                 <small
-                                    className={this.state.positionIsValid ? 'hide' : 'error'}>
+                                    className={this.props.positionIsValid ? 'hide' : 'error'}>
                                     Вы указали неверное местоположение!
                                 </small>
                             </div>
@@ -99,18 +128,57 @@ export default class DeliveryPanel extends Component {
                             </div>
                             <div className="button-section">
                                 <button className="main-item-style" onClick={this.calculateThePrice}>
-                                    Далее
+                                    Применить
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div className={deliveredOrder.orderValue ? 'courier-panel__delivered' : 'hide'}>
-                        <div className={'courier-panel__delivered-title mb-15'}>
-                            <h5>Текущий заказ {deliveredOrder.id}</h5>
+                    <div
+                        className={deliveredOrder.orderValue && !this.state.edit ? 'courier-panel__delivered' : 'hide'}>
+                        <div
+                            onClick={this.editInfo}
+                            className={'courier-panel__delivered-title mb-15'}>
+                            <h5>Доставляемый заказ {deliveredOrder.id}</h5>
+                            <span>
+                                <i className="fa fa-arrow-left" aria-hidden="true"/>
+                                Редактировать
+                            </span>
                         </div>
                         <div className={'courier-panel__delivered-content'}>
-                            {this.props.renderOrderInfo(deliveredOrder)}
+                            <div className={'courier-panel__list'}>
+                                <span className={'courier-panel__list-item mb-15'}
+                                      onClick={this.interactionWithList}>
+                                    {this.state.listIsOpen
+                                        ? 'К карте'
+                                        : 'К Информации'}
+                                    <i className="fa fa-arrow-right" aria-hidden="true"/>
+                                </span>
+
+                                {
+                                    this.state.listIsOpen
+                                        ?
+                                        <>
+                                            {this.props.renderOrderInfo(deliveredOrder)}
+                                        </>
+                                        :
+                                        <div className={'courier-panel__map'}>
+                                            <YMaps query={{apikey: '87bbec27-5093-4a9c-a244-9bedba71ad27'}}>
+                                                <Map defaultState={{center: [59.220496, 39.891523], zoom: 12}}
+                                                     modules={["templateLayoutFactory", "route"]}
+                                                     instanceRef={ref => (this.map = ref)}
+                                                     onLoad={ymaps => this.handleApiAvaliable(ymaps)}
+                                                     width="100%"
+                                                     height={'330px'}
+                                                >
+                                                    <ZoomControl options={{ float: 'right' }} />
+                                                </Map>
+                                            </YMaps>
+                                        </div>
+                                }
+                            </div>
+
+
                             <div className="button-section button-section_bottom">
                                 <button className="main-item-style mr-15" onClick={this.finishOrder}>
                                     Доставлен

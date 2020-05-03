@@ -42,6 +42,13 @@ export default class Order extends Component {
         return (
             <>
                 <ul>
+                    {
+                        this.props.type === 'active-courier'
+                            ? <>
+                                <li className={'mb-15'}>Расстояние: <b>{Math.round(this.props.orderInfo.distance/1000 || 0)} км</b></li>
+                            </>
+                            : null
+                    }
                     <li className={'mb-15'}>Откуда: {this.props.orderInfo.name}</li>
                     <li className={'mb-15'}>Адресс доставки: {this.props.orderInfo.clientAddress}</li>
                     {
