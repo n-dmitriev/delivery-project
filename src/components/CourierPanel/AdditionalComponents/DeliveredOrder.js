@@ -13,7 +13,7 @@ export default class DeliveredOrder extends Component {
         this.setState({
             orderIsOpen: !this.state.orderIsOpen,
         })
-        this.props.subscribeOrderInfo(!this.state.orderIsOpen, this.props.ordersList[0].orderItem.id)
+        this.props.subscribeOrderInfo(!this.state.orderIsOpen, this.props.ordersList[0].id)
     }
 
     interactWithCheckBox = (e) => {
@@ -21,7 +21,7 @@ export default class DeliveredOrder extends Component {
     }
 
     finishBuy = () => {
-        const orderList = this.props.ordersList[0].orderItem.order
+        const orderList = this.props.ordersList[0].order
         let counter = 0
         for (let item of orderList) {
             if (item.purchased)
@@ -51,7 +51,7 @@ export default class DeliveredOrder extends Component {
                     <div
                         onClick={this.interactWithOrder}
                         className={'courier-panel__delivered-title'}>
-                        <h5>Текущий заказ {deliveredOrder.orderItem.id}</h5>
+                        <h5>Текущий заказ {deliveredOrder.id}</h5>
                         {
                             this.state.orderIsOpen
                                 ?
@@ -73,9 +73,9 @@ export default class DeliveredOrder extends Component {
                                 ?
                                 <div className={'courier-panel__delivered-content_scroll'}>
                                     {
-                                        deliveredOrder.orderItem.order.length > 0
+                                        deliveredOrder.order.length > 0
                                             ?
-                                            deliveredOrder.orderItem.order.map((product) => {
+                                            deliveredOrder.order.map((product) => {
                                                 const item = `${product.name} ${product.brand !== undefined ? product.brand : ''} 
                                                         ${product.quantity} ${product.price} ${product.description}`
                                                 return (

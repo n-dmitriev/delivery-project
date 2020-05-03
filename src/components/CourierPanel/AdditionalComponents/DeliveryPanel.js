@@ -25,7 +25,7 @@ export default class DeliveryPanel extends Component {
         })
         if (this.state.positionIsValid && this.state.valueIsValid && this.state.checkIsValid) {
             const coordinate = answer.geoObjects.get(0).geometry.getCoordinates()
-            this.props.calculateThePrice(this.props.ordersList[0].orderItem.id, this.orderValue.current.value, this.courierPosition.current.value)
+            this.props.calculateThePrice(this.props.ordersList[0].id, this.orderValue.current.value, this.courierPosition.current.value)
         }
     }
 
@@ -51,7 +51,7 @@ export default class DeliveryPanel extends Component {
             return (
                 <>
                     <div className="courier-panel__title">
-                        <div className={deliveredOrder.orderItem.orderValue ? 'hide' : 'courier-panel__title_input'}>
+                        <div className={deliveredOrder.orderValue ? 'hide' : 'courier-panel__title_input'}>
                             <div className="form-group">
                                 <input placeholder={'Укажите стоимость закупки'}
                                        defaultValue={this.state.value}
@@ -105,9 +105,9 @@ export default class DeliveryPanel extends Component {
                         </div>
                     </div>
 
-                    <div className={deliveredOrder.orderItem.orderValue ? 'courier-panel__delivered' : 'hide'}>
+                    <div className={deliveredOrder.orderValue ? 'courier-panel__delivered' : 'hide'}>
                         <div className={'courier-panel__delivered-title mb-15'}>
-                            <h5>Текущий заказ {deliveredOrder.orderItem.id}</h5>
+                            <h5>Текущий заказ {deliveredOrder.id}</h5>
                         </div>
                         <div className={'courier-panel__delivered-content'}>
                             {this.props.renderOrderInfo(deliveredOrder)}

@@ -41,7 +41,7 @@ export default class OrdersList extends Component {
                 <>
                     {
                         this.props.ordersList.map((orderInfo) => (
-                            <div key={orderInfo.orderItem.id}>
+                            <div key={orderInfo.id}>
                                 <Order
                                     orderInfo={orderInfo}
                                     changeOrderData={this.props.changeOrderData}

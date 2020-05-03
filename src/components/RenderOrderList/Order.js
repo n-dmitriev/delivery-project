@@ -47,7 +47,7 @@ export default class Order extends Component {
                     {
                         this.props.type === 'active-courier' || this.props.type === 'finish-courier' || this.props.type === 'admin'
                             ? <>
-                                <li className={'mb-15'}>Имя клиента: {this.props.orderInfo.name}</li>
+                                <li className={'mb-15'}>Имя клиента: {this.props.orderInfo.clientName}</li>
                                 <li className={'mb-15'}>Контактный телефон: {this.props.orderInfo.clientNumberPhone}</li>
                             </>
                             : null

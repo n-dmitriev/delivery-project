@@ -81,7 +81,7 @@ export function fetchOrderList(listType, typeId, soughtId, statusList) {
             type = FETCH_USER_AL_SUCCESS
         else if (listType === 'finish')
             type = FETCH_USER_FL_SUCCESS
-        else if (listType = 'sample')
+        else if (listType === 'sample')
             type = SET_SAMPLE
 
         if (statusList.length > 0) {

@@ -8,13 +8,20 @@ export default class RenderOrderList extends Component {
     }
 
     interactionWithOrderList = () => {
-        this.setState({
+        let type = this.props.type === 'active-user' || this.props.type === 'active-courier'
+            ? 'active'
+            : this.props.type === 'finish-user' || this.props.type === 'finish-courier'
+            ? 'finish'
+                : this.props.type === 'admin'
+                    ? 'sample'
+                    : null
+            this.setState({
             orderListIsOpen: !this.state.orderListIsOpen,
         })
         if (!this.state.orderListIsOpen) {
-            this.props.fetchOrderList(this.props.type, this.props.soughtId, null, this.props.statusList)
+            this.props.fetchOrderList(type, this.props.soughtId, null, this.props.statusList)
         }
-        this.props.subscribe(!this.state.orderListIsOpen, this.props.type, this.props.soughtId, null, this.props.statusList)
+        this.props.subscribe(!this.state.orderListIsOpen, type, this.props.soughtId, null, this.props.statusList)
     }
 
     render() {
