@@ -1,4 +1,8 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Для запуска проекта необходим файл "config", находящийся в папке ./src/firebase/. 
+Вы можете создать проект на firebase и в ручную добавить конфигурационный ключ.
+
+To start the project, you need the "config" file located in the folder ./src/firebase/.
+You can create a project on firebase and manually add the configuration key.
 
 ## Available Scripts
 
