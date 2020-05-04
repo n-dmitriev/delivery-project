@@ -60,6 +60,9 @@ export function changeOrderData(status, data) {
                     description = 'Ваш заказ проверяется на корректность.'
                     break
                 }
+                default: {
+                    break
+                }
             }
 
             dataBase.collection('couriers').doc(state.authReducer.id).update({
@@ -98,10 +101,15 @@ export function subscribeOrderInfo(listening, id) {
     }
 }
 
-export function calculateThePrice(id, price, position) {
+export function calculateThePrice(id, price, distance) {
     return async (dispatch) => {
         try {
-            dataBase.collection('orders').doc(id).update({orderValue: price, deliveryValue: 100})
+            let deliveryValue = Math.round(distance * 20)
+
+            if (deliveryValue < 150)
+                deliveryValue = 150
+
+            dataBase.collection('orders').doc(id).update({orderValue: price, deliveryValue: deliveryValue})
             dispatch(fetchUserInfo())
         } catch (e) {
             console.log(e)
@@ -122,24 +130,23 @@ export function interactWithPurchased(id, flag) {
 }
 
 export function sortArrayByDistance(coordinate) {
-   return async (dispatch, getState) => {
-       const arr = []
-       const ordersList = getState().userInfReducer.listOfCurrentOrders
+    return async (dispatch, getState) => {
+        const arr = []
+        const ordersList = getState().userInfReducer.listOfCurrentOrders
 
-       for (let i of ordersList) {
-           const route = await window.ymaps.route([coordinate, i.coordinate])
-           const distance = Math.ceil(route.getLength())
-           i.distance = distance
-           arr.push(i)
-       }
+        for (let i of ordersList) {
+            const route = await window.ymaps.route([coordinate, i.coordinate])
+            i.distance = Math.ceil(route.getLength()) / 1000
+            arr.push(i)
+        }
 
-       arr.sort((a, b) => {
-           if (a.distance > b.distance) return 1;
-           if (a.distance === b.distance) return 0;
-           if (a.distance < b.distance) return -1;
-       })
+        arr.sort((a, b) => {
+            if (a.distance > b.distance) return 1
+            if (a.distance < b.distance) return -1
+            else return 0
+        })
 
 
-       dispatch(dispatchAction(SORT_ORDER_LIST, arr))
-   }
+        dispatch(dispatchAction(SORT_ORDER_LIST, arr))
+    }
 }

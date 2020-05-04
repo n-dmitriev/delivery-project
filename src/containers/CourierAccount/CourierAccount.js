@@ -46,7 +46,7 @@ class CourierAccount extends Component {
                         calculateThePrice={this.props.calculateThePrice}
                     />
 
-                    <div className={'mb-30'}></div>
+                    <div className={'mb-30'}> </div>
 
                     <RenderOrderList description={'завершённых заказов'}
                                      orderList={this.props.listOfDeliveredOrders}
@@ -84,8 +84,8 @@ class CourierAccount extends Component {
 
                 <div className={'container'}>
                     <div className="row">
-                        <div className="col-lg-1 col-md-1 col-sm-0"></div>
-                        <div className="col-lg-10 col-md-10 col-sm-12">
+                        <div className="col-lg-2 col-md-1 col-sm-0"> </div>
+                        <div className="col-lg-8 col-md-10 col-sm-12">
                             <div className="app__main-content">
                                 {
                                     this.props.match.params.number === 'auth' && !this.props.isAuth
@@ -108,7 +108,7 @@ class CourierAccount extends Component {
                                 }
                             </div>
                         </div>
-                        <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                        <div className="col-lg-2 col-md-1 col-sm-0"> </div>
                     </div>
                 </div>
             </div>
@@ -140,7 +140,7 @@ function mapDispatchToProps(dispatch) {
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
-        calculateThePrice: (id, price, position) => dispatch(calculateThePrice(id, price, position)),
+        calculateThePrice: (id, price, distance) => dispatch(calculateThePrice(id, price, distance)),
     }
 }
 

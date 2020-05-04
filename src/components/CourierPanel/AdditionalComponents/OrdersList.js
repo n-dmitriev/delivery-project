@@ -56,14 +56,14 @@ export default class OrdersList extends Component {
                             <input
                                 placeholder={'Укажите ваше местоположение'}
                                 defaultValue={this.props.position}
-                                className={!this.state.positionIsValid ? 'input-error mb-15' : 'mb-15'} type="text"
+                                className={!this.props.positionIsValid ? 'input-error mb-15' : 'mb-15'} type="text"
                                 ref={this.courierPosition}
                                 id="dynamic-label-input-0"
                             />
                             <label className={'label'} htmlFor="dynamic-label-input-2">Ваше местоположение</label>
                             <small
                                 className={this.state.positionIsValid ? 'hide' : 'error mb-15'}>
-                                {!this.state.positionIsValid ? <> Вы указали неверное местоположение!</> : null}
+                                {!this.props.positionIsValid ? <> Вы указали неверное местоположение!</> : null}
                             </small>
                         </div>
                         <div className="button-section">

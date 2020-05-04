@@ -7,7 +7,7 @@ import {NavLink, Redirect} from 'react-router-dom'
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
 import {fetchOrderList, passwordChange, setUserInfo, subscribe} from '../../store/userInformation/userActions'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
-import {cancelOrder, orderАgain} from '../../store/currentOrder/orderActions'
+import {cancelOrder, reOrder} from '../../store/currentOrder/orderActions'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
 import Footer from '../../components/UI/Footer/Footer'
 
@@ -64,7 +64,7 @@ class UserAccount extends Component {
 
                         <div className={'container'}>
                             <div className="row">
-                                <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                                <div className="col-lg-1 col-md-1 col-sm-0"> </div>
                                 <div className="col-lg-10 col-md-10 col-sm-12">
                                     <div className="app__main-content">
                                         <div className="user-account__input">
@@ -117,12 +117,12 @@ class UserAccount extends Component {
                                             soughtId={'userId'}
                                             statusList={[3, 4]}
                                             subscribe={this.props.subscribe}
-                                            orderАgain={this.props.orderАgain}
+                                            reOrder={this.props.reOrder}
                                         />
                                     </div>
                                     <Footer/>
                                 </div>
-                                <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                                <div className="col-lg-1 col-md-1 col-sm-0"> </div>
                             </div>
                         </div>
                 </div>
@@ -150,7 +150,7 @@ function mapDispatchToProps(dispatch) {
         cancelOrder: (id) => dispatch(cancelOrder(id)),
         subscribe: (listening, listType, typeId, soughtId, statusList, coordinates) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList, coordinates)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
-        orderАgain: (orderInfo) => dispatch(orderАgain(orderInfo)),
+        reOrder: (orderInfo) => dispatch(reOrder(orderInfo)),
     }
 }
 

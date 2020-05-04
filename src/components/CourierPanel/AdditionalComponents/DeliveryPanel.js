@@ -14,7 +14,7 @@ export default class DeliveryPanel extends Component {
             coordinateCourier: '',
             checkIsValid: true,
             edit: false,
-            listIsOpen: true,
+            listIsOpen: false,
         }
     }
 
@@ -26,7 +26,7 @@ export default class DeliveryPanel extends Component {
         console.log('da')
         this.ymaps = ymaps
         ymaps
-            .route([ this.props.coordinate, this.props.ordersList[0].coordinate])
+            .route([this.props.coordinate, this.props.ordersList[0].coordinate])
             .then(route => {
                 this.map.geoObjects.add(route)
             })
@@ -40,7 +40,9 @@ export default class DeliveryPanel extends Component {
             checkIsValid: this.check.current.checked,
         })
         if (this.props.positionIsValid && this.state.valueIsValid && this.state.checkIsValid) {
-            this.props.calculateThePrice(this.props.ordersList[0].id, this.orderValue.current.value, this.courierPosition.current.value)
+            const route = await window.ymaps.route([this.props.coordinate, this.props.ordersList[0].coordinate])
+            const distance = Math.ceil(route.getLength()) / 1000
+            this.props.calculateThePrice(this.props.ordersList[0].id, this.orderValue.current.value, distance)
             this.editInfo()
         }
     }
@@ -85,7 +87,7 @@ export default class DeliveryPanel extends Component {
                             <div className="form-group">
                                 <input placeholder={'Укажите стоимость закупки'}
                                        defaultValue={this.props.ordersList[0].orderValue}
-                                       className={!this.state.valueIsValid ? 'input-error' : ''} type="text"
+                                       className={!this.state.valueIsValid ? 'input-error' : ''}
                                        ref={this.orderValue}
                                        type='number'
                                        id="dynamic-label-input-1"
@@ -151,31 +153,28 @@ export default class DeliveryPanel extends Component {
                                       onClick={this.interactionWithList}>
                                     {this.state.listIsOpen
                                         ? 'К карте'
-                                        : 'К Информации'}
+                                        : 'К информации'}
                                     <i className="fa fa-arrow-right" aria-hidden="true"/>
                                 </span>
 
-                                {
-                                    this.state.listIsOpen
-                                        ?
-                                        <>
-                                            {this.props.renderOrderInfo(deliveredOrder)}
-                                        </>
-                                        :
-                                        <div className={'courier-panel__map'}>
-                                            <YMaps query={{apikey: '87bbec27-5093-4a9c-a244-9bedba71ad27'}}>
-                                                <Map defaultState={{center: [59.220496, 39.891523], zoom: 12}}
-                                                     modules={["templateLayoutFactory", "route"]}
-                                                     instanceRef={ref => (this.map = ref)}
-                                                     onLoad={ymaps => this.handleApiAvaliable(ymaps)}
-                                                     width="100%"
-                                                     height={'330px'}
-                                                >
-                                                    <ZoomControl options={{ float: 'right' }} />
-                                                </Map>
-                                            </YMaps>
-                                        </div>
-                                }
+                                <div className={'courier-panel__body'}>
+                                    <div className={this.state.listIsOpen ? '' : 'hide'}>
+                                        {this.props.renderOrderInfo(deliveredOrder)}
+                                    </div>
+                                    <div className={this.state.listIsOpen ? 'hide' : 'courier-panel__map'}>
+                                        <YMaps query={{apikey: '87bbec27-5093-4a9c-a244-9bedba71ad27'}}>
+                                            <Map defaultState={{center: [59.220496, 39.891523], zoom: 12}}
+                                                 modules={['templateLayoutFactory', 'route']}
+                                                 instanceRef={ref => (this.map = ref)}
+                                                 onLoad={ymaps => this.handleApiAvaliable(ymaps)}
+                                                 width="100%"
+                                                 height={'350px'}
+                                            >
+                                                <ZoomControl options={{float: 'right'}}/>
+                                            </Map>
+                                        </YMaps>
+                                    </div>
+                                </div>
                             </div>
 
 

@@ -14,7 +14,7 @@ export default class List extends Component {
                                        cancelOrder={this.props.cancelOrder}
                                        setEditItem={this.props.setEditItem}
                                        remove={this.props.remove}
-                                       orderАgain={this.props.orderАgain}
+                                       reOrder={this.props.reOrder}
                                        changeOrderData={this.props.changeOrderData}
                                 />
                             </div>,

@@ -269,7 +269,7 @@ export function editSentOrder(orderInfo) {
     }
 }
 
-export function orderАgain(orderInfo) {
+export function reOrder(orderInfo) {
     return async (dispatch, getState) => {
         const userId = getState().authReducer.id
 

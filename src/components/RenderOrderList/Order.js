@@ -25,7 +25,7 @@ export default class Order extends Component {
                         ?
                         <i className="fa fa-refresh fa-animate" aria-hidden="true"
                            onClick={() => {
-                               this.props.orderАgain(this.props.orderInfo)
+                               this.props.reOrder(this.props.orderInfo)
                                toaster.notify('Заказ возобновлён!', {
                                    position: 'bottom-right',
                                    duration: 3000,
@@ -45,7 +45,7 @@ export default class Order extends Component {
                     {
                         this.props.type === 'active-courier'
                             ? <>
-                                <li className={'mb-15'}>Расстояние: <b>{Math.round(this.props.orderInfo.distance/1000 || 0)} км</b></li>
+                                <li className={'mb-15'}>Расстояние: <b>{Math.round(this.props.orderInfo.distance)} км</b></li>
                             </>
                             : null
                     }
