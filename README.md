@@ -4,6 +4,8 @@
 To start the project, you need the "config" file located in the folder ./src/firebase/.
 You can create a project on firebase and manually add the configuration key.
 
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
 ## Available Scripts
 
 In the project directory, you can run:
