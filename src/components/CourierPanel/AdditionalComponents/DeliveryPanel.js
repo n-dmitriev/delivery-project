@@ -143,7 +143,7 @@ export default class DeliveryPanel extends Component {
                             className={'courier-panel__delivered-title mb-15'}>
                             <h5>Доставляемый заказ {deliveredOrder.id}</h5>
                             <span>
-                                <i className="fa fa-arrow-left" aria-hidden="true"/>
+                                <i className="fa fa-arrow-left  fa-animate" aria-hidden="true"/>
                                 Редактировать
                             </span>
                         </div>
@@ -154,7 +154,7 @@ export default class DeliveryPanel extends Component {
                                     {this.state.listIsOpen
                                         ? 'К карте'
                                         : 'К информации'}
-                                    <i className="fa fa-arrow-right" aria-hidden="true"/>
+                                    <i className="fa fa-arrow-right fa-animate" aria-hidden="true"/>
                                 </span>
 
                                 <div className={'courier-panel__body'}>

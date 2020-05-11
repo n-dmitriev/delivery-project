@@ -9,7 +9,7 @@ import {
     CREATE_NEW_COURIER_S,
     CREATE_NEW_COURIER_E,
 } from './actionTypes'
-import {SET_USER_INFO_ERROR, SET_USER_INFO_SUCCESS} from '../userInformation/actionTypes'
+import {SET_USER_INFO_ERROR, SET_USER_INFO_SUCCESS} from '../user/actionTypes'
 
 // Функция аунтификации
 export function authAdmin(email, password) {
@@ -106,7 +106,7 @@ export function fetchDataBase(collection) {
     }
 }
 
-export function registrNewCourier(email, password) {
+export function registrationNewCourier(email, password) {
     return async dispatch => {
         try {
             await authWithFirebase.createUserWithEmailAndPassword(email, password)
@@ -135,7 +135,6 @@ export function registrNewCourier(email, password) {
                 }
             })
         } catch (e) {
-            console.log(e)
             dispatch(dispatchAction(CREATE_NEW_COURIER_E, null))
         }
     }

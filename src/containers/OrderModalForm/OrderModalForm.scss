@@ -10,32 +10,6 @@
     box-sizing: content-box !important;
   }
 
-  &__selector {
-    display: flex;
-    transform: translate(0, 1px);
-  }
-
-  &__select {
-    outline: 0 !important;
-    padding: 5px;
-    margin: 5px 0 0 0;
-    cursor: pointer;
-    border: 1px solid white;
-    border-bottom: 1px solid gray;
-    border-top-right-radius: 15px;
-    font-size: 23px;
-    background-color: #F0F0F0;
-    @include animate();
-
-    &:hover {
-      @include animate-hover-color(1.03)
-    }
-
-    &_active {
-      background-color: #686868;
-      color: white;
-    }
-  }
 
   & .dagger {
     margin-left: auto;
@@ -113,16 +87,13 @@
       padding: 10px;
     }
   }
-  .order-form__select{
-    white-space: nowrap;
-  }
 }
 
 @media (min-width: 600px) {
   .order-form {
     width: 450px;
   }
-  .order-form__select {
+  .select {
     font-size: 23px;
   }
 
@@ -132,7 +103,7 @@
 }
 
 @media (max-width: 600px) {
-  .order-form__select {
+  .select {
     font-size: 20px;
   }
   .order-constructor__content {
@@ -146,7 +117,7 @@
     padding: 3px 15px 15px 15px;
   }
 
-  .order-form__select {
+  .select {
     font-size: 15px;
   }
   .order-form {

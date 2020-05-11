@@ -22,7 +22,7 @@ const initialState = {
 }
 
 
-export default function userInfReducer(state = initialState, action) {
+export default function userReducer(state = initialState, action) {
     switch (action.type) {
         case FETCH_USER_START:
             return {

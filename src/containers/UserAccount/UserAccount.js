@@ -5,9 +5,9 @@ import InputInformation from '../../components/InputInformation/InputInformation
 import {logout} from '../../store/authentication/authActions'
 import {NavLink, Redirect} from 'react-router-dom'
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
-import {fetchOrderList, passwordChange, setUserInfo, subscribe} from '../../store/userInformation/userActions'
+import {fetchOrderList, passwordChange, setUserInfo, subscribe} from '../../store/user/userActions'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
-import {cancelOrder, reOrder} from '../../store/currentOrder/orderActions'
+import {cancelOrder, reOrder} from '../../store/order/orderActions'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
 import Footer from '../../components/UI/Footer/Footer'
 
@@ -133,12 +133,12 @@ class UserAccount extends Component {
 function mapStateToProps(state) {
     return {
         id: state.authReducer.id,
-        userInfo: state.userInfReducer.info,
-        errorPassword: state.userInfReducer.error,
-        listOfDeliveredOrders: state.userInfReducer.listOfDeliveredOrders,
-        listOfCurrentOrders: state.userInfReducer.listOfCurrentOrders,
-        loading: state.userInfReducer.loading,
-        remove: state.userInfReducer.remove,
+        userInfo: state.userReducer.info,
+        errorPassword: state.userReducer.error,
+        listOfDeliveredOrders: state.userReducer.listOfDeliveredOrders,
+        listOfCurrentOrders: state.userReducer.listOfCurrentOrders,
+        loading: state.userReducer.loading,
+        remove: state.userReducer.remove,
     }
 }
 

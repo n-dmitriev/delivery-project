@@ -6,13 +6,13 @@ import {NavLink, Redirect} from 'react-router-dom'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
 import {authActions, logout} from '../../store/authentication/authActions'
-import {fetchOrderList, passwordChange} from '../../store/userInformation/userActions'
+import {fetchOrderList, passwordChange} from '../../store/user/userActions'
 import CourierPanel from '../../components/CourierPanel/CourierPanel'
 import {
     changeOrderData,
     interactWithPurchased, calculateThePrice, subscribeOrderInfo,
 } from '../../store/courier/courierAction'
-import {subscribe} from '../../store/userInformation/userActions'
+import {subscribe} from '../../store/user/userActions'
 
 class CourierAccount extends Component {
     state = {
@@ -121,12 +121,12 @@ function mapStateToProps(state) {
         id: state.authReducer.id,
         isAuth: state.authReducer.isAuth,
         error: state.authReducer.isError,
-        userInfo: state.userInfReducer.info,
-        errorPassword: state.userInfReducer.error,
-        loading: state.courier.loading,
-        listLoading: state.userInfReducer.loading,
-        listOfCurrentOrders: state.userInfReducer.listOfCurrentOrders,
-        listOfDeliveredOrders: state.userInfReducer.listOfDeliveredOrders,
+        userInfo: state.userReducer.info,
+        errorPassword: state.userReducer.error,
+        loading: state.courierReducer.loading,
+        listLoading: state.userReducer.loading,
+        listOfCurrentOrders: state.userReducer.listOfCurrentOrders,
+        listOfDeliveredOrders: state.userReducer.listOfDeliveredOrders,
     }
 }
 

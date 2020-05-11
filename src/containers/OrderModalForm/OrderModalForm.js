@@ -7,17 +7,17 @@ import {
     editOrderItem,
     removeProductFromOrder,
     sendOrder,
-} from '../../store/currentOrder/orderActions'
+} from '../../store/order/orderActions'
 import ProductForm from '../../components/ProductForm/ProductForm'
 import {
     addProductToSentOrder,
     editSentOrder,
     editSentOrderItem,
     removeProductFromSentOrder,
-} from '../../store/currentOrder/orderActions'
+} from '../../store/order/orderActions'
 import toaster from 'toasted-notes'
 import InputInformation from '../../components/InputInformation/InputInformation'
-import {setUserInfo} from '../../store/userInformation/userActions'
+import {setUserInfo} from '../../store/user/userActions'
 
 //Данный контэйнер отвечает за рендеринг модального окна и отправку функций/перменных в качестве пропсов дочерним эл-там
 class OrderModalForm extends Component {
@@ -189,7 +189,7 @@ class OrderModalForm extends Component {
                             </div>
                             <div className={'order-constructor__order-list'}>
                                 {this.props.restaurantOrder.map((item, count) => (
-                                    <div key={item.id} id={count} className={'order-constructor__tab'}
+                                    <div key={item.id} id={count} className={'tab'}
                                          onClick={this.editItem}>
                                         {item.name} {item.quantity} {item.price} {item.description}
                                         <span id={item.id} className={'dagger dagger_delete'}
@@ -254,20 +254,20 @@ class OrderModalForm extends Component {
                                 {
                                     this.props.isEdit === true
                                         ? null
-                                        : <div className={'order-form__selector'}>
+                                        : <div className={'selector'}>
                                             <div
                                                 id={'shop-tab'}
                                                 className={this.state.activeTab === 'shop-tab'
-                                                    ? 'order-form__select order-form__select_active'
-                                                    : 'order-form__select'}
+                                                    ? 'select select_active'
+                                                    : 'select'}
                                                 onClick={this.clickItemHandler}>
                                                 <span className={'non-click'}>Из магазина</span>
                                             </div>
                                             <div
                                                 id={'restaurant-tab'}
                                                 className={this.state.activeTab === 'restaurant-tab'
-                                                    ? 'order-form__select order-form__select_active'
-                                                    : 'order-form__select'}
+                                                    ? 'select select_active'
+                                                    : 'select'}
                                                 onClick={this.clickItemHandler}>
                                                 <span className={'non-click'}>Из заведения</span>
                                             </div>
@@ -305,11 +305,11 @@ class OrderModalForm extends Component {
 
 function mapStateToProps(state) {
     return {
-        shopOrder: state.currentOrder.shopOrder,
-        restaurantOrder: state.currentOrder.restaurantOrder,
-        nameOfRestaurant: state.currentOrder.nameOfRestaurant,
-        nameOfShop: state.currentOrder.nameOfShop,
-        userInfo: state.userInfReducer.info,
+        shopOrder: state.orderReducer.shopOrder,
+        restaurantOrder: state.orderReducer.restaurantOrder,
+        nameOfRestaurant: state.orderReducer.nameOfRestaurant,
+        nameOfShop: state.orderReducer.nameOfShop,
+        userInfo: state.userReducer.info,
     }
 }
 

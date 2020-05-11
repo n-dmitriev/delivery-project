@@ -5,7 +5,7 @@ import AuthShape from '../../components/AuthShape/AuthShape'
 import {
     authAdmin,
     fetchDataBase,
-    registrNewCourier,
+    registrationNewCourier,
     removeCourier,
     setCourierInfo,
 } from '../../store/admin/adminActions'
@@ -15,7 +15,7 @@ import {REMOVE_ERROR} from '../../store/admin/actionTypes'
 import RenderCourierList from '../../components/RenderCourierList/RenderCourierList'
 import EditCourierModal from '../../components/RenderCourierList/EditCourierModal/EditCourierModal'
 import AdminPanelWithOrders from '../../components/AdminPanelWithOrders/AdminPanelWithOrders'
-import {fetchOrderList} from '../../store/userInformation/userActions'
+import {fetchOrderList} from '../../store/user/userActions'
 import toaster from 'toasted-notes'
 
 class Admin extends Component {
@@ -117,7 +117,7 @@ class Admin extends Component {
                 />
                 <div className={'container'}>
                     <div className="row">
-                        <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                        <div className="col-lg-1 col-md-1 col-sm-0"> </div>
                         <div className="col-lg-10 col-md-12 col-sm-12">
                             <div className="app__main-content">
                                 <h1>Панель админа</h1>
@@ -138,7 +138,7 @@ class Admin extends Component {
                                 }
                             </div>
                         </div>
-                        <div className="col-lg-1 col-md-1 col-sm-0"></div>
+                        <div className="col-lg-1 col-md-1 col-sm-0"> </div>
                     </div>
                 </div>
             </div>
@@ -148,11 +148,11 @@ class Admin extends Component {
 
 function mapStateToProps(state) {
     return {
-        adminId: state.authAdmin.adminId,
-        error: state.authAdmin.error,
-        users: state.authAdmin.users,
-        couriers: state.authAdmin.couriers,
-        orderList: state.authAdmin.orderList,
+        adminId: state.adminReducer.adminId,
+        error: state.adminReducer.error,
+        users: state.adminReducer.users,
+        couriers: state.adminReducer.couriers,
+        orderList: state.adminReducer.orderList,
     }
 }
 
@@ -161,7 +161,7 @@ function mapDispatchToProps(dispatch) {
         authAdmin: (login, email) => dispatch(authAdmin(login, email)),
         fetchDataBase: (collection) => dispatch(fetchDataBase(collection)),
         removeError: () => dispatch(dispatchAction(REMOVE_ERROR, null)),
-        registrNewCourier: (email, password) => dispatch(registrNewCourier(email, password)),
+        registrNewCourier: (email, password) => dispatch(registrationNewCourier(email, password)),
         setCourierInfo: (info) => dispatch(setCourierInfo(info)),
         removeCourier: (id) => dispatch(removeCourier(id)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),

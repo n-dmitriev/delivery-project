@@ -1,5 +1,5 @@
 import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS, AUTH_START} from './actionTypes'
-import {fetchUserInfo} from '../userInformation/userActions'
+import {fetchUserInfo} from '../user/userActions'
 import {authWithFirebase, dataBase} from '../../firebase/firebase'
 import {dispatchAction} from '../universalFunctions'
 

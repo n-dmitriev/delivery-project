@@ -1,10 +1,8 @@
 import {combineReducers} from 'redux'
-import currentOrder from './currentOrder/orderReducer'
+import orderReducer from './order/orderReducer'
 import authReducer from './authentication/authReducer'
-import userInfReducer from './userInformation/userReducer'
-import authAdmin from './admin/adminReducer'
-import courier from './courier/courierReducer'
+import userReducer from './user/userReducer'
+import adminReducer from './admin/adminReducer'
+import courierReducer from './courier/courierReducer'
 
-export default combineReducers({
-    currentOrder,authReducer,userInfReducer, authAdmin, courier
-})
+export default combineReducers({orderReducer,authReducer,userReducer, adminReducer, courierReducer})

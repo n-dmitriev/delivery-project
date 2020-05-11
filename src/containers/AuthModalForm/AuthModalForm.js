@@ -2,10 +2,10 @@ import React, {Component} from 'react'
 import './AuthModalForm.scss'
 import {connect} from 'react-redux'
 import {authActions, removeError} from '../../store/authentication/authActions'
-import {sendOrder} from '../../store/currentOrder/orderActions'
+import {sendOrder} from '../../store/order/orderActions'
 import InputInformation from '../../components/InputInformation/InputInformation'
 import AuthShape from '../../components/AuthShape/AuthShape'
-import {setUserInfo} from '../../store/userInformation/userActions'
+import {setUserInfo} from '../../store/user/userActions'
 import toaster from 'toasted-notes'
 
 

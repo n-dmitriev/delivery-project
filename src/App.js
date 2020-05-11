@@ -8,7 +8,7 @@ import {Route, Switch} from 'react-router-dom'
 import UserAccount from './containers/UserAccount/UserAccount'
 import CourierAccount from './containers/CourierAccount/CourierAccount'
 import MainPage from './components/MainPage/MainPage'
-import {fetchUserInfo} from './store/userInformation/userActions'
+import {fetchUserInfo} from './store/user/userActions'
 import Admin from './containers/Admin/Admin'
 import {autoLogin} from './store/admin/adminActions'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -81,7 +81,7 @@ function mapStateToProps(state) {
         isAuth: state.authReducer.isAuth,
         isError: state.authReducer.isError,
         id: state.authReducer.id,
-        userInfo: state.userInfReducer.info,
+        userInfo: state.userReducer.info,
         path: state.authReducer.path,
     }
 }

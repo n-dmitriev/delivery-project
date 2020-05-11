@@ -1,6 +1,6 @@
 import {dataBase} from '../../firebase/firebase'
 import {dispatchAction, getDate, getElementById} from '../universalFunctions'
-import {fetchOrderList, fetchUserInfo} from '../userInformation/userActions'
+import {fetchOrderList, fetchUserInfo} from '../user/userActions'
 import {SORT_ORDER_LIST} from './actionTypes'
 
 // 6 статусов

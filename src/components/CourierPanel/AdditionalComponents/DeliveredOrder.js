@@ -60,13 +60,13 @@ export default class DeliveredOrder extends Component {
                             this.state.orderIsOpen
                                 ?
                                 <span>
-                                        <i className="fa fa-arrow-left" aria-hidden="true"/>
+                                        <i className="fa fa-arrow-left fa-animate" aria-hidden="true"/>
                                         Вернуться к информации
                                     </span>
                                 :
                                 <span>
                                         Перейти к заказу
-                                        <i className="fa fa-arrow-right" aria-hidden="true"/>
+                                        <i className="fa fa-arrow-right fa-animate" aria-hidden="true"/>
                                     </span>
                         }
                     </div>

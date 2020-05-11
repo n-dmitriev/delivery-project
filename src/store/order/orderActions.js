@@ -7,9 +7,9 @@ import {
     SEND_ORDER,
 } from './actionTypes'
 import {dataBase} from '../../firebase/firebase'
-import {fetchOrderList, fetchUserInfo} from '../userInformation/userActions'
+import {fetchOrderList, fetchUserInfo} from '../user/userActions'
 import {dispatchAction, getDate, getElementById} from '../universalFunctions'
-import {ADD_P_TO_SENT_ORDER, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} from '../userInformation/actionTypes'
+import {ADD_P_TO_SENT_ORDER, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} from '../user/actionTypes'
 
 //Обновление localStorage при внесении изменений в заказ
 function updateLocalStorage(getState, list) {
