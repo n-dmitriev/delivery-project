@@ -1,8 +1,8 @@
-Для запуска проекта необходим файл "config", находящийся в папке ./src/firebase/. 
-Вы можете создать проект на firebase и в ручную добавить конфигурационный ключ.
+Для запуска проекта необходим файл "config"(содержащий api ключи),файл находится в папке ./src/firebase/. 
+Вы можете создать проект на firebase и в ручную добавить конфигурационный ключ в файл "config".
 
-To start the project, you need the "config" file located in the folder ./src/firebase/.
-You can create a project on firebase and manually add the configuration key.
+To start the project, you need a "config" file (containing api keys). the file is located in the folder./src/firebase/.
+You can create a project on firebase and manually add the configuration key to the "config" file.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
