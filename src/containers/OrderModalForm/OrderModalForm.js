@@ -18,6 +18,7 @@ import {
 import toaster from 'toasted-notes'
 import InputInformation from '../../components/InputInformation/InputInformation'
 import {setUserInfo} from '../../store/user/userActions'
+import TabPanel from '../../components/UI/TabPanel/TabPanel'
 
 //Данный контэйнер отвечает за рендеринг модального окна и отправку функций/перменных в качестве пропсов дочерним эл-там
 class OrderModalForm extends Component {
@@ -254,24 +255,18 @@ class OrderModalForm extends Component {
                                 {
                                     this.props.isEdit === true
                                         ? null
-                                        : <div className={'selector'}>
-                                            <div
-                                                id={'shop-tab'}
-                                                className={this.state.activeTab === 'shop-tab'
-                                                    ? 'select select_active'
-                                                    : 'select'}
-                                                onClick={this.clickItemHandler}>
-                                                <span className={'non-click'}>Из магазина</span>
-                                            </div>
-                                            <div
-                                                id={'restaurant-tab'}
-                                                className={this.state.activeTab === 'restaurant-tab'
-                                                    ? 'select select_active'
-                                                    : 'select'}
-                                                onClick={this.clickItemHandler}>
-                                                <span className={'non-click'}>Из заведения</span>
-                                            </div>
-                                        </div>
+                                        :
+                                        <TabPanel
+                                            clickItemHandler={this.clickItemHandler}
+                                            activeTab={this.state.activeTab}
+                                            tabList={[{
+                                                title: 'Из магазина',
+                                                id: 'shop-tab',
+                                            }, {
+                                                title: 'Из заведения',
+                                                id: 'restaurant-tab',
+                                            }]}
+                                        />
                                 }
 
                                 <div className={'order-constructor'}>

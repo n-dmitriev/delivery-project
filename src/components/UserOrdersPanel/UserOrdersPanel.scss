@@ -1,3 +1,23 @@
 .user-panel {
+  display: flex;
+  flex-direction: column;
 
+  &__body {
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    height: 620px;
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .user-panel__body {
+    width: 55vmax;
+  }
+}
+@media (max-width: 400px) and (min-height: 700px){
+  .user-panel__body {
+    width: 44vmax !important;
+  }
 }

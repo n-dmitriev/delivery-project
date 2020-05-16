@@ -28,7 +28,7 @@ function updateLocalStorage(getState, list) {
 //Отправка заказа на сервер
 export function sendOrder(info) {
     return async (dispatch, getState) => {
-        const state = getState().currentOrder
+        const state = getState().orderReducer
         const userId = getState().authReducer.id
 
 
@@ -126,7 +126,7 @@ export function addProductToOrder(item, list) {
 //Функция локально редактирующая продукт в заказе
 export function editOrderItem(item, list) {
     return (dispatch, getState) => {
-        const state = getState().currentOrder
+        const state = getState().orderReducer
         let arr, type
         if (list === 'shop-tab') {
             arr = state.shopOrder
@@ -154,7 +154,7 @@ export function deleteOrder() {
 //Функция локально удаляющая продукт из заказа
 export function removeProductFromOrder(id, list) {
     return (dispatch, getState) => {
-        const state = getState().currentOrder
+        const state = getState().orderReducer
         let arr, type
         if (list === 'shop-tab') {
             arr = state.shopOrder
@@ -177,7 +177,7 @@ export function removeProductFromOrder(id, list) {
 export function changeRestaurantName(name) {
     return (dispatch, getState) => {
         dispatch(dispatchAction(CHANGE_RESTAURANT_NAME, name))
-        localStorage.setItem('nameOfRestaurant', JSON.stringify(getState().currentOrder.nameOfRestaurant))
+        localStorage.setItem('nameOfRestaurant', JSON.stringify(getState().orderReducer.nameOfRestaurant))
     }
 }
 
@@ -185,7 +185,7 @@ export function changeRestaurantName(name) {
 export function changeShopName(name) {
     return (dispatch, getState) => {
         dispatch(dispatchAction(CHANGE_SHOP_NAME, name))
-        localStorage.setItem('nameOfShop', JSON.stringify(getState().currentOrder.nameOfShop))
+        localStorage.setItem('nameOfShop', JSON.stringify(getState().orderReducer.nameOfShop))
     }
 }
 
@@ -194,7 +194,7 @@ export function changeShopName(name) {
 //Функция локально добавляющая продукт в уже отправленный заказ, без отправки на сервер
 export function addProductToSentOrder(listId, item) {
     return (dispatch, getState) => {
-        const state = getState().userInfReducer
+        const state = getState().userReducer
         const ordersList = state.listOfCurrentOrders
         const indexOrder = getElementById(ordersList, listId)
         if (indexOrder === -1) {
@@ -211,7 +211,7 @@ export function addProductToSentOrder(listId, item) {
 export function editSentOrderItem(listId, item) {
     return (dispatch, getState) => {
         try {
-            const state = getState().userInfReducer
+            const state = getState().userReducer
             const ordersList = state.listOfCurrentOrders
             const indexOrder = getElementById(ordersList, listId)
             if (indexOrder === -1) {
@@ -235,7 +235,7 @@ export function editSentOrderItem(listId, item) {
 export function removeProductFromSentOrder(listId, id) {
     return (dispatch, getState) => {
         try {
-            const state = getState().userInfReducer
+            const state = getState().userReducer
             const ordersList = state.listOfCurrentOrders
             const indexOrder = getElementById(ordersList, listId)
             if (indexOrder === -1) {

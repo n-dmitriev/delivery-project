@@ -29,12 +29,12 @@ export function changeOrderData(status, data) {
                     break
                 }
                 case 1: {
-                    description = `Курьер ${state.userInfReducer.info.name} принял ваш заказ. Контактный номер курьера: ${state.userInfReducer.info.numberPhone}`
+                    description = `Курьер ${state.userReducer.info.name} принял ваш заказ. Контактный номер курьера: ${state.userReducer.info.numberPhone}`
                     courierStatus = 1
                     break
                 }
                 case 2: {
-                    description = `Курьер ${state.userInfReducer.info.name} доставляет ваш заказ. Контактный номер курьера: ${state.userInfReducer.info.numberPhone}`
+                    description = `Курьер ${state.userReducer.info.name} доставляет ваш заказ. Контактный номер курьера: ${state.userReducer.info.numberPhone}`
                     courierStatus = 2
                     orderInfo.order = order
                     break
@@ -104,10 +104,13 @@ export function subscribeOrderInfo(listening, id) {
 export function calculateThePrice(id, price, distance) {
     return async (dispatch) => {
         try {
-            let deliveryValue = Math.round(distance * 20)
+            const priceFor1Km = 20
+            const minPrice = 150
 
-            if (deliveryValue < 150)
-                deliveryValue = 150
+            let deliveryValue = Math.round(distance * priceFor1Km)
+
+            if (deliveryValue < minPrice)
+                deliveryValue = minPrice
 
             dataBase.collection('orders').doc(id).update({orderValue: price, deliveryValue: deliveryValue})
             dispatch(fetchUserInfo())
@@ -121,7 +124,7 @@ export function calculateThePrice(id, price, distance) {
 export function interactWithPurchased(id, flag) {
     return (dispatch, getState) => {
         const state = getState(),
-            arr = state.userInfReducer.listOfCurrentOrders[0].order,
+            arr = state.userReducer.listOfCurrentOrders[0].order,
             index = getElementById(arr, id)
         if (index !== -1) {
             arr[index].purchased = flag
@@ -132,7 +135,7 @@ export function interactWithPurchased(id, flag) {
 export function sortArrayByDistance(coordinate) {
     return async (dispatch, getState) => {
         const arr = []
-        const ordersList = getState().userInfReducer.listOfCurrentOrders
+        const ordersList = getState().userReducer.listOfCurrentOrders
 
         for (let i of ordersList) {
             const route = await window.ymaps.route([coordinate, i.coordinate])
