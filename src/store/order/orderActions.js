@@ -14,9 +14,9 @@ import {ADD_P_TO_SENT_ORDER, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} fro
 //Обновление localStorage при внесении изменений в заказ
 function updateLocalStorage(getState, list) {
     if (list === 'shop-tab')
-        localStorage.setItem('shopOrder', JSON.stringify(getState().currentOrder.shopOrder))
+        localStorage.setItem('shopOrder', JSON.stringify(getState().orderReducer.shopOrder))
     else if (list === 'restaurant-tab')
-        localStorage.setItem('restaurantOrder', JSON.stringify(getState().currentOrder.restaurantOrder))
+        localStorage.setItem('restaurantOrder', JSON.stringify(getState().orderReducer.restaurantOrder))
     else {
         localStorage.removeItem('shopOrder')
         localStorage.removeItem('restaurantOrder')
