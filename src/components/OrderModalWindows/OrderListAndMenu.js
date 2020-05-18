@@ -32,7 +32,6 @@ export default class OrderListAndMenu extends Component {
     }
 
     render(){
-
         let list
         this.props.isEdit ? list = this.props.editItem.order : list = this.props.shopOrder
         return (

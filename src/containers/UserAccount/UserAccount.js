@@ -9,7 +9,7 @@ import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChan
 import {cancelOrder, reOrder} from '../../store/order/orderActions'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
 import Footer from '../../components/UI/Footer/Footer'
-import UserOrdersPanel from '../../components/UserOrdersPanel/UserOrdersPanel'
+import UserOrdersPanel from '../../components/UserPanelWithOrders/UserOrdersPanel'
 
 class UserAccount extends Component {
     state = {

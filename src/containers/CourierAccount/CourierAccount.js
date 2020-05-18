@@ -7,7 +7,7 @@ import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChan
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
 import {authActions, logout} from '../../store/authentication/authActions'
 import {fetchOrderList, passwordChange} from '../../store/user/userActions'
-import CourierPanel from '../../components/CourierPanel/CourierPanel'
+import CourierPanel from '../../components/CourierPanelWithOrders/CourierPanel'
 import {
     changeOrderData,
     interactWithPurchased, calculateThePrice, subscribeOrderInfo,

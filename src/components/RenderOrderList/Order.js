@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import toaster from 'toasted-notes'
+import Item from './Item'
 
 export default class Order extends Component {
     state = {
@@ -99,28 +100,9 @@ export default class Order extends Component {
                         this.props.orderInfo.order && this.props.orderInfo.order.length > 0
                             ?
                             this.props.orderInfo.order.map((product) => (
-                                <div key={product.id} className={'list__unwrapping-item'}>
-                                    <ul className={'list__product-list'}>
-                                        <li>{product.name}</li>
-                                        {
-                                            product.brand !== undefined ? <li>{product.brand}</li> : ''
-                                        }
-                                        <li>{product.quantity}</li>
-                                        <li>{product.price}</li>
-                                        <li>{product.description}</li>
-                                    </ul>
-                                    <div className={'list__checkbox'}>
-                                        {
-                                            this.props.orderInfo.orderValue !== ''
-                                                ?
-                                                product.purchased
-                                                    ? <i className="fa fa-check-square-o" aria-hidden="true"/>
-                                                    : <i className="fa fa-times" aria-hidden="true"/>
-                                                :
-                                                <i className="fa fa-square-o" aria-hidden="true"/>
-                                        }
-                                    </div>
-                                </div>
+                               <div key={product.id}>
+                                   <Item product={product} orderValue={this.props.orderInfo.orderValue}/>
+                               </div>
                             ))
                             :
                             <span>Ваш заказ пуст! :(</span>

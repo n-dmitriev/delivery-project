@@ -132,7 +132,7 @@ export default class form extends Component {
     }
 
     render() {
-        const isEdit = this.props.item === null
+        const isEdit = this.props.item !== null
         const listQuestions = this.props.activeTab === 'shop-tab' ? this.state.listOfShopQuestions : this.state.listOfRestaurantQuestions
 
         return (

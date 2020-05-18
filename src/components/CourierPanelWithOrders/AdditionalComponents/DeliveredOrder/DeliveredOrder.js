@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import toaster from 'toasted-notes'
+import DeliveredItem from './DeliveredItem'
 
 export default class DeliveredOrder extends Component {
     state = {
@@ -14,10 +15,6 @@ export default class DeliveredOrder extends Component {
             orderIsOpen: !this.state.orderIsOpen,
         })
         this.props.subscribeOrderInfo(!this.state.orderIsOpen, this.props.ordersList[0].id)
-    }
-
-    interactWithCheckBox = (e) => {
-        this.props.interactWithPurchased(e.target.id, e.target.checked)
     }
 
     finishBuy = () => {
@@ -79,23 +76,11 @@ export default class DeliveredOrder extends Component {
                                     {
                                         deliveredOrder.order.length > 0
                                             ?
-                                            deliveredOrder.order.map((product) => {
-                                                const item = `${product.name} ${product.brand !== undefined ? product.brand : ''} 
-                                                        ${product.quantity} ${product.price} ${product.description}`
-                                                return (
-                                                    <div className="courier-panel__item" key={product.id}>
-                                                        <div className={'checkbox'}>
-                                                            <input
-                                                                onClick={this.interactWithCheckBox}
-                                                                defaultChecked={product.purchased === true ? 'checked' : ''}
-                                                                type="checkbox" id={product.id} name="todo"/>
-                                                            <label htmlFor="todo" data-content={item}>
-                                                                {item}
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
+                                            deliveredOrder.order.map((product) =>
+                                               <div key={product.id}>
+                                                   <DeliveredItem product={product} interactWithPurchased={this.props.interactWithPurchased}/>
+                                               </div>
+                                            )
                                             :
                                             <span>Оу заказ пуст!:(</span>
                                     }
