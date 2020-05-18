@@ -98,10 +98,12 @@ class UserAccount extends Component {
 
                                     <UserOrdersPanel
                                         fetchOrderList={this.props.fetchOrderList}
+                                        editItem={this.props.editItem}
                                         subscribe={this.props.subscribe}
                                         cancelOrder={this.props.cancelOrder}
                                         reOrder={this.props.reOrder}
                                         setEditItem={this.setEditItem}
+                                        loading={this.props.loading}
                                         arrOfLists={[
                                             {
                                                 orderList: this.props.listOfCurrentOrders,

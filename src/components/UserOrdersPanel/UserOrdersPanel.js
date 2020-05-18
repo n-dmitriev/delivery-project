@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import './UserOrdersPanel.scss'
 import List from '../RenderOrderList/List'
 import TabPanel from '../UI/TabPanel/TabPanel'
+import MiniPreloader from '../UI/Preloaders/MiniPrleloader'
 
 export default class UserOrdersPanel extends Component {
     state = {
@@ -21,8 +22,7 @@ export default class UserOrdersPanel extends Component {
         } else if (activeTab === 'finish-tab') {
             type = 'finish'
             statusList = [3, 4]
-        }
-        else
+        } else
             type = event.target.id === 'current-tab' ? 'active' : 'finish'
 
         if (activeTab !== '') {
@@ -48,29 +48,32 @@ export default class UserOrdersPanel extends Component {
 
                 <div className={'user-panel__body'}>
                     {
-                        this.state.activeTab === 'current-tab'
-                            ? <List
-                                orderList={this.props.arrOfLists[0].orderList}
-                                type={this.props.arrOfLists[0].type}
-                                soughtId={this.props.arrOfLists[0].soughtId}
-                                cancelOrder={this.props.cancelOrder}
-                                setEditItem={this.props.setEditItem}
-                                remove={this.props.remove}
-                                changeOrderData={this.props.changeOrderData}
-                                reOrder={this.props.reOrder}
-                            />
-                            : this.state.activeTab === 'finish-tab'
-                            ? <List
-                                orderList={this.props.arrOfLists[1].orderList}
-                                type={this.props.arrOfLists[1].type}
-                                soughtId={this.props.arrOfLists[1].soughtId}
-                                cancelOrder={this.props.cancelOrder}
-                                setEditItem={this.props.setEditItem}
-                                remove={this.props.remove}
-                                changeOrderData={this.props.changeOrderData}
-                                reOrder={this.props.reOrder}
-                            />
-                            : <p className={'placeholder'}>Ничего не выбрано!</p>
+                        this.props.loading ?
+                            <MiniPreloader/>
+                            :
+                            this.state.activeTab === 'current-tab'
+                                ? <List
+                                    orderList={this.props.arrOfLists[0].orderList}
+                                    type={this.props.arrOfLists[0].type}
+                                    soughtId={this.props.arrOfLists[0].soughtId}
+                                    cancelOrder={this.props.cancelOrder}
+                                    setEditItem={this.props.setEditItem}
+                                    remove={this.props.remove}
+                                    changeOrderData={this.props.changeOrderData}
+                                    reOrder={this.props.reOrder}
+                                />
+                                : this.state.activeTab === 'finish-tab'
+                                ? <List
+                                    orderList={this.props.arrOfLists[1].orderList}
+                                    type={this.props.arrOfLists[1].type}
+                                    soughtId={this.props.arrOfLists[1].soughtId}
+                                    cancelOrder={this.props.cancelOrder}
+                                    setEditItem={this.props.setEditItem}
+                                    remove={this.props.remove}
+                                    changeOrderData={this.props.changeOrderData}
+                                    reOrder={this.props.reOrder}
+                                />
+                                : <p className={'placeholder'}>Ничего не выбрано!</p>
                     }
                 </div>
             </div>

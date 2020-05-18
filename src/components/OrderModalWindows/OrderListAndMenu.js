@@ -3,18 +3,11 @@ import toaster from 'toasted-notes'
 
 export default class OrderListAndMenu extends Component {
 
-    //При нажатии на название магазина, сбрасываем его и открываем форму редактирования
-    editShopName = () => {
+    //При нажатии на название, открываем форму редактирования
+    editName = () => {
         if (this.props.isEdit !== true) {
-            this.props.changeShopName('')
-            this.interactionWithDagger()
+            this.props.interactionWithDagger('name')
         }
-    }
-
-    //При нажатии на название, сбрасываем его и открываем форму редактирования
-    editRestaurantName = () => {
-        this.props.changeRestaurantName('')
-        this.interactionWithDagger()
     }
 
     // Обработчик, удаляет выбранный продукт из заказа
@@ -31,7 +24,15 @@ export default class OrderListAndMenu extends Component {
         })
     }
 
+    addedNewOrderItem = () => {
+        if((this.props.nameOfShop === '' && this.props.activeTab === 'shop-tab') || (this.props.nameOfRestaurant === '' && this.props.activeTab === 'restaurant-tab'))
+            this.props.interactionWithDagger('name')
+        else
+            this.props.interactionWithDagger('form')
+    }
+
     render(){
+
         let list
         this.props.isEdit ? list = this.props.editItem.order : list = this.props.shopOrder
         return (
@@ -43,14 +44,14 @@ export default class OrderListAndMenu extends Component {
                         ? <>
                             <div
                                 className={'order-constructor__name'}
-                                onClick={this.editShopName}>
+                                onClick={this.editName}>
                                 {this.props.isEdit ? this.props.editItem.name : this.props.nameOfShop}
                                 <i className="fa fa-pencil-square-o fa-animate" aria-hidden="true"/>
                             </div>
                             <div className={'order-constructor__order-list'}>
                                 {list.map((item, count) => (
                                     <div key={item.id} id={count} className={'order-constructor__tab'}
-                                         onClick={this.props.editItem}>
+                                         onClick={this.props.editItemHandler}>
                                         {item.name}, {item.quantity}, {item.brand}
                                         <span id={item.id} className={'dagger dagger_delete'}
                                               onClick={this.deleteItem}/>
@@ -61,14 +62,14 @@ export default class OrderListAndMenu extends Component {
                         : null
                         : this.props.nameOfRestaurant !== ''
                         ? <>
-                            <div className={'order-constructor__name'} onClick={this.editRestaurantName}>
+                            <div className={'order-constructor__name'} onClick={this.editName}>
                                 {this.props.nameOfRestaurant}
                                 <i className="fa fa-pencil-square-o fa-animate" aria-hidden="true"/>
                             </div>
                             <div className={'order-constructor__order-list'}>
                                 {this.props.restaurantOrder.map((item, count) => (
-                                    <div key={item.id} id={count} className={'tab'}
-                                         onClick={this.editItem}>
+                                    <div key={item.id} id={count} className={'order-constructor__tab'}
+                                         onClick={this.props.editItemHandler}>
                                         {item.name} {item.quantity} {item.price} {item.description}
                                         <span id={item.id} className={'dagger dagger_delete'}
                                               onClick={this.deleteItem}/>
@@ -92,14 +93,14 @@ export default class OrderListAndMenu extends Component {
                             </button>
                             <span
                                 className={'dagger dagger_add'}
-                                onClick={this.props.interactionWithDagger}>
+                                onClick={this.addedNewOrderItem}>
                             </span>
                         </div>
                         : <>
                             <p className={'placeholder'}>Вы ещё ничего не добавили в заказ</p>
                             <span
                                 className={'dagger dagger_add'}
-                                onClick={this.props.interactionWithDagger}>
+                                onClick={this.addedNewOrderItem}>
                             </span>
                         </>
                 }

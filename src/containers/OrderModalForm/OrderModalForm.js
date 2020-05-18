@@ -8,7 +8,7 @@ import {
     removeProductFromOrder,
     sendOrder,
 } from '../../store/order/orderActions'
-import ProductForm from '../../components/OrderForms/ProductForm'
+import ProductForm from '../../components/OrderModalWindows/Form'
 import {
     addProductToSentOrder,
     editSentOrder,
@@ -19,57 +19,30 @@ import toaster from 'toasted-notes'
 import InputInformation from '../../components/InputInformation/InputInformation'
 import {setUserInfo} from '../../store/user/userActions'
 import TabPanel from '../../components/UI/TabPanel/TabPanel'
-import OrderListAndMenu from '../../components/OrderForms/OrderListAndMenu'
+import OrderListAndMenu from '../../components/OrderModalWindows/OrderListAndMenu'
+import InputName from '../../components/OrderModalWindows/InputName'
 
-//Данный контэйнер отвечает за рендеринг модального окна и отправку функций/перменных в качестве пропсов дочерним эл-там
+//Данный контейнер отвечает за рендеринг модального окна
 class OrderModalForm extends Component {
     state = {
-        activeTab: 'shop-tab', // текущее вкладка 2 состояния shop-tab и restaurant-tab
-        formIsOpen: false, // флаг отвечающий за форму ввода, если false - рендерится заказ, true - рендерится форма ввода
-        activeItem: null, // В переменной хранится текуший элемент, который выбран для редактирования
-        send: false,
-        currentWin: 'list'
+        activeTab: 'shop-tab', // Активная вкладка 2 состояния shop-tab и restaurant-tab
+        activeWin: 'list', // Активный комонент, list - список заказов, form - форма ввода, name - имя заведения, info - инф о клиенте
+        activeItem: null, // В переменной хранится элемент, который выбран для редактирования
     }
 
     //Функция открывающая/закрывающая форму ввода
-    interactionWithDagger = () => {
+    interactionWithDagger = (activeWin) => {
         this.setState({
-            formIsOpen: !this.state.formIsOpen,
+            activeWin,
         })
     }
 
-    //Функция меняющая активную вкладку и закрывающая форму ввода
+    //Функция меняющая активную вкладку
     clickItemHandler = (event) => {
         this.setState({
             activeTab: event.target.id,
-            formIsOpen: false,
+            activeWin: 'list',
         })
-    }
-
-    // Отправка заказа, если пользователь не авторизоывался, открывается окно авторизации, после чего заказ отправляется на сервер
-    sendOrderHandler = () => {
-        if (this.props.isEdit === true) {
-            this.props.onClose()
-            this.props.editSentOrder(this.props.editItem)
-            toaster.notify('Ваш заказ отредактирован!', {
-                position: 'bottom-right',
-                duration: null,
-            })
-        } else {
-            if (this.props.isAuth === true) {
-                this.setState({
-                    send: true,
-                })
-            } else {
-                this.props.onClose()
-                this.props.trySendOrder(true)
-                this.props.onOpenAuth()
-                toaster.notify('Сперва зарегестируйтесь!', {
-                    position: 'bottom-right',
-                    duration: null,
-                })
-            }
-        }
     }
 
     // Обработчик, возвращает activeItem в начальное состояние
@@ -79,8 +52,15 @@ class OrderModalForm extends Component {
         })
     }
 
+    // Обработчик, закрывает модальное окно и чистит содержимое
+    close = () => {
+        this.props.onClose()
+        this.interactionWithDagger('list')
+    }
+
+
     // Обработчик, кладёт в переменную activeItem эл-т, редактировать который хочет пользователь и открывает конструктор заказа
-    editItem = (e) => {
+    editItemHandler = (e) => {
         e.preventDefault()
         this.props.isEdit === true
             ?
@@ -96,9 +76,10 @@ class OrderModalForm extends Component {
                     activeItem: this.props.restaurantOrder[e.target.id],
                 })
 
-        this.interactionWithDagger()
+        this.interactionWithDagger('form')
     }
 
+    // Обработчик, добавляет в ранее отправленный заказ продукт
     addSentOrder = (item) => {
         this.props.addProductToSentOrder(this.props.editItem.id, item)
         toaster.notify('Продукт добавлен в заказ!', {
@@ -107,6 +88,7 @@ class OrderModalForm extends Component {
         })
     }
 
+    // Обработчик, редактирует в ранее отправленном закае продукт
     editSentOrderItem = (item) => {
         this.props.editSentOrderItem(this.props.editItem.id, item)
         toaster.notify('Продукт отредактирован!', {
@@ -116,32 +98,44 @@ class OrderModalForm extends Component {
     }
 
 
+    sendOrderHandler = () => {
+        if (this.props.isAuth === true) {
+            this.interactionWithDagger('info')
+        } else {
+            this.props.onClose()
+            this.props.trySendOrder(true)
+            this.props.onOpenAuth()
+            toaster.notify('Сперва зарегестируйтесь!', {
+                position: 'bottom-right',
+                duration: null,
+            })
+        }
+    }
+
     saveContactInformation = (info) => {
-        this.props.setUserInfo(info)
-        this.props.sendOrder(info)
-        this.setState({
-            send: false,
-        })
-        this.props.onClose()
-        toaster.notify('Ваш заказ отправлен!', {
-            position: 'bottom-right',
-            duration: null,
-        })
+        if (this.props.isEdit === true) {
+            this.props.editSentOrder(this.props.editItem, info)
+            toaster.notify('Ваш заказ отредактирован!', {
+                position: 'bottom-right',
+                duration: null,
+            })
+        } else {
+            this.props.setUserInfo(info)
+            this.props.sendOrder(info)
+
+            toaster.notify('Ваш заказ отправлен!', {
+                position: 'bottom-right',
+                duration: null,
+            })
+        }
+        this.close()
     }
 
-    close = () => {
-        this.props.onClose()
-        this.props.deleteOrder()
-        this.setState({
-            send: false,
-        })
-    }
-
-    // Функция, рендерит заказ и навигационное меню
     renderOrderListAndNavigationMenu = () => {
         return <OrderListAndMenu
             isEdit={this.props.isEdit}
             editItem={this.props.editItem}
+            editItemHandler={this.editItemHandler}
             shopOrder={this.props.shopOrder}
             restaurantOrder={this.props.restaurantOrder}
             activeTab={this.state.activeTab}
@@ -153,7 +147,6 @@ class OrderModalForm extends Component {
             onClose={this.props.onClose}
             deleteOrder={this.props.deleteOrder}
             interactionWithDagger={this.interactionWithDagger}
-            editItem={this.editItem}
         />
     }
 
@@ -164,19 +157,26 @@ class OrderModalForm extends Component {
             addProductToOrder={this.props.addProductToOrder}
             editOrderItem={this.props.editOrderItem}
             item={this.state.activeItem}
-            nameOfRestaurant={this.props.nameOfRestaurant}
-            nameOfShop={this.props.nameOfShop}
             resetActiveItem={this.resetActiveItem}
-            changeShopName={this.props.changeShopName}
-            changeRestaurantName={this.props.changeRestaurantName}
             isEdit={this.props.isEdit || false}
             addSentOrder={this.addSentOrder}
             editSentOrder={this.editSentOrderItem}
         />
     }
 
+    renderInputName = () => {
+        return <InputName
+            interactionWithDagger={this.interactionWithDagger}
+            nameOfRestaurant={this.props.nameOfRestaurant}
+            nameOfShop={this.props.nameOfShop}
+            changeShopName={this.props.changeShopName}
+            changeRestaurantName={this.props.changeRestaurantName}
+            activeTab={this.state.activeTab}
+        />
+    }
+
     renderTabPanel = () => {
-        return  <TabPanel
+        return <TabPanel
             clickItemHandler={this.clickItemHandler}
             activeTab={this.state.activeTab}
             tabList={[{
@@ -187,7 +187,6 @@ class OrderModalForm extends Component {
                 id: 'restaurant-tab',
             }]}
         />
-
     }
 
     render() {
@@ -197,15 +196,8 @@ class OrderModalForm extends Component {
                 <div className={'order-form'} key={'order-form'}>
                     <span className="dagger dagger_delete" onClick={this.close}/>
                     {
-                        this.state.send
-                            ? <div className={'user-inf-input'}>
-                                <InputInformation
-                                    saveContactInformation={this.saveContactInformation}
-                                    userInfo={this.props.userInfo}
-                                    type={'user'}
-                                />
-                            </div>
-                            : <>
+                        this.state.activeWin !== 'info'
+                            ? <>
                                 {
                                     this.props.isEdit === true
                                         ? null
@@ -214,12 +206,24 @@ class OrderModalForm extends Component {
                                 }
 
                                 <div className={'order-constructor'}>
-                                    {this.state.formIsOpen === true
+                                    {this.state.activeWin === 'form'
                                         ? this.renderProductForm()
-                                        : this.renderOrderListAndNavigationMenu()
+                                        : this.state.activeWin === 'list'
+                                            ? this.renderOrderListAndNavigationMenu()
+                                            : this.state.activeWin === 'name'
+                                                ? this.renderInputName()
+                                                : null
                                     }
                                 </div>
                             </>
+                            :
+                            <div className={'user-inf-input'}>
+                                <InputInformation
+                                    saveContactInformation={this.saveContactInformation}
+                                    userInfo={this.props.userInfo}
+                                    type={'user'}
+                                />
+                            </div>
                     }
                 </div>
                 <div className={'bg'} onClick={this.props.onClose}/>
@@ -252,7 +256,7 @@ function mapDispatchToProps(dispatch) {
         removeProductFromSentOrder: (listid, id) => dispatch(removeProductFromSentOrder(listid, id)),
         addProductToSentOrder: (listid, item) => dispatch(addProductToSentOrder(listid, item)),
         editSentOrderItem: (listid, item) => dispatch(editSentOrderItem(listid, item)),
-        editSentOrder: (orderInfo) => dispatch(editSentOrder(orderInfo)),
+        editSentOrder: (orderInfo, userInfo) => dispatch(editSentOrder(orderInfo,userInfo)),
         setUserInfo: (info) => dispatch(setUserInfo(info)),
     }
 }

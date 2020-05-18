@@ -254,12 +254,17 @@ export function removeProductFromSentOrder(listId, id) {
     }
 }
 
-export function editSentOrder(orderInfo) {
+export function editSentOrder(orderInfo, userInfo) {
     return (dispatch) => {
         try {
             if (orderInfo.order.length === 0) {
                 dispatch(cancelOrder(orderInfo.id))
             }
+
+            orderInfo.clientName = userInfo.name
+            orderInfo.clientNumberPhone = userInfo.numberPhone
+            orderInfo.clientAddress = userInfo.address
+            orderInfo.coordinate = userInfo.coordinate
 
             dataBase.collection('orders').doc(orderInfo.id).update(orderInfo)
             dispatch(fetchUserInfo())

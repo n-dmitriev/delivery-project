@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
 import './ProductForm.scss'
-import toaster from 'toasted-notes'
 
-export default class productForm extends Component {
+export default class form extends Component {
     constructor(props) {
         super(props)
         this.inputName = React.createRef()
@@ -10,11 +9,8 @@ export default class productForm extends Component {
         this.inputBrand = React.createRef()
         this.inputPrice = React.createRef()
         this.text = React.createRef()
-        this.restaurantNameInput = React.createRef()
-        this.shopNameInput = React.createRef()
         this.state = {
             orderFormIsValid: true,
-            restIsValid: true,
             //Список вопросов для магазина
             listOfShopQuestions: [
                 {
@@ -94,41 +90,6 @@ export default class productForm extends Component {
         })
     }
 
-    // Редактирование названия ресторана, с валидацией
-    editRestaurantName = (e) => {
-        e.preventDefault()
-        if (this.restaurantNameInput.current.value.replace(/\s+/g, '') !== '') {
-            this.props.changeRestaurantName(this.restaurantNameInput.current.value)
-            this.props.interactionWithDagger()
-            this.setState({
-                restIsValid: true,
-            })
-            toaster.notify('Навзвание ресторана изменено!', {
-                position: 'bottom-right',
-                duration: 3000,
-            })
-        } else {
-            this.setState({
-                restIsValid: false,
-            })
-        }
-    }
-
-    // Редактирование названия магазина
-    editShopName = (e) => {
-        e.preventDefault()
-        if (this.shopNameInput.current.value.replace(/\s+/g, '') !== '') {
-            this.props.changeShopName(this.shopNameInput.current.value)
-        } else {
-            this.props.changeShopName('В любом магазине')
-        }
-        toaster.notify('Навзвание магазина изменено!', {
-            position: 'bottom-right',
-            duration: 3000,
-        })
-        this.props.interactionWithDagger()
-    }
-
     // Функция отвечающая за добавление и редактивроание эл-та
     // Редактирование и добавление в 1-ом месте, так как функционал компонента переиспользуется
     addAndEditOrder = async (e) => {
@@ -142,7 +103,7 @@ export default class productForm extends Component {
                 quantity: this.inputQuantity.current.value,
                 price: this.inputPrice.current.value,
                 description: this.text.current.value,
-                purchased: false
+                purchased: false,
             }
 
             // Если магазин, то в объект добавляем название бренда
@@ -165,16 +126,17 @@ export default class productForm extends Component {
                 else
                     this.props.editOrderItem(item, this.props.activeTab)
             }
-            this.props.interactionWithDagger()
+            this.props.interactionWithDagger('list')
             this.props.resetActiveItem()
         }
-
     }
 
-    // Функция, рендерит input-ы с вопросами из list-ов
-    formInputs(isEdit, listQuestions) {
+    render() {
+        const isEdit = this.props.item === null
+        const listQuestions = this.props.activeTab === 'shop-tab' ? this.state.listOfShopQuestions : this.state.listOfRestaurantQuestions
+
         return (
-            <>
+            <div className={'product-form'}>
                 {
                     listQuestions.map((question) => (
                         <div key={question.id} className={'product-form__input-field'}>
@@ -212,57 +174,6 @@ export default class productForm extends Component {
                         {isEdit ? 'Назад' : 'Отменить'}
                     </button>
                 </div>
-            </>
-        )
-    }
-
-    //Главная функция, отвечает за редактирование названий заведений и вызов функции formInputs
-    form() {
-        let isEdit
-        this.props.item === null ? isEdit = false : isEdit = true
-
-        if (this.props.activeTab === 'shop-tab') {
-            if (this.props.nameOfShop === '' && !isEdit && this.props.isEdit !== true)
-                return (
-                    <div className={'product-form__input-field product-form__input-field_name'}>
-                        <h3 className={'mb-15'}>Введите название магазина</h3>
-                        <input type="text" ref={this.shopNameInput} className={'mb-15'}/>
-                        <small className={'mb-30'}>Это поле необязательное для заполнения</small>
-                        <button
-                            className={'main-item-style'}
-                            onClick={this.editShopName}>
-                            Далее
-                        </button>
-                    </div>
-                )
-            else
-                return this.formInputs(isEdit, this.state.listOfShopQuestions)
-        } else {
-            if (this.props.nameOfRestaurant === '' && !isEdit)
-                return (
-                    <div className={'product-form__input-field product-form__input-field_name'}>
-                        <h4 className={'mb-30'}>Введите название ресторана</h4>
-                        <input className={this.state.restIsValid === true ? 'mb-15' : 'input-error mb-15'} type="text"
-                               ref={this.restaurantNameInput}/>
-                        <small className={this.state.restIsValid === true ? 'mb-30' : 'error mb-30'}>Это поле
-                            обязательное для
-                            заполнения</small>
-                        <button
-                            className={'main-item-style'}
-                            onClick={this.editRestaurantName}>
-                            Далее
-                        </button>
-                    </div>
-                )
-            else
-                return this.formInputs(isEdit, this.state.listOfRestaurantQuestions)
-        }
-    }
-
-    render() {
-        return (
-            <div className={'product-form'}>
-                {this.form()}
             </div>
         )
     }
