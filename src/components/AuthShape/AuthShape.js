@@ -22,10 +22,10 @@ export default class AuthShape extends Component {
         e.preventDefault()
         if (this.password && this.login) {
             {
-                    await this.validateUserData()
-                    if (this.state.loginIsValid && this.state.passwordIsValid) {
-                        this.props.auth(this.login.current.value, this.password.current.value)
-                    }
+                await this.validateUserData()
+                if (this.state.loginIsValid && this.state.passwordIsValid) {
+                    this.props.auth(this.login.current.value, this.password.current.value)
+                }
             }
         }
 

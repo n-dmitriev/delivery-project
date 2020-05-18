@@ -72,13 +72,13 @@
   &__panel {
     display: flex;
     flex-direction: column;
+    border-left: 1px solid lightgray;
   }
 
   &__filters {
     flex: 1;
     display: flex;
     flex-direction: column;
-    border-left: 1px solid lightgray;
     padding: 0 10px 27px 10px;
     white-space: nowrap;
 
@@ -105,14 +105,13 @@
   }
 
   &__button {
-    margin-top: auto;
+    margin-top: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 20px;
     cursor: pointer;
     border-top: 1px solid lightgray;
-    border-left: 1px solid lightgray;
     border-radius: 3px;
     @include animate();
 

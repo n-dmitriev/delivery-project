@@ -10,7 +10,7 @@ import {fetchOrderList, passwordChange} from '../../store/user/userActions'
 import CourierPanel from '../../components/CourierPanelWithOrders/CourierPanel'
 import {
     changeOrderData,
-    interactWithPurchased, calculateThePrice, subscribeOrderInfo,
+    interactWithPurchased, calculateThePrice, subscribeOrderInfo, updateCourierStatus,
 } from '../../store/courier/courierAction'
 import {subscribe} from '../../store/user/userActions'
 
@@ -26,6 +26,14 @@ class CourierAccount extends Component {
         })
     }
 
+    authAction = async (login, email) => {
+        await this.props.auth(login, email, true, 'couriers')
+    }
+
+    logout = async () => {
+        await this.props.updateCourierStatus(-1)
+        await this.props.logout()
+    }
 
     renderCourierPanel = () => {
         if (this.props.match.params.number !== this.props.id || this.props.userInfo === undefined)
@@ -59,7 +67,7 @@ class CourierAccount extends Component {
 
                     <div className="button-section mt-30">
                         <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15"
-                                 onClick={this.props.logout}>
+                                 onClick={this.logout}>
                             Выйти
                         </NavLink>
                         <button className="main-item-style" onClick={this.interactionWithChangeModal}>
@@ -68,10 +76,6 @@ class CourierAccount extends Component {
                     </div>
                 </>
             )
-    }
-
-    authAction = async (login, email) => {
-        await this.props.auth(login, email, true, 'couriers')
     }
 
     render() {
@@ -141,6 +145,7 @@ function mapDispatchToProps(dispatch) {
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
         calculateThePrice: (id, price, distance) => dispatch(calculateThePrice(id, price, distance)),
+        updateCourierStatus: (status) => dispatch(updateCourierStatus(status))
     }
 }
 

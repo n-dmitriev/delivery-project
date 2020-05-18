@@ -16,9 +16,10 @@ export function authActions(email, password, isLogin, collectionType) {
             else
                 await authWithFirebase.createUserWithEmailAndPassword(email, password)
 
+            const collection = dataBase.collection(collectionType)
+
             authWithFirebase.onAuthStateChanged(async (user) => {
                 if (user) {
-                    const collection = dataBase.collection(collectionType)
                     if(isLogin){
                         const answer = await collection.doc(user.uid).get()
                         const data = answer.data()
@@ -43,6 +44,9 @@ export function authActions(email, password, isLogin, collectionType) {
 
                     const path = collectionType === 'users' ? '/user-account/' : '/courier-account/'
 
+                    if(collectionType === 'couriers' )
+                        await collection.doc(user.uid).update({courierStatus: 0})
+
                     dispatch(dispatchAction(AUTH_SUCCESS, {id: user.uid, path}))
                     localStorage.setItem('id', JSON.stringify(user.uid))
                     localStorage.setItem('path', JSON.stringify(path))
@@ -52,7 +56,6 @@ export function authActions(email, password, isLogin, collectionType) {
                 }
             })
         } catch (e) {
-            console.log(e)
             dispatch(dispatchAction(AUTH_ERROR, null))
         }
     }

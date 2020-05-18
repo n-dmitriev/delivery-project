@@ -65,9 +65,7 @@ export function changeOrderData(status, data) {
                 }
             }
 
-            dataBase.collection('couriers').doc(state.authReducer.id).update({
-                courierStatus: courierStatus,
-            })
+            dispatch(updateCourierStatus(courierStatus))
 
             const userOrders = dataBase.collection('user-orders')
             const answer = await userOrders.where('orderId', '==', data.id).get()
@@ -98,6 +96,13 @@ export function subscribeOrderInfo(listening, id) {
             })
         if (!listening)
             unsubscribe()
+    }
+}
+
+export function updateCourierStatus(status) {
+    return async (dispatch, getState) => {
+        const id = getState().authReducer.id
+        await dataBase.collection('couriers').doc(id).update({courierStatus: status})
     }
 }
 
