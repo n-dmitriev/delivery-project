@@ -18,10 +18,10 @@ $green: #06842c;
     &:hover {
       color: #555555 !important;
     }
+  }
 
-    &_down {
-      transform: translateY(-20px);
-    }
+  & .g {
+    vertical-align:middle;
   }
 
   & input[type="checkbox"] {

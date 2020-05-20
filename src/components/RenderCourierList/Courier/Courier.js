@@ -23,6 +23,7 @@ export default class Courier extends Component {
                 </h4>
                 <ul>
                     <li className={'mb-15'}>Статус: {status}</li>
+                    <li className={'mb-15'}>ID: {this.props.courierInfo.id}</li>
                     <li className={'mb-15'}>Номер телефона: {this.props.courierInfo.numberPhone}</li>
                     <li className={'mb-15'}>Ссылка на вк: {this.props.courierInfo.address}</li>
                     <li className={'mb-15'}>Почта: {this.props.courierInfo.email}</li>

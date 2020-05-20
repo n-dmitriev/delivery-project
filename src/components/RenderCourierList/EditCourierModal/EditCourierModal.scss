@@ -2,8 +2,7 @@
 
 .edit-courier{
   @include modal();
-  min-width: 500px;
-  min-height: 200px;
+  width: 500px;
   padding: 20px;
   &__content {
     display: flex;
@@ -16,5 +15,14 @@
     margin-left: auto;
     top: 15px;
     right: 0;
+  }
+}
+
+@media (max-width: 500px) {
+  .edit-courier {
+    width: 45vmax;
+    & input {
+      width: 90% !important;
+    }
   }
 }

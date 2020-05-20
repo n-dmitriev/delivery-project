@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 
 export default class DeliveredItem extends Component {
-    state={
-        itemListIsOpen: false
+    state = {
+        itemListIsOpen: false,
     }
 
     openListHandler = () => {
         this.setState({
-            itemListIsOpen: !this.state.itemListIsOpen
+            itemListIsOpen: !this.state.itemListIsOpen,
         })
     }
 
@@ -15,7 +15,7 @@ export default class DeliveredItem extends Component {
         this.props.interactWithPurchased(e.target.id, e.target.checked)
     }
 
-    render(){
+    render() {
         const product = this.props.product
         const shortItem = `${product.name} ${product.quantity}`
         return (
@@ -31,13 +31,19 @@ export default class DeliveredItem extends Component {
                     <label htmlFor="todo" className={this.state.itemListIsOpen ? 'g' : 'hide'}>
                         <ul>
                             <li>{product.name}</li>
-                            <li>{product.brand !== undefined ? product.brand : ''}</li>
+                            {
+                                product.brand !== undefined ? product.brand : ''
+                            }
                             <li>{product.quantity}</li>
-                            <li>{product.price}</li>
-                            <li>{product.description}</li>
+                            {
+                                product.price !== '' ? <li>{product.price}</li> : ''
+                            }
+                            {
+                                product.description !== '' ? <li>{product.description}</li> : ''
+                            }
                         </ul>
                     </label>
-                    <i className={`fa fa-caret-${!this.state.itemListIsOpen ? 'down' : 'up fa_down'}`}
+                    <i className={`fa fa-caret-${!this.state.itemListIsOpen ? 'down' : 'up'}`}
                        aria-hidden="true" onClick={this.openListHandler}/>
                 </div>
             </div>
