@@ -37,7 +37,7 @@ export default class AuthShape extends Component {
                 <h2 className={'mb-30'}>Авторизуйтесь</h2>
 
                 <label
-                    className={'mb-15'}>{this.props.trySendOrderNotAuth ? 'Прежде чем сдеать заказ, авторизуйтесь или зарегестрируйтесь' : ''} </label>
+                    className={'mb-15'}>{this.props.trySendOrderNotAuth ? 'Прежде чем сдеать заказ, авторизуйтесь или зарегистрируйтесь' : ''} </label>
 
                 <label className={'mb-15'}>Введите логин</label>
                 <input className={this.props.isError === true ? 'input-error mb-30' : 'mb-30'} type="login"
@@ -64,7 +64,7 @@ export default class AuthShape extends Component {
     renderRegistrForm = () => {
         return (
             <>
-                <h2 className={'mb-30'}>Регестрация {this.props.description}</h2>
+                <h2 className={'mb-30'}>Регистрация {this.props.description}</h2>
 
                 <label className={'mb-15'}>Укажите почту</label>
                 <input
@@ -84,8 +84,8 @@ export default class AuthShape extends Component {
                     <button className={'main-item-style mr-15'} onClick={this.authHandler}>
                         {
                             this.props.type === 'authModal'
-                                ? 'Зарегестрироваться'
-                                : 'Зарегестировать'
+                                ? 'Зарегистрироваться'
+                                : 'Зарегистировать'
                         }
                     </button>
                     {

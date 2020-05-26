@@ -24,7 +24,7 @@ export default class AddCourier extends Component {
     registrHandler = (email, password) => {
         this.props.add(email, password)
         this.switchCurrentWin('input')
-        toaster.notify('Курьер зарегестрирован!', {
+        toaster.notify('Курьер зарегистрирован!', {
             position: 'bottom-right',
             duration: 3000,
         })

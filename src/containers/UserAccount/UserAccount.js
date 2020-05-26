@@ -14,8 +14,8 @@ import UserOrdersPanel from '../../components/UserPanelWithOrders/UserOrdersPane
 class UserAccount extends Component {
     state = {
         isOrderModalOpen: false,
-        editItem: null,
         cpfIsOpen: false,
+        editItem: null,
     }
 
     interactionWithOrderModal = () => {
@@ -41,7 +41,8 @@ class UserAccount extends Component {
     }
 
     render() {
-        if ((this.props.match.path === '/user-account/:number' && this.props.match.params.number !== this.props.id) || this.props.userInfo === undefined)
+        if ((this.props.match.path === '/user-account/:number' && this.props.match.params.number !== this.props.id)
+            || this.props.userInfo === undefined)
             return <Redirect to={'/'}/>
         else
             return (

@@ -164,7 +164,7 @@ class OrderModalForm extends Component {
         />
     }
 
-    renderInputName = () => {
+        renderInputName = () => {
         return <InputName
             interactionWithDagger={this.interactionWithDagger}
             nameOfRestaurant={this.props.nameOfRestaurant}
