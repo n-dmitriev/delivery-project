@@ -105,7 +105,7 @@ class OrderModalForm extends Component {
             this.props.onClose()
             this.props.trySendOrder(true)
             this.props.onOpenAuth()
-            toaster.notify('Сперва зарегестируйтесь!', {
+            toaster.notify('Сперва зарегистируйтесь!', {
                 position: 'bottom-right',
                 duration: null,
             })

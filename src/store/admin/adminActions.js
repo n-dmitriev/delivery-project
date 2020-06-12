@@ -13,7 +13,7 @@ import {SET_USER_INFO_ERROR, SET_USER_INFO_SUCCESS} from '../user/actionTypes'
 
 // Функция аунтификации
 export function authAdmin(email, password) {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
             await authWithFirebase.signInWithEmailAndPassword(email, password)
             authWithFirebase.onAuthStateChanged(async (user) => {

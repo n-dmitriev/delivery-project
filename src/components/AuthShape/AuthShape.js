@@ -36,9 +36,6 @@ export default class AuthShape extends Component {
             <>
                 <h2 className={'mb-30'}>Авторизуйтесь</h2>
 
-                <label
-                    className={'mb-15'}>{this.props.trySendOrderNotAuth ? 'Прежде чем сдеать заказ, авторизуйтесь или зарегистрируйтесь' : ''} </label>
-
                 <label className={'mb-15'}>Введите логин</label>
                 <input className={this.props.isError === true ? 'input-error mb-30' : 'mb-30'} type="login"
                        ref={this.login}/>
@@ -46,6 +43,10 @@ export default class AuthShape extends Component {
                 <input className={this.props.isError === true ? 'input-error mb-15' : 'mb-30'} type="password"
                        ref={this.password}/>
                 <small className={this.props.isError === true ? 'error' : 'hide'}>Неверный логин или пароль!</small>
+
+                <label className={'placeholder mb-15'}>
+                    {this.props.trySendOrderNotAuth ? 'Прежде чем сдеать заказ, авторизуйтесь или зарегистрируйтесь' : ''}
+                </label>
 
                 <div className={'button-section mt-15'}>
                     <button className={'main-item-style mr-15'} onClick={this.authHandler}>Войти</button>

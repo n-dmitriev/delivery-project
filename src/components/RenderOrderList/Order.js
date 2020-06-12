@@ -67,7 +67,7 @@ export default class Order extends Component {
                             </>
                             : null
                     }
-                    <li className={'mb-15'}>Время начала заказа:{this.props.orderInfo.startTime}</li>
+                    <li className={'mb-15'}>Время начала заказа: {this.props.orderInfo.startTime}</li>
                     {
                         this.props.orderInfo.endTime !== ''
                             ?
