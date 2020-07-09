@@ -10,8 +10,8 @@ export default class ScrollTop extends Component {
         return(
             <button
                 onClick={this.scrollToTop}
-                className="scroll-to-top">
-                <i className="fa fa-angle-up" aria-hidden="true"/>
+                className={this.props.scrollV ? `scroll-to-top` : 'hide'}>
+                <i className={`fa fa-angle-up`} aria-hidden="true"/>
             </button>
         )
     }

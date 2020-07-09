@@ -76,8 +76,8 @@ class UserAccount extends Component {
 
                     <div className={'container'}>
                         <div className="row">
-                            <div className="col-lg-2 col-md-2 col-sm-0"></div>
-                            <div className="col-lg-8 col-md-8 col-sm-12">
+                            <div className="col-lg-2 col-md-1 col-sm-0"/>
+                            <div className="col-lg-8 col-md-10 col-sm-12">
                                 <div className="app__main-content">
                                     <h1 className={'mb-30'}>
                                         Личный кабинет
@@ -127,7 +127,7 @@ class UserAccount extends Component {
                                 </div>
                                 <Footer/>
                             </div>
-                            <div className="col-lg-2 col-md-2 col-sm-0"></div>
+                            <div className="col-lg-2 col-md-1 col-sm-0"/>
                         </div>
                     </div>
                 </div>

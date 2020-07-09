@@ -16,6 +16,7 @@ import {fetchUserInfo} from './store/user/userActions'
 import Admin from './containers/AdminAccount/Admin'
 import {autoLogin} from './store/admin/adminActions'
 import Page404 from './components/UI/Page404/Page404'
+import ScrollTop from './components/UI/ScrollTop/ScrollTop'
 
 
 class App extends Component {
@@ -23,12 +24,29 @@ class App extends Component {
         trySendOrderNotAuth: false,
         isOrderModalOpen: false,
         isAuthModalOpen: false,
+        scrollV: false
     }
 
     async componentDidMount() {
         if (this.props.isAuth)
             await this.props.fetchUserInfo()
         this.props.autoLogin()
+        window.addEventListener('scroll', this.handleScroll)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.handleScroll)
+    }
+
+    handleScroll = (e) => {
+        if(e.srcElement.scrollingElement.scrollTop > 100 && !this.state.scrollV)
+            this.setState({
+                scrollV: true
+            })
+        else if (e.srcElement.scrollingElement.scrollTop <= 100 && this.state.scrollV)
+            this.setState({
+                scrollV: false
+            })
     }
 
     // Метод на случай, если пользователь попытается сделать заказ не авторизовавшись
@@ -48,7 +66,7 @@ class App extends Component {
 
     render() {
         return (
-            <div className={`app`}>
+            <div className={`app`} onScroll={event => console.log(event)}>
                 <Header
                     logout={this.props.logout} isAuth={this.props.isAuth}
                     openOrderForm={this.interactionWithOrderModal} openAuthForm={this.interactionWithAuthModal}
@@ -56,7 +74,7 @@ class App extends Component {
                     name={this.props.userInfo ? this.props.userInfo.name : 'Безымянный пользователь'}
                     path={this.props.path}
                 />
-                <div className="app__container">
+                <div className="app__container" >
                     <Switch>
                         <Route path='/' component={MainPage} exact/>
                         <Route path='/user-account/:number' component={UserAccount}/>
@@ -65,6 +83,8 @@ class App extends Component {
                         <Route component={Page404}/>
                     </Switch>
                 </div>
+
+                <ScrollTop scrollV={this.state.scrollV}/>
 
                 <OrderModalForm
                     trySendOrder={this.trySendOrder} isAuth={this.props.isAuth}
