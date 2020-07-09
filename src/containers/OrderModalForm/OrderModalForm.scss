@@ -1,7 +1,6 @@
 @import "../../css/mixins";
 
 .order-form {
-  @include modal();
   padding: 10px 25px 25px 20px;
 
   &,

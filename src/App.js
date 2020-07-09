@@ -1,5 +1,9 @@
 import React, {Component} from 'react'
 import './App.scss'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'toasted-notes/src/styles.css'
+import 'react-confirm-alert/src/react-confirm-alert.css'
+import "react-sweet-progress/lib/style.css";
 import Auth from './containers/AuthModalForm/AuthModalForm'
 import Header from './components/Header/Header'
 import OrderModalForm from './containers/OrderModalForm/OrderModalForm'
@@ -11,8 +15,8 @@ import MainPage from './components/MainPage/MainPage'
 import {fetchUserInfo} from './store/user/userActions'
 import Admin from './containers/AdminAccount/Admin'
 import {autoLogin} from './store/admin/adminActions'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'toasted-notes/src/styles.css'
+import Page404 from './components/UI/Page404/Page404'
+
 
 class App extends Component {
     state = {
@@ -58,6 +62,7 @@ class App extends Component {
                         <Route path='/user-account/:number' component={UserAccount}/>
                         <Route path='/courier-account/:number' component={CourierAccount}/>
                         <Route path='/admin' component={Admin}/>
+                        <Route component={Page404}/>
                     </Switch>
                 </div>
 

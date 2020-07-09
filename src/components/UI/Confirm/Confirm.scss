@@ -1,0 +1,28 @@
+.confirm {
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px 35px;
+  min-height: 250px;
+  max-width: 400px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  & h3 {
+    font-size: 25px !important;
+  }
+
+  & span {
+    font-size: 20px;
+  }
+
+  & .btn {
+    width: 90px;
+  }
+}
+
+.react-confirm-alert-overlay {
+  background-color: transparentize(black, 0.2);
+  backdrop-filter: blur(1px);
+}

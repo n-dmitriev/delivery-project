@@ -21,6 +21,8 @@ import {setUserInfo} from '../../store/user/userActions'
 import TabPanel from '../../components/UI/TabPanel/TabPanel'
 import OrderListAndMenu from '../../components/OrderModalWindows/OrderListAndMenu'
 import InputName from '../../components/OrderModalWindows/InputName'
+import ModalWindow from '../../components/UI/ModalWindow/ModalWindow'
+
 
 //Данный контейнер отвечает за рендеринг модального окна
 class OrderModalForm extends Component {
@@ -189,45 +191,49 @@ class OrderModalForm extends Component {
         />
     }
 
-    render() {
-        if (this.props.isOpen === false) return null
+    renderContent = () => {
         return (
-            <>
-                <div className={'order-form'} key={'order-form'}>
-                    <span className="dagger dagger_delete" onClick={this.close}/>
-                    {
-                        this.state.activeWin !== 'info'
-                            ? <>
-                                {
-                                    this.props.isEdit === true
-                                        ? null
-                                        : this.renderTabPanel()
+            <div className={'order-form'} key={'order-form'}>
+                {
+                    this.state.activeWin !== 'info'
+                        ? <>
+                            {
+                                this.props.isEdit === true
+                                    ? <div className={'mb-5'}/>
+                                    : this.renderTabPanel()
+                            }
 
+                            <div className={'order-constructor'}>
+                                {this.state.activeWin === 'form'
+                                    ? this.renderProductForm()
+                                    : this.state.activeWin === 'list'
+                                        ? this.renderOrderListAndNavigationMenu()
+                                        : this.state.activeWin === 'name'
+                                            ? this.renderInputName()
+                                            : null
                                 }
-
-                                <div className={'order-constructor'}>
-                                    {this.state.activeWin === 'form'
-                                        ? this.renderProductForm()
-                                        : this.state.activeWin === 'list'
-                                            ? this.renderOrderListAndNavigationMenu()
-                                            : this.state.activeWin === 'name'
-                                                ? this.renderInputName()
-                                                : null
-                                    }
-                                </div>
-                            </>
-                            :
-                            <div className={'user-inf-input'}>
-                                <InputInformation
-                                    saveContactInformation={this.saveContactInformation}
-                                    userInfo={this.props.userInfo}
-                                    type={'user'}
-                                />
                             </div>
-                    }
-                </div>
-                <div className={'bg'} onClick={this.props.onClose}/>
-            </>
+                        </>
+                        :
+                        <div className={'user-inf-input'}>
+                            <InputInformation
+                                saveContactInformation={this.saveContactInformation}
+                                userInfo={this.props.userInfo}
+                                type={'user'}
+                            />
+                        </div>
+                }
+            </div>
+        )
+    }
+
+    render() {
+        return (
+            <ModalWindow
+                isOpen={this.props.isOpen}
+                onClose={this.close}
+                renderBody={this.renderContent}
+            />
         )
     }
 }

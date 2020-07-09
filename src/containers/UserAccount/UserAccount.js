@@ -3,19 +3,22 @@ import './UserAccount.scss'
 import {connect} from 'react-redux'
 import InputInformation from '../../components/InputInformation/InputInformation'
 import {logout} from '../../store/authentication/authActions'
-import {NavLink, Redirect} from 'react-router-dom'
+import {Redirect} from 'react-router-dom'
 import {fetchOrderList, passwordChange, setUserInfo, subscribe} from '../../store/user/userActions'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
 import {cancelOrder, reOrder} from '../../store/order/orderActions'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
 import Footer from '../../components/UI/Footer/Footer'
 import UserOrdersPanel from '../../components/UserPanelWithOrders/UserOrdersPanel'
+import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
+import {confirm} from '../../components/UI/Confirm/Confirm'
+import toaster from 'toasted-notes'
 
 class UserAccount extends Component {
     state = {
         isOrderModalOpen: false,
         cpfIsOpen: false,
-        editItem: null,
+        editItem: null
     }
 
     interactionWithOrderModal = () => {
@@ -25,17 +28,25 @@ class UserAccount extends Component {
 
     interactionWithChangeModal = () => {
         this.setState({
-            cpfIsOpen: !this.state.cpfIsOpen,
+            cpfIsOpen: !this.state.cpfIsOpen
         })
     }
 
     saveContactInformation = (info) => {
-        this.props.setUserInfo(info)
+        confirm(
+            'изменить данные вашей учетной записи', async () => {
+                await this.props.setUserInfo(info)
+                toaster.notify('Ваши данные успешно изменены!', {
+                    position: 'bottom-right',
+                    duration: 3000
+                })
+            }
+        )
     }
 
     setEditItem = (item) => {
         this.setState({
-            editItem: item,
+            editItem: item
         })
         this.interactionWithOrderModal()
     }
@@ -65,26 +76,21 @@ class UserAccount extends Component {
 
                     <div className={'container'}>
                         <div className="row">
-                            <div className="col-lg-1 col-md-1 col-sm-0"> </div>
-                            <div className="col-lg-10 col-md-10 col-sm-12">
+                            <div className="col-lg-2 col-md-2 col-sm-0"></div>
+                            <div className="col-lg-8 col-md-8 col-sm-12">
                                 <div className="app__main-content">
+                                    <h1 className={'mb-30'}>
+                                        Личный кабинет
+                                    </h1>
+
+                                    <FunctionalButtons
+                                        logout={this.props.logout}
+                                        interactionWithChangeModal={this.interactionWithChangeModal}
+                                    />
+
+                                    <hr/>
+
                                     <div className="user-account__input">
-                                        <h1 className={'mb-30'}>
-                                            Личный кабинет
-                                        </h1>
-                                        <div className="button-section">
-                                            <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15"
-                                                     onClick={this.props.logout}>
-                                                Выйти
-                                            </NavLink>
-                                            <button className="main-item-style"
-                                                    onClick={this.interactionWithChangeModal}>
-                                                Сменить пароль
-                                            </button>
-                                        </div>
-
-                                        <hr/>
-
                                         <InputInformation
                                             saveContactInformation={this.saveContactInformation}
                                             userInfo={this.props.userInfo}
@@ -109,19 +115,19 @@ class UserAccount extends Component {
                                             {
                                                 orderList: this.props.listOfCurrentOrders,
                                                 type: 'active-user',
-                                                soughtId: 'userId',
+                                                soughtId: 'userId'
                                             },
                                             {
                                                 orderList: this.props.listOfDeliveredOrders,
                                                 type: 'finish-user',
-                                                soughtId: 'userId',
-                                            },
+                                                soughtId: 'userId'
+                                            }
                                         ]}
                                     />
                                 </div>
                                 <Footer/>
                             </div>
-                            <div className="col-lg-1 col-md-1 col-sm-0"> </div>
+                            <div className="col-lg-2 col-md-2 col-sm-0"></div>
                         </div>
                     </div>
                 </div>
@@ -137,7 +143,7 @@ function mapStateToProps(state) {
         listOfDeliveredOrders: state.userReducer.listOfDeliveredOrders,
         listOfCurrentOrders: state.userReducer.listOfCurrentOrders,
         loading: state.userReducer.loading,
-        remove: state.userReducer.remove,
+        remove: state.userReducer.remove
     }
 }
 
@@ -149,7 +155,7 @@ function mapDispatchToProps(dispatch) {
         cancelOrder: (id) => dispatch(cancelOrder(id)),
         subscribe: (listening, listType, typeId, soughtId, statusList, coordinates) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList, coordinates)),
         fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
-        reOrder: (orderInfo) => dispatch(reOrder(orderInfo)),
+        reOrder: (orderInfo) => dispatch(reOrder(orderInfo))
     }
 }
 

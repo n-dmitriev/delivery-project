@@ -1,7 +1,6 @@
 @import "../../../css/mixins";
 
 .edit-courier{
-  @include modal();
   width: 500px;
   padding: 20px;
   &__content {

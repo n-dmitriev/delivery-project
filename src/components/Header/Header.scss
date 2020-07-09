@@ -5,8 +5,12 @@
   width: 100%;
   box-sizing: border-box;
   display: flex;
+  align-items: center;
   background-color: #F5F5F5;
   padding: 5px 15px 5px 25px;
+  -webkit-box-shadow: 4px 8px 27px 0px rgba(34, 60, 80, 0.47);
+  -moz-box-shadow: 4px 8px 27px 0px rgba(34, 60, 80, 0.47);
+  box-shadow: 4px 8px 27px 0px rgba(34, 60, 80, 0.47);
 
   &__title {
     cursor: pointer;
@@ -15,6 +19,32 @@
 
     &-logo {
       width: 200px;
+      &:hover {
+        animation: bounce 1s;
+      }
+      &:active {
+        animation: bounce 1s;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        60%,
+        100% {
+          -webkit-transform: translateY(0);
+          transform: translateY(0);
+        }
+
+        40% {
+          -webkit-transform: translateY(-5px);
+          transform: translateY(-5px);
+        }
+
+        80% {
+          -webkit-transform: translateY(-5px);
+          transform: translateY(-5px);
+        }
+      }
     }
   }
 
@@ -37,7 +67,6 @@
 
   &__user {
     margin: 10px 20px 10px 20px;
-    justify-content: center;
     cursor: pointer;
     opacity: 0.8;
     white-space: nowrap;

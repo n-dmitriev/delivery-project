@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import toaster from 'toasted-notes'
 import DeliveredItem from './DeliveredItem'
+import {confirm} from '../../../UI/Confirm/Confirm'
 
 export default class DeliveredOrder extends Component {
     state = {
@@ -33,15 +34,27 @@ export default class DeliveredOrder extends Component {
                 duration: 3000,
             })
         } else {
-            this.setState({
-                quantityIsValid: true,
-            })
-            this.props.changeOrderData(2, this.props.ordersList[0])
-            toaster.notify('Заказ переведён в состояние "доставка"!', {
-                position: 'bottom-right',
-                duration: 3000,
-            })
+            confirm(
+                'закончить закупку', async () => {
+                    this.setState({
+                        quantityIsValid: true,
+                    })
+                    this.props.changeOrderData(2, this.props.ordersList[0])
+                    toaster.notify('Заказ переведён в состояние "доставка"!', {
+                        position: 'bottom-right',
+                        duration: 3000,
+                    })
+                }
+            )
         }
+    }
+
+    cancel = (deliveredOrder) => {
+        toaster.notify('Заказ отменён!', {
+            position: 'bottom-right',
+            duration: 3000,
+        })
+        this.props.changeOrderData(0, deliveredOrder)
     }
 
     render() {
@@ -84,26 +97,21 @@ export default class DeliveredOrder extends Component {
                                             :
                                             <span>Оу заказ пуст!:(</span>
                                     }
-                                    <small className={this.state.quantityIsValid ? 'hide' : 'error mb-15'}>
-                                        Преобретите как минимум 60% товаров, иначе откажитесь от заказа!
-                                    </small>
                                 </div>
                                 :
                                 <>
                                     {this.props.renderOrderInfo(deliveredOrder)}
                                 </>
                         }
+                        <small className={this.state.quantityIsValid ? 'hide' : 'error mb-15'}>
+                            Преобретите как минимум 60% товаров или откажитесь от заказа!
+                        </small>
                         <div className="button-section button-section_bottom">
                             <button className="main-item-style mr-15" onClick={this.finishBuy}>
                                 Закончить закупку
                             </button>
-                            <button className="main-item-style main-item-style_danger" onClick={() => {
-                                toaster.notify('Заказ отменён!', {
-                                    position: 'bottom-right',
-                                    duration: 3000,
-                                })
-                                this.props.changeOrderData(0, deliveredOrder)
-                            }}>
+                            <button className="main-item-style main-item-style_danger"
+                                    onClick={() => this.cancel(deliveredOrder)}>
                                 Отказаться
                             </button>
                         </div>

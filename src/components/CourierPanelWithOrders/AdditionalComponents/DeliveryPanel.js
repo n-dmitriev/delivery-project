@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import toaster from 'toasted-notes'
 import {Map, YMaps, ZoomControl} from 'react-yandex-maps'
+import {confirm} from '../../UI/Confirm/Confirm'
 
 export default class DeliveryPanel extends Component {
     constructor(props) {
@@ -48,19 +49,27 @@ export default class DeliveryPanel extends Component {
     }
 
     finishOrder = () => {
-        this.props.changeOrderData(3, this.props.ordersList[0])
-        toaster.notify('Заказ завершён!', {
-            position: 'bottom-right',
-            duration: 3000,
-        })
+        confirm(
+            'завершить заказ', async () => {
+                this.props.changeOrderData(3, this.props.ordersList[0])
+                toaster.notify('Заказ завершён!', {
+                    position: 'bottom-right',
+                    duration: 3000,
+                })
+            }
+        )
     }
 
     cancelOrder = () => {
-        this.props.changeOrderData(4, this.props.ordersList[0])
-        toaster.notify('Заказ возобновлён!', {
-            position: 'bottom-right',
-            duration: 3000,
-        })
+        confirm(
+            'клиент отказался', async () => {
+                this.props.changeOrderData(4, this.props.ordersList[0])
+                toaster.notify('Заказ отменён!', {
+                    position: 'bottom-right',
+                    duration: 3000,
+                })
+            }
+        )
     }
 
     editInfo = () => {

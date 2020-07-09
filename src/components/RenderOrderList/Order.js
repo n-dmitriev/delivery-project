@@ -1,16 +1,72 @@
 import React, {Component} from 'react'
 import toaster from 'toasted-notes'
 import Item from './Item'
+import {confirm} from '../UI/Confirm/Confirm'
 
 export default class Order extends Component {
     state = {
-        productListIsOpen: false,
+        productListIsOpen: false
     }
 
     interactionWithProductList = () => {
         this.setState({
-            productListIsOpen: !this.state.productListIsOpen,
+            productListIsOpen: !this.state.productListIsOpen
         })
+    }
+
+    reOrder = () => {
+        confirm(
+            'возобновить заказ', async () => {
+                await this.props.reOrder(this.props.orderInfo)
+                setTimeout(() => {
+                    this.props.setEditItem(this.props.orderInfo)
+                    toaster.notify('Заказ возобновлён!', {
+                        position: 'bottom-right',
+                        duration: 3000
+                    })
+                }, 300);
+            }
+        )
+    }
+
+    takeOrder = () => {
+        confirm('взять заказ', () => {
+            this.props.changeOrderData(1, {
+                uid: this.props.orderInfo.id,
+                ...this.props.orderInfo
+            })
+            toaster.notify('Вы приняли заказ!', {
+                position: 'bottom-right',
+                duration: 3000
+            })
+        })
+    }
+
+    cancelOrder = () => {
+        confirm('отменить заказ',
+            () => {
+                this.props.cancelOrder(this.props.orderInfo.id)
+                toaster.notify('Заказ отменён!', {
+                    position: 'bottom-right',
+                    duration: 3000
+                })
+            })
+    }
+
+    troll = () => {
+        confirm(
+            'пометить заказ как "ложный"',
+            () => {
+                this.props.changeOrderData(-1, {
+                    uid: this.props.orderInfo.id,
+                    ...this.props.orderInfo
+                })
+                toaster.notify('Заказ скрыт!', {
+                    position: 'bottom-right',
+                    duration: 3000
+                })
+            }
+        )
     }
 
     // type - тип списка
@@ -25,14 +81,7 @@ export default class Order extends Component {
                     this.props.type === 'finish-user'
                         ?
                         <i className="fa fa-refresh fa-animate" aria-hidden="true"
-                           onClick={() => {
-                               this.props.reOrder(this.props.orderInfo)
-                               toaster.notify('Заказ возобновлён!', {
-                                   position: 'bottom-right',
-                                   duration: 3000,
-                               })
-                           }}
-                        />
+                           onClick={this.reOrder}/>
                         : null
                 }
             </>
@@ -46,7 +95,8 @@ export default class Order extends Component {
                     {
                         this.props.type === 'active-courier'
                             ? <>
-                                <li className={'mb-15'}>Расстояние: <b>{Math.round(this.props.orderInfo.distance)} км</b></li>
+                                <li className={'mb-15'}>Расстояние: <b>{Math.round(this.props.orderInfo.distance)} км</b>
+                                </li>
                             </>
                             : null
                     }
@@ -100,9 +150,9 @@ export default class Order extends Component {
                         this.props.orderInfo.order && this.props.orderInfo.order.length > 0
                             ?
                             this.props.orderInfo.order.map((product) => (
-                               <div key={product.id}>
-                                   <Item product={product} orderValue={this.props.orderInfo.orderValue}/>
-                               </div>
+                                <div key={product.id}>
+                                    <Item product={product} orderValue={this.props.orderInfo.orderValue}/>
+                                </div>
                             ))
                             :
                             <span>Ваш заказ пуст! :(</span>
@@ -128,13 +178,7 @@ export default class Order extends Component {
                             </button>
                             <button
                                 className={'main-item-style main-item-style_danger'}
-                                onClick={() => {
-                                    this.props.cancelOrder(this.props.orderInfo.id)
-                                    toaster.notify('Заказ отменён!', {
-                                        position: 'bottom-right',
-                                        duration: 3000,
-                                    })
-                                }}>
+                                onClick={this.cancelOrder}>
                                 Отменить
                             </button>
                         </div>
@@ -145,30 +189,12 @@ export default class Order extends Component {
                         ? <div className="button-section mt-30">
                             <button
                                 className={`main-item-style mr-15`}
-                                onClick={() => {
-                                    this.props.changeOrderData(1, {
-                                        uid: this.props.orderInfo.id,
-                                        ...this.props.orderInfo,
-                                    })
-                                    toaster.notify('Вы приняли заказ!', {
-                                        position: 'bottom-right',
-                                        duration: null,
-                                    })
-                                }}>
+                                onClick={this.takeOrder}>
                                 Взять
                             </button>
                             <button
                                 className={`main-item-style main-item-style_danger`}
-                                onClick={() => {
-                                    this.props.changeOrderData(-1, {
-                                        uid: this.props.orderInfo.id,
-                                        ...this.props.orderInfo,
-                                    })
-                                    toaster.notify('Заказ скрыт!', {
-                                        position: 'bottom-right',
-                                        duration: 3000,
-                                    })
-                                }}>
+                                onClick={this.troll}>
                                 Тролль!
                             </button>
                         </div>

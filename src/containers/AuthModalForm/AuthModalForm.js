@@ -7,18 +7,19 @@ import InputInformation from '../../components/InputInformation/InputInformation
 import AuthShape from '../../components/AuthShape/AuthShape'
 import {setUserInfo} from '../../store/user/userActions'
 import toaster from 'toasted-notes'
+import ModalWindow from '../../components/UI/ModalWindow/ModalWindow'
 
 
 //Данный контейнер отвечает за авторизацию и регистрацию пользователей
 class AuthModalForm extends Component {
     state = {
-        currentWin: 'signIn',
+        currentWin: 'signIn'
     }
 
     //Меняем контент в модальном окне, состояния: signIn, signUp, userInfoInp, success
     switchCurrentWin = (winName) => {
         this.setState({
-            currentWin: winName,
+            currentWin: winName
         })
         this.props.removeError()
     }
@@ -33,7 +34,7 @@ class AuthModalForm extends Component {
             }
             toaster.notify('Вы успешно авторизовались!', {
                 position: 'bottom-right',
-                duration: 3000,
+                duration: 3000
             })
             this.closeAuthWin()
         }
@@ -48,13 +49,12 @@ class AuthModalForm extends Component {
             this.props.sendOrder(info)
             toaster.notify('Ваши данные сохранены, заказ отправлен!', {
                 position: 'bottom-right',
-                duration: 3000,
+                duration: 3000
             })
-        }
-        else
+        } else
             toaster.notify('Ваши данные сохранены!', {
                 position: 'bottom-right',
-                duration: 3000,
+                duration: 3000
             })
     }
 
@@ -65,7 +65,7 @@ class AuthModalForm extends Component {
         if (this.props.isError !== true) {
             toaster.notify('Вы успешно зарегестрировались!', {
                 position: 'bottom-right',
-                duration: 3000,
+                duration: 3000
             })
             this.switchCurrentWin('userInfoInp')
         }
@@ -119,26 +119,32 @@ class AuthModalForm extends Component {
         )
     }
 
-    render() {
-        if (this.props.isOpen === false || (this.props.isAuth === true && this.state.currentWin === 'signIn')) return null
+    renderContent = () => {
         return (
-            <>
-                <div className={'auth-form'}>
-                    <div className="auth-form__inputs">
-                        <span className="dagger dagger_delete" onClick={this.closeAuthWin}/>
-                        {
-                            this.state.currentWin === 'signIn'
-                                ? this.renderSignIn()
-                                : this.state.currentWin === 'signUp'
-                                ? this.renderSignUp()
-                                : this.state.currentWin === 'userInfoInp'
-                                    ? this.renderInputUserInfo()
-                                    : null
-                        }
-                    </div>
+            <div className={'auth-form'}>
+                <div className="auth-form__inputs">
+                    {
+                        this.state.currentWin === 'signIn'
+                            ? this.renderSignIn()
+                            : this.state.currentWin === 'signUp'
+                            ? this.renderSignUp()
+                            : this.state.currentWin === 'userInfoInp'
+                                ? this.renderInputUserInfo()
+                                : null
+                    }
                 </div>
-                <div className={'bg'} onClick={this.closeAuthWin}/>
-            </>
+            </div>
+        )
+    }
+
+    render() {
+        if (this.props.isAuth === true && this.state.currentWin === 'signIn') return null
+        return (
+            <ModalWindow
+                isOpen={this.props.isOpen}
+                onClose={this.closeAuthWin}
+                renderBody={this.renderContent}
+            />
         )
     }
 }
@@ -148,7 +154,7 @@ function mapDispatchToProps(dispatch) {
         auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
         removeError: () => dispatch(removeError()),
         sendOrder: (info) => dispatch(sendOrder(info)),
-        setUserInfo: (info) => dispatch(setUserInfo(info)),
+        setUserInfo: (info) => dispatch(setUserInfo(info))
     }
 }
 

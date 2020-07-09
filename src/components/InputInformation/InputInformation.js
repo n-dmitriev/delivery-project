@@ -28,15 +28,17 @@ export default class InputInformation extends Component {
         if (this.name && this.numberPhone && this.address) {
             await this.validateUserInformation()
             if (this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid) {
-                const answer = await window.ymaps.geocode(this.address.current.value)
                 const info = {
                     name: this.name.current.value,
                     numberPhone: this.numberPhone.current.value,
                     address: this.address.current.value,
                     role: this.props.type,
-                    coordinate: answer.geoObjects.get(0).geometry.getCoordinates()
                 }
 
+                if ( this.props.type !== 'courier') {
+                    const answer = await window.ymaps.geocode(this.address.current.value)
+                    info.coordinate = answer.geoObjects.get(0).geometry.getCoordinates()
+                }
                 if (this.props.userInfo !== undefined)
                     info.id = this.props.userInfo.id
                 this.props.saveContactInformation(info)

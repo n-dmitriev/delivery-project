@@ -117,8 +117,8 @@ class Admin extends Component {
                 />
                 <div className={'container'}>
                     <div className="row">
-                        <div className="col-lg-1 col-md-1 col-sm-0"> </div>
-                        <div className="col-lg-10 col-md-12 col-sm-12">
+                        <div className="col-lg-2 col-md-2 col-sm-0"> </div>
+                        <div className="col-lg-8 col-md-8 col-sm-12">
                             <div className="app__main-content">
                                 <h1>Панель админа</h1>
                                 <hr/>
@@ -138,7 +138,7 @@ class Admin extends Component {
                                 }
                             </div>
                         </div>
-                        <div className="col-lg-1 col-md-1 col-sm-0"> </div>
+                        <div className="col-lg-2 col-md-2 col-sm-0"> </div>
                     </div>
                 </div>
             </div>

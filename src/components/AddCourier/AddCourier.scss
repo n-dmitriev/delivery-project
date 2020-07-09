@@ -1,19 +1,11 @@
 @import "../../css/mixins";
 
 .add-courier {
-  @include modal();
   padding: 20px;
   &__content {
     display: flex;
     flex-direction: column;
     padding: 0 20px 20px;
-    @include border()
-  }
-
-  & .dagger {
-    margin-left: auto;
-    top: 15px;
-    right: 0;
   }
 }
 

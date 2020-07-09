@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import './EditCourierModal.scss'
 import InputInformation from '../../InputInformation/InputInformation'
+import ModalWindow from '../../UI/ModalWindow/ModalWindow'
 
 export default class EditCourierModal extends Component {
     saveContactInformation = (info)  => {
@@ -8,23 +9,28 @@ export default class EditCourierModal extends Component {
         this.props.onClose()
     }
 
-    render() {
-        if (this.props.isOpen === false) return null
+    renderContent =() => {
         return (
-            <>
-                <div className={'edit-courier'}>
-                    <div className={'add-courier__content'}>
-                        <span className="dagger dagger_delete" onClick={this.props.onClose}/>
-                        <InputInformation
-                            saveContactInformation={this.saveContactInformation}
-                            onClose={this.props.onClose}
-                            type={'courier'}
-                            userInfo={this.props.userInfo}
-                        />
-                    </div>
+            <div className={'edit-courier'}>
+                <div className={'add-courier__content'}>
+                    <InputInformation
+                        saveContactInformation={this.saveContactInformation}
+                        onClose={this.props.onClose}
+                        type={'courier'}
+                        userInfo={this.props.userInfo}
+                    />
                 </div>
-                <div className={'bg'} onClick={this.props.onClose}/>
-            </>
+            </div>
+        )
+    }
+
+    render() {
+        return (
+            <ModalWindow
+                isOpen={this.props.isOpen}
+                onClose={this.props.onClose}
+                renderBody={this.renderContent}
+            />
         )
     }
 }

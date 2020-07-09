@@ -1,0 +1,27 @@
+@import "../../../css/mixins";
+
+.page-404 {
+  display: flex;
+  height: 100%;
+
+  &__content {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  & .btn {
+    font-size: 20px;
+    align-items: center;
+    color: white !important;
+    @include animate();
+
+    &:hover {
+      @include animate-hover(1.03)
+    }
+  }
+
+  & .fa {
+    font-size: 24px;
+  }
+}

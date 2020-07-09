@@ -1,6 +1,6 @@
 export function dispatchAction(type, item) {
     return {
-        type, item,
+        type, item
     }
 }
 

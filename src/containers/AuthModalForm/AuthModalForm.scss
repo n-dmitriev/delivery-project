@@ -1,20 +1,11 @@
 @import "../../css/mixins";
 
 .auth-form{
-  @include modal();
   padding: 20px;
-
-  & .dagger {
-    margin-left: auto;
-    top: 15px;
-    right: 0;
-  }
 
   &__inputs{
     display: flex;
     flex-direction: column;
-    border: 1px solid gray;
-    border-radius: 10px;
     padding: 0 20px 20px 20px;
   }
 

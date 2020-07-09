@@ -3,6 +3,7 @@ import './AddCourier.scss'
 import AuthShape from '../AuthShape/AuthShape'
 import InputInformation from '../InputInformation/InputInformation'
 import toaster from 'toasted-notes'
+import ModalWindow from '../UI/ModalWindow/ModalWindow'
 
 export default class AddCourier extends Component {
     state = {
@@ -38,8 +39,7 @@ export default class AddCourier extends Component {
             description={'курьера'}
         />
     }
-
-
+    
     saveContactInformation = (info)  => {
         this.props.setCourierInfo(info)
         this.close()
@@ -57,22 +57,27 @@ export default class AddCourier extends Component {
         />
     }
 
-    render() {
-        if (this.props.isOpen === false) return null
+    renderContent = () => {
         return (
-            <>
-                <div className={'add-courier'}>
-                    <div className={'add-courier__content'}>
-                        <span className="dagger dagger_delete" onClick={this.close}/>
-                        {
-                            this.state.currentWin === 'signUp'
-                                ? this.renderRegistForm()
-                                : this.renderCourierInfoForm()
-                        }
-                    </div>
+            <div className={'add-courier'}>
+                <div className={'add-courier__content'}>
+                    {
+                        this.state.currentWin === 'signUp'
+                            ? this.renderRegistForm()
+                            : this.renderCourierInfoForm()
+                    }
                 </div>
-                <div className={'bg'} onClick={this.close}/>
-            </>
+            </div>
+        )
+    }
+
+    render() {
+        return (
+           <ModalWindow
+               isOpen={this.props.isOpen}
+               onClose={this.close}
+               renderBody={this.renderContent}
+           />
         )
     }
 }

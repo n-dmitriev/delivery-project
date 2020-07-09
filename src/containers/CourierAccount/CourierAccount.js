@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import './CourierAccount.scss'
 import {connect} from 'react-redux'
 import AuthShape from '../../components/AuthShape/AuthShape'
-import {NavLink, Redirect} from 'react-router-dom'
+import {Redirect} from 'react-router-dom'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
 import RenderOrderList from '../../components/RenderOrderList/RenderOrderList'
 import {authActions, logout} from '../../store/authentication/authActions'
@@ -13,12 +13,12 @@ import {
     interactWithPurchased, calculateThePrice, subscribeOrderInfo, updateCourierStatus,
 } from '../../store/courier/courierAction'
 import {subscribe} from '../../store/user/userActions'
+import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
 
 class CourierAccount extends Component {
     state = {
         cpfIsOpen: false,
     }
-
 
     interactionWithChangeModal = () => {
         this.setState({
@@ -42,6 +42,13 @@ class CourierAccount extends Component {
             return (
                 <>
                     <h1 className={'mb-30'}>Личный кабинет курьера</h1>
+
+                    <FunctionalButtons
+                        logout={this.props.logout}
+                        interactionWithChangeModal={this.interactionWithChangeModal}
+                    />
+                    <hr/>
+
                     <CourierPanel
                         fetchOrderList={this.props.fetchOrderList}
                         ordersList={this.props.listOfCurrentOrders}
@@ -64,16 +71,6 @@ class CourierAccount extends Component {
                                      fetchOrderList={this.props.fetchOrderList}
                                      subscribe={this.props.subscribe}
                     />
-
-                    <div className="button-section mt-30">
-                        <NavLink to={'/'} className="main-item-style main-item-style_danger mr-15"
-                                 onClick={this.logout}>
-                            Выйти
-                        </NavLink>
-                        <button className="main-item-style" onClick={this.interactionWithChangeModal}>
-                            Сменить пароль
-                        </button>
-                    </div>
                 </>
             )
     }
