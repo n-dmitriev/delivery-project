@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import Tooltip from "react-tooltip-lite"
 
 export default class Item extends Component {
     state={
@@ -34,13 +35,37 @@ export default class Item extends Component {
 
                 <div className={'list__checkbox'}>
                     {
-                        this.props.status !== 0
+                        this.props.status > 2
                             ?
                             product.purchased
-                                ? <i className="fa fa-check-square-o" aria-hidden="true"/>
-                                : <i className="fa fa-times" aria-hidden="true"/>
+                                ?  <Tooltip
+                                    content={'Продукт приобретен курьером'}
+                                    direction="up"
+                                    tagName="span"
+                                    className="target"
+                                    useDefaultStyles
+                                >
+                                    <i className="fa fa-check-square-o" aria-hidden="true"/>
+                                </Tooltip>
+                                :   <Tooltip
+                                    content={'Продукт не приобретен курьером'}
+                                    direction="up"
+                                    tagName="span"
+                                    className="target"
+                                    useDefaultStyles
+                                >
+                                    <i className="fa fa-times" aria-hidden="true"/>
+                                </Tooltip>
                             :
-                            <i className="fa fa-square-o" aria-hidden="true"/>
+                            <Tooltip
+                                content={'Нет информации о товаре'}
+                                direction="up"
+                                tagName="span"
+                                className="target"
+                                useDefaultStyles
+                            >
+                                <i className="fa fa-square-o" aria-hidden="true"/>
+                            </Tooltip>
                     }
                 </div>
             </div>

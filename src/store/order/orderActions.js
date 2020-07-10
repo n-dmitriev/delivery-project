@@ -294,7 +294,11 @@ export function reOrder(orderInfo) {
             description: 'Курьер ещё не принял заказ',
             name: orderInfo.name,
             order: order,
-            coordinate: orderInfo.coordinate
+            coordinate: orderInfo.coordinate,
+            status: 0,
+            clientAddress: orderInfo.clientAddress,
+            clientName: orderInfo.clientName,
+            clientNumberPhone: orderInfo.clientNumberPhone
         }
 
             const orders = dataBase.collection("orders")

@@ -20,13 +20,10 @@ export default class Order extends Component {
         confirm(
             'возобновить заказ', async () => {
                 await this.props.reOrder(this.props.orderInfo)
-                setTimeout(() => {
-                    this.props.setEditItem(this.props.orderInfo)
-                    toaster.notify('Заказ возобновлён!', {
-                        position: 'bottom-right',
-                        duration: 3000
-                    })
-                }, 300)
+                toaster.notify('Заказ возобновлён!', {
+                    position: 'bottom-right',
+                    duration: 3000
+                })
             }
         )
     }

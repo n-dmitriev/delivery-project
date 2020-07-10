@@ -66,7 +66,7 @@ class App extends Component {
 
     render() {
         return (
-            <div className={`app`} onScroll={event => console.log(event)}>
+            <div className={`app`}>
                 <Header
                     logout={this.props.logout} isAuth={this.props.isAuth}
                     openOrderForm={this.interactionWithOrderModal} openAuthForm={this.interactionWithAuthModal}
