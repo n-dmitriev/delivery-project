@@ -71,14 +71,15 @@ export function changeOrderData(status, data) {
             const answer = await userOrders.where('orderId', '==', data.id).get()
             answer.forEach((doc) => {
                 userOrders.doc(doc.id).update({
-                    courierId, status: status,
+                    courierId, status
                 })
             })
 
             orderInfo.endTime = endTime
             orderInfo.description = description
+            orderInfo.status = status
 
-            dataBase.collection('orders').doc(data.id).update(orderInfo)
+            await dataBase.collection('orders').doc(data.id).update(orderInfo)
 
             dispatch(fetchUserInfo())
         } catch (e) {
@@ -117,7 +118,8 @@ export function calculateThePrice(id, price, distance) {
             if (deliveryValue < minPrice)
                 deliveryValue = minPrice
 
-            dataBase.collection('orders').doc(id).update({orderValue: price, deliveryValue: deliveryValue})
+            await dataBase.collection('orders').doc(id)
+                .update({orderValue: price, deliveryValue: deliveryValue})
             dispatch(fetchUserInfo())
         } catch (e) {
             console.log(e)

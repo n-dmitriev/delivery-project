@@ -34,7 +34,7 @@ export default class Item extends Component {
 
                 <div className={'list__checkbox'}>
                     {
-                        this.props.orderValue !== ''
+                        this.props.status !== 0
                             ?
                             product.purchased
                                 ? <i className="fa fa-check-square-o" aria-hidden="true"/>

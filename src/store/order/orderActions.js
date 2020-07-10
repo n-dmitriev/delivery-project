@@ -41,6 +41,7 @@ export function sendOrder(info) {
             orderValue: '',
             deliveryValue: '',
             description: 'Курьер ещё не принял заказ',
+            status: 0,
             clientName: info.name,
             clientNumberPhone: info.numberPhone,
             clientAddress: info.address,
@@ -102,7 +103,8 @@ export function cancelOrder(id) {
 
             dataBase.collection('orders').doc(id).update({
                 description: 'Вы отменили заказ',
-                endTime: getDate()
+                endTime: getDate(),
+                status: 4
             })
 
 

@@ -63,6 +63,7 @@
 
   & .main-item-style {
     margin: 10px;
+    box-shadow: none;
   }
 
   &__user {
@@ -87,6 +88,10 @@
 }
 
 @media (max-width: 500px) {
+  .header {
+    box-shadow: none;
+  }
+
   .header__title-logo {
     width: 150px;
   }

@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import toaster from 'toasted-notes'
 import Item from './Item'
 import {confirm} from '../UI/Confirm/Confirm'
+import {Progress} from 'react-sweet-progress'
+import Tooltip from "react-tooltip-lite"
 
 export default class Order extends Component {
     state = {
@@ -24,7 +26,7 @@ export default class Order extends Component {
                         position: 'bottom-right',
                         duration: 3000
                     })
-                }, 300);
+                }, 300)
             }
         )
     }
@@ -88,10 +90,71 @@ export default class Order extends Component {
         )
     }
 
+    renderProgressBar = () => {
+        let percent, status, theme
+
+        switch (this.props.orderInfo.status) {
+            case -1:
+                percent = 100
+                status = 'error'
+                theme = {
+                    error: {
+                        symbol: '🤔',
+                        color: '#fbc630'
+                    }
+                }
+                break
+            case 0:
+                percent = 10
+                status = ''
+                theme = {}
+                break
+            case 1:
+                percent = 30
+                status = ''
+                theme = {}
+                break
+            case 2:
+                percent = 70
+                status = ''
+                theme = {}
+                break
+            case 3:
+                percent = 100
+                status = 'success'
+                theme = {}
+                break
+            case 4:
+                percent = 100
+                status = 'error'
+                theme = {}
+                break
+            default:
+                percent = 0
+                status = ''
+                theme = {}
+                break
+        }
+
+        return (
+            <Progress percent={percent} status={status} theme={theme}/>
+        )
+    }
+
     renderBody = () => {
         return (
             <>
                 <ul>
+                    {
+                        this.props.type === 'active-user' || this.props.type === 'finish-user' || this.props.type === 'admin'
+                            ? <>
+                                <li className={'mb-15'}>Состояние: {this.props.orderInfo.description}</li>
+                                <li className={'mb-15'}>
+                                    {this.renderProgressBar()}
+                                </li>
+                            </>
+                            : null
+                    }
                     {
                         this.props.type === 'active-courier'
                             ? <>
@@ -107,13 +170,6 @@ export default class Order extends Component {
                             ? <>
                                 <li className={'mb-15'}>Имя клиента: {this.props.orderInfo.clientName}</li>
                                 <li className={'mb-15'}>Контактный телефон: {this.props.orderInfo.clientNumberPhone}</li>
-                            </>
-                            : null
-                    }
-                    {
-                        this.props.type === 'active-user' || this.props.type === 'finish-user' || this.props.type === 'admin'
-                            ? <>
-                                <li className={'mb-15'}>Состояние: {this.props.orderInfo.description}</li>
                             </>
                             : null
                     }
@@ -151,7 +207,7 @@ export default class Order extends Component {
                             ?
                             this.props.orderInfo.order.map((product) => (
                                 <div key={product.id}>
-                                    <Item product={product} orderValue={this.props.orderInfo.orderValue}/>
+                                    <Item product={product} status={this.props.orderInfo.status}/>
                                 </div>
                             ))
                             :
@@ -169,13 +225,25 @@ export default class Order extends Component {
                     this.props.type === 'active-user'
                         ?
                         <div className="button-section mt-30">
-                            <button
-                                className={`main-item-style mr-15 ${this.props.orderInfo.orderValue !== ''
-                                    ? 'non-click'
-                                    : ''}`}
-                                onClick={() => this.props.setEditItem(this.props.orderInfo)}>
-                                Редактировать
-                            </button>
+                            {
+                                this.props.orderInfo.status >= 2
+                                ? <Tooltip
+                                        content={'Эот заказ нельзя редактировать!'}
+                                        direction="up"
+                                        tagName="span"
+                                        className="target"
+                                        useDefaultStyles
+                                    >
+                                        <button className={`main-item-style mr-15 non-click`}>
+                                            Редактировать
+                                        </button>
+                                    </Tooltip>
+                                    :  <button
+                                        className={`main-item-style mr-15`}
+                                        onClick={() => this.props.setEditItem(this.props.orderInfo)}>
+                                        Редактировать
+                                    </button>
+                            }
                             <button
                                 className={'main-item-style main-item-style_danger'}
                                 onClick={this.cancelOrder}>
