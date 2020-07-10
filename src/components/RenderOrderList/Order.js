@@ -129,6 +129,11 @@ export default class Order extends Component {
                 status = 'error'
                 theme = {}
                 break
+            case 5:
+                percent = 100
+                status = 'error'
+                theme = {}
+                break
             default:
                 percent = 0
                 status = ''
@@ -148,7 +153,7 @@ export default class Order extends Component {
                     {
                         this.props.type === 'active-user' || this.props.type === 'finish-user' || this.props.type === 'admin'
                             ? <>
-                                <li className={'mb-15'}>Состояние: {this.props.orderInfo.description}</li>
+                                <li><b>{this.props.orderInfo.description}</b></li>
                                 <li className={'mb-15'}>
                                     {this.renderProgressBar()}
                                 </li>

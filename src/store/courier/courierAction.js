@@ -29,12 +29,12 @@ export function changeOrderData(status, data) {
                     break
                 }
                 case 1: {
-                    description = `Курьер ${state.userReducer.info.name} принял ваш заказ. Контактный номер курьера: ${state.userReducer.info.numberPhone}`
+                    description = `Курьер ${state.userReducer.info.name} принял ваш заказ.\n Контактный номер курьера: ${state.userReducer.info.numberPhone}`
                     courierStatus = 1
                     break
                 }
                 case 2: {
-                    description = `Курьер ${state.userReducer.info.name} доставляет ваш заказ. Контактный номер курьера: ${state.userReducer.info.numberPhone}`
+                    description = `Курьер ${state.userReducer.info.name} доставляет ваш заказ.\n Контактный номер курьера: ${state.userReducer.info.numberPhone}`
                     courierStatus = 2
                     orderInfo.order = order
                     break

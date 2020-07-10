@@ -40,7 +40,7 @@ export function sendOrder(info) {
             endTime: '',
             orderValue: '',
             deliveryValue: '',
-            description: 'Курьер ещё не принял заказ',
+            description: 'Курьер ещё не принял ваш заказ.',
             status: 0,
             clientName: info.name,
             clientNumberPhone: info.numberPhone,
@@ -58,9 +58,9 @@ export function sendOrder(info) {
                 id: orderId,
             })
 
-            dataBase.collection('user-orders').add({
+            await dataBase.collection('user-orders').add({
                 userId: userId,
-                orderId:orderId,
+                orderId: orderId,
                 courierId: '',
                 status: 0
             })
@@ -76,9 +76,9 @@ export function sendOrder(info) {
                 id: orderId,
             })
 
-            dataBase.collection('user-orders').add({
+            await dataBase.collection('user-orders').add({
                 userId: userId,
-                orderId:orderId,
+                orderId: orderId,
                 courierId: '',
                 status: 0
             })
@@ -101,8 +101,8 @@ export function cancelOrder(id) {
                 })
             })
 
-            dataBase.collection('orders').doc(id).update({
-                description: 'Вы отменили заказ',
+            await dataBase.collection('orders').doc(id).update({
+                description: 'Вы отменили заказ.',
                 endTime: getDate(),
                 status: 4
             })

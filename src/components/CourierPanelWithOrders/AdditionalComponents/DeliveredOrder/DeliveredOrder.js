@@ -50,11 +50,15 @@ export default class DeliveredOrder extends Component {
     }
 
     cancel = (deliveredOrder) => {
-        toaster.notify('Заказ отменён!', {
-            position: 'bottom-right',
-            duration: 3000,
-        })
-        this.props.changeOrderData(0, deliveredOrder)
+        confirm(
+            'отказаться от заказа', async () => {
+                toaster.notify('Заказ отменён!', {
+                    position: 'bottom-right',
+                    duration: 3000,
+                })
+                this.props.changeOrderData(0, deliveredOrder)
+            }
+        )
     }
 
     render() {
