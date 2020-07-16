@@ -4,7 +4,7 @@ import MiniPreloader from '../UI/Preloaders/MiniPrleloader'
 
 export default class List extends Component {
     onScroll = (e) => {
-        if (Math.ceil(e.target.offsetHeight + e.target.scrollTop) >= e.target.scrollHeight) {
+        if (Math.ceil(e.target.offsetHeight + e.target.scrollTop) >= e.target.scrollHeight && !this.props.loading) {
             this.props.increaseNumberElements()
         }
     }

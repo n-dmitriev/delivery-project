@@ -8,7 +8,7 @@ export default class UserOrdersPanel extends Component {
         activeTab: ''
     }
 
-    getActiveTabData = (event) => {
+    getActiveTabData = (activeTab = '') => {
         let type = '', statusList = [], num
         if (this.state.activeTab === 'current-tab') {
             type = 'active'
@@ -19,7 +19,7 @@ export default class UserOrdersPanel extends Component {
             statusList = [3, 4]
             num = 1
         } else
-            type = event.target.id === 'current-tab' ? 'active' : 'finish'
+            type = activeTab === 'current-tab' ? 'active' : 'finish'
 
         return {type, statusList, num}
     }
@@ -30,7 +30,7 @@ export default class UserOrdersPanel extends Component {
             activeTab: activeTab
         })
 
-        const data = this.getActiveTabData(event)
+        const data = this.getActiveTabData(activeTab)
 
         if (activeTab !== '') {
             this.props.fetchOrderList(data.type, 'userId', null, data.statusList, 0)
@@ -40,10 +40,12 @@ export default class UserOrdersPanel extends Component {
 
     increaseNumberElements = async () => {
         const data = this.getActiveTabData()
-        const info = this.props.arrOfLists[data.num]
-        await this.props.fetchOrderList(data.type, 'userId', null, data.statusList,
-            info.orderList[info.orderList.length-1].id)
-        console.log(info.orderList[info.orderList.length-1].id)
+        if(!this.props.arrOfLists[data.num].isEnd) {
+            const list = this.props.arrOfLists[data.num].orderList
+            console.log(data, list)
+            await this.props.fetchOrderList(data.type, 'userId', null, data.statusList,
+                list.length !== 0 ? list[list.length-1].id : 0)
+        }
     }
 
     render() {

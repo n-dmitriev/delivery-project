@@ -8,11 +8,11 @@ import {
     SET_USER_PASSWORD_ERROR,
     SET_USER_PASSWORD_SUCCESS,
     SET_USER_AL_SUCCESS,
-    SET_USER_FL_SUCCESS, ADD_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS
+    SET_USER_FL_SUCCESS, ADD_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, AL_END, FL_END
 } from './actionTypes'
 import {dispatchAction} from '../universalFunctions'
 import {FETCH_O_STOP} from '../courier/actionTypes'
-import {SET_SAMPLE} from '../admin/actionTypes'
+import {ADD_SAMPLE, SAMPLE_END, SET_SAMPLE} from '../admin/actionTypes'
 import {sortArrayByDistance} from '../courier/courierAction'
 
 //Фунцкция запрашивающая пользовательские данные
@@ -41,7 +41,7 @@ export function fetchUserInfo() {
 export function setUserInfo(info) {
     return async (dispatch, getState) => {
         try {
-            dataBase.collection('users').doc(getState().authReducer.id).update({
+            await dataBase.collection('users').doc(getState().authReducer.id).update({
                 name: info.name,
                 numberPhone: info.numberPhone,
                 address: info.address,
@@ -76,23 +76,27 @@ export function passwordChange(oldPassword, newPassword) {
 //soughtId - искомый id
 //statusList - список желаемых статусов, принимает значения от -1 до 4
 export function fetchOrderList(listType = '', typeId = '', soughtId = '', statusList = [], skip = 0) {
-    console.log(skip)
     return async (dispatch, getState) => {
-        let actionType
+        let actionType, endOfList
         if (listType === 'active') {
             actionType = skip === 0 ? SET_USER_AL_SUCCESS : ADD_USER_AL_SUCCESS
+            endOfList = AL_END
         } else if (listType === 'finish') {
             actionType = skip === 0 ? SET_USER_FL_SUCCESS : ADD_USER_FL_SUCCESS
+            endOfList = FL_END
         } else if (listType === 'sample') {
-            actionType = SET_SAMPLE
+            actionType = skip === 0 ? SET_SAMPLE : ADD_SAMPLE
+            endOfList = SAMPLE_END
         }
         if (statusList.length > 0) {
+            const limit = 2
             dispatch(dispatchAction(FETCH_USER_START, null))
             let answer
 
             if (typeId === 'all')
                 answer = await dataBase.collection('user-orders')
-                    .where('status', 'in', statusList).startAt(0).limit(5).get()
+                    .where('status', 'in', statusList).orderBy('orderId')
+                    .startAt(0).limit(5).get()
             else {
                 if (soughtId === null)
                     soughtId = getState().authReducer.id
@@ -100,8 +104,8 @@ export function fetchOrderList(listType = '', typeId = '', soughtId = '', status
                 const userOrders = dataBase.collection('user-orders')
 
                 answer = await userOrders
-                     .where(typeId, '==', soughtId).where('status', 'in', statusList)
-                    .orderBy('orderId').limit(2).startAfter(skip).get()
+                    .where(typeId, '==', soughtId).where('status', 'in', statusList)
+                    .orderBy('orderId').startAfter(skip).limit(limit).get()
             }
 
             const listOrdersInfo = [], orderList = []
@@ -109,11 +113,6 @@ export function fetchOrderList(listType = '', typeId = '', soughtId = '', status
             answer.forEach((item) => {
                 listOrdersInfo.push(item.data())
             })
-
-            console.log('------------------')
-            for (let el of listOrdersInfo) {
-                console.log(el?.orderId)
-            }
 
 
             const orderRef = dataBase.collection('orders')
@@ -124,6 +123,8 @@ export function fetchOrderList(listType = '', typeId = '', soughtId = '', status
                 orderList.push(orderData)
             }
 
+            if(listOrdersInfo < limit)
+                dispatch(dispatchAction(endOfList, null))
             dispatch(dispatchAction(actionType, orderList))
         } else
             dispatch(dispatchAction(actionType, []))

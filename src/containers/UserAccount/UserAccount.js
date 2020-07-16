@@ -116,11 +116,13 @@ class UserAccount extends Component {
                                                 orderList: this.props.listOfCurrentOrders,
                                                 type: 'active-user',
                                                 soughtId: 'userId',
-                                                                                            },
+                                                isEnd: this.props.clEnd
+                                            },
                                             {
                                                 orderList: this.props.listOfDeliveredOrders,
                                                 type: 'finish-user',
                                                 soughtId: 'userId',
+                                                isEnd: this.props.dlEnd
                                             }
                                         ]}
                                     />
@@ -143,7 +145,9 @@ function mapStateToProps(state) {
         listOfDeliveredOrders: state.userReducer.listOfDeliveredOrders,
         listOfCurrentOrders: state.userReducer.listOfCurrentOrders,
         loading: state.userReducer.loading,
-        remove: state.userReducer.remove
+        remove: state.userReducer.remove,
+        clEnd: state.userReducer.alEnd,
+        dlEnd: state.userReducer.flEnd
     }
 }
 

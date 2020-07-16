@@ -8,7 +8,7 @@ import {
     EDIT_SENT_ORDER_ITEM,
     FETCH_USER_START,
     SET_USER_AL_SUCCESS,
-    SET_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, ADD_USER_FL_SUCCESS
+    SET_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, ADD_USER_FL_SUCCESS, AL_END, FL_END
 } from './actionTypes'
 import {SORT_ORDER_LIST} from '../courier/actionTypes'
 
@@ -18,6 +18,8 @@ const initialState = {
     info: {},
     listOfCurrentOrders: [],
     listOfDeliveredOrders: [],
+    alEnd: false,
+    flEnd: false,
     remove: false // костыль, без него почему-то не обновляется компонент....
 }
 
@@ -34,7 +36,11 @@ export default function userReducer(state = initialState, action) {
             }
         case SET_USER_AL_SUCCESS:
             return {
-                ...state, loading: false, listOfCurrentOrders: action.item
+                ...state, loading: false, listOfCurrentOrders: action.item, alEnd: false
+            }
+        case AL_END:
+            return {
+                ...state, alEnd: true
             }
         case ADD_USER_AL_SUCCESS:
             return {
@@ -42,11 +48,15 @@ export default function userReducer(state = initialState, action) {
             }
         case SET_USER_FL_SUCCESS:
             return {
-                ...state, loading: false, listOfDeliveredOrders: action.item
+                ...state, loading: false, listOfDeliveredOrders: action.item, flEnd: false
             }
         case ADD_USER_FL_SUCCESS:
             return {
                 ...state, loading: false, listOfDeliveredOrders: state.listOfDeliveredOrders.concat(action.item)
+            }
+        case FL_END:
+            return {
+                ...state, flEnd: true
             }
         case FETCH_USER_INFO_ERROR:
             return {
