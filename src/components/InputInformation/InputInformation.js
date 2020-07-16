@@ -1,4 +1,6 @@
 import React, {Component} from 'react'
+import {IMaskInput} from 'react-imask'
+
 
 export default class InputInformation extends Component {
     constructor(props) {
@@ -30,7 +32,7 @@ export default class InputInformation extends Component {
             if (this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid) {
                 const info = {
                     name: this.name.current.value,
-                    numberPhone: this.numberPhone.current.value,
+                    numberPhone: this.numberPhone,
                     address: this.address.current.value,
                     role: this.props.type,
                 }
@@ -68,12 +70,17 @@ export default class InputInformation extends Component {
 
                 <div className={'input-field'}>
                     <label className={'mb-15'}>Номер телефона*</label>
-                    <input className={this.state.numberPhoneIsValid === false ? 'input-error mb-30' : 'mb-30'}
-                           type="text"
-                           ref={this.numberPhone}
-                           defaultValue={isEdit ? this.props.userInfo.numberPhone : null}
-                           placeholder={''}
-                    />
+                    <div className={`number-block mb-30 ${this.state.numberPhoneIsValid === false ? 'input-error' : ''}`}>
+                        <IMaskInput
+                            mask={'+{7}(000)000-00-00'}
+                            unmask={false}
+                            onAccept={
+                                (value) => this.numberPhone = value
+                            }
+                            placeholder='+7 ('
+                            value={isEdit ? this.props.userInfo.numberPhone : null}
+                        />
+                    </div>
                 </div>
 
                 <div className={'input-field'}>

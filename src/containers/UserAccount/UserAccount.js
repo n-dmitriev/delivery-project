@@ -115,12 +115,12 @@ class UserAccount extends Component {
                                             {
                                                 orderList: this.props.listOfCurrentOrders,
                                                 type: 'active-user',
-                                                soughtId: 'userId'
-                                            },
+                                                soughtId: 'userId',
+                                                                                            },
                                             {
                                                 orderList: this.props.listOfDeliveredOrders,
                                                 type: 'finish-user',
-                                                soughtId: 'userId'
+                                                soughtId: 'userId',
                                             }
                                         ]}
                                     />
@@ -154,7 +154,7 @@ function mapDispatchToProps(dispatch) {
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
         cancelOrder: (id) => dispatch(cancelOrder(id)),
         subscribe: (listening, listType, typeId, soughtId, statusList, coordinates) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList, coordinates)),
-        fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
+        fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status)),
         reOrder: (orderInfo) => dispatch(reOrder(orderInfo))
     }
 }

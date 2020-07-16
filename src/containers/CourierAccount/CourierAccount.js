@@ -140,7 +140,7 @@ function mapDispatchToProps(dispatch) {
         subscribeOrderInfo: (listening, id) => dispatch(subscribeOrderInfo(listening, id)),
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),
-        fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
+        fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status)),
         calculateThePrice: (id, price, distance) => dispatch(calculateThePrice(id, price, distance)),
         updateCourierStatus: (status) => dispatch(updateCourierStatus(status))
     }

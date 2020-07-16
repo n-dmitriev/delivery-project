@@ -2,33 +2,48 @@ import React, {Component} from 'react'
 import './UserOrdersPanel.scss'
 import List from '../RenderOrderList/List'
 import TabPanel from '../UI/TabPanel/TabPanel'
-import MiniPreloader from '../UI/Preloaders/MiniPrleloader'
 
 export default class UserOrdersPanel extends Component {
     state = {
-        activeTab: '',
+        activeTab: ''
     }
 
-    clickItemHandler = (event) => {
-        let type, statusList = []
-        const activeTab = event.target.id === this.state.activeTab ? '' : event.target.id
-        this.setState({
-            activeTab: activeTab,
-        })
-
-        if (activeTab === 'current-tab') {
+    getActiveTabData = (event) => {
+        let type = '', statusList = [], num
+        if (this.state.activeTab === 'current-tab') {
             type = 'active'
             statusList = [-1, 0, 1, 2]
-        } else if (activeTab === 'finish-tab') {
+            num = 0
+        } else if (this.state.activeTab === 'finish-tab') {
             type = 'finish'
             statusList = [3, 4]
+            num = 1
         } else
             type = event.target.id === 'current-tab' ? 'active' : 'finish'
 
+        return {type, statusList, num}
+    }
+
+    clickItemHandler = async (event) => {
+        const activeTab = event.target.id === this.state.activeTab ? '' : event.target.id
+        await this.setState({
+            activeTab: activeTab
+        })
+
+        const data = this.getActiveTabData(event)
+
         if (activeTab !== '') {
-            this.props.fetchOrderList(type, 'userId', null, statusList)
+            this.props.fetchOrderList(data.type, 'userId', null, data.statusList, 0)
         }
-        this.props.subscribe(activeTab !== '', type, 'userId', null, statusList)
+        this.props.subscribe(activeTab !== '', data.type, 'userId', null, data.statusList)
+    }
+
+    increaseNumberElements = async () => {
+        const data = this.getActiveTabData()
+        const info = this.props.arrOfLists[data.num]
+        await this.props.fetchOrderList(data.type, 'userId', null, data.statusList,
+            info.orderList[info.orderList.length-1].id)
+        console.log(info.orderList[info.orderList.length-1].id)
     }
 
     render() {
@@ -39,41 +54,42 @@ export default class UserOrdersPanel extends Component {
                     activeTab={this.state.activeTab}
                     tabList={[{
                         title: 'Активные',
-                        id: 'current-tab',
+                        id: 'current-tab'
                     }, {
                         title: 'Завершённые',
-                        id: 'finish-tab',
+                        id: 'finish-tab'
                     }]}
                 />
 
                 <div className={'user-panel__body'}>
                     {
-                        this.props.loading ?
-                            <MiniPreloader/>
-                            :
-                            this.state.activeTab === 'current-tab'
-                                ? <List
-                                    orderList={this.props.arrOfLists[0].orderList}
-                                    type={this.props.arrOfLists[0].type}
-                                    soughtId={this.props.arrOfLists[0].soughtId}
-                                    cancelOrder={this.props.cancelOrder}
-                                    setEditItem={this.props.setEditItem}
-                                    remove={this.props.remove}
-                                    changeOrderData={this.props.changeOrderData}
-                                    reOrder={this.props.reOrder}
-                                />
-                                : this.state.activeTab === 'finish-tab'
-                                ? <List
-                                    orderList={this.props.arrOfLists[1].orderList}
-                                    type={this.props.arrOfLists[1].type}
-                                    soughtId={this.props.arrOfLists[1].soughtId}
-                                    cancelOrder={this.props.cancelOrder}
-                                    setEditItem={this.props.setEditItem}
-                                    remove={this.props.remove}
-                                    changeOrderData={this.props.changeOrderData}
-                                    reOrder={this.props.reOrder}
-                                />
-                                : <p className={'placeholder'}>Ничего не выбрано!</p>
+                        this.state.activeTab === 'current-tab'
+                            ? <List
+                                orderList={this.props.arrOfLists[0].orderList}
+                                type={this.props.arrOfLists[0].type}
+                                soughtId={this.props.arrOfLists[0].soughtId}
+                                cancelOrder={this.props.cancelOrder}
+                                setEditItem={this.props.setEditItem}
+                                remove={this.props.remove}
+                                changeOrderData={this.props.changeOrderData}
+                                reOrder={this.props.reOrder}
+                                increaseNumberElements={this.increaseNumberElements}
+                                loading={this.props.loading}
+                            />
+                            : this.state.activeTab === 'finish-tab'
+                            ? <List
+                                orderList={this.props.arrOfLists[1].orderList}
+                                type={this.props.arrOfLists[1].type}
+                                soughtId={this.props.arrOfLists[1].soughtId}
+                                cancelOrder={this.props.cancelOrder}
+                                setEditItem={this.props.setEditItem}
+                                remove={this.props.remove}
+                                changeOrderData={this.props.changeOrderData}
+                                reOrder={this.props.reOrder}
+                                increaseNumberElements={this.increaseNumberElements}
+                                loading={this.props.loading}
+                            />
+                            : <p className={'placeholder'}>Ничего не выбрано!</p>
                     }
                 </div>
             </div>

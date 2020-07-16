@@ -1,10 +1,17 @@
 import React, {Component} from 'react'
 import Order from './Order'
+import MiniPreloader from '../UI/Preloaders/MiniPrleloader'
 
 export default class List extends Component {
+    onScroll = (e) => {
+        if (Math.ceil(e.target.offsetHeight + e.target.scrollTop) >= e.target.scrollHeight) {
+            this.props.increaseNumberElements()
+        }
+    }
+
     render() {
         return (
-            <div className={'list__content'}>
+            <div className={'list__content'} onScroll={this.onScroll}>
                 {
                     this.props.orderList.length !== 0
                         ? this.props.orderList.map((orderInfo) =>
@@ -17,11 +24,14 @@ export default class List extends Component {
                                        reOrder={this.props.reOrder}
                                        changeOrderData={this.props.changeOrderData}
                                 />
-                            </div>,
+                            </div>
                         )
-                        : <>
-                            <span>Оу, здесь пусто :(</span>
-                        </>
+                        : null
+                }
+                {
+                    this.props.loading
+                        ?  <MiniPreloader/>
+                        : this.props.orderList.length === 0 ? <span>Оу, здесь пусто :(</span> : null
                 }
             </div>
         )

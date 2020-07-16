@@ -164,7 +164,7 @@ function mapDispatchToProps(dispatch) {
         registrNewCourier: (email, password) => dispatch(registrationNewCourier(email, password)),
         setCourierInfo: (info) => dispatch(setCourierInfo(info)),
         removeCourier: (id) => dispatch(removeCourier(id)),
-        fetchOrderList: (listType, typeId, soughtId, statusList) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList)),
+        fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status)),
     }
 }
 

@@ -7,9 +7,9 @@
   &__body {
     border: 1px solid lightgray;
     border-radius: 5px;
-    height: 620px;
+    height: 605px;
     width: 100%;
-    padding: 10px;
+    padding: 3px 10px;
     @include shadow();
   }
 }
