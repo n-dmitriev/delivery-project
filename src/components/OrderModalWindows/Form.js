@@ -169,7 +169,7 @@ export default class form extends Component {
                     </button>
                     <button className="main-item-style main-item-style_danger" onClick={() => {
                         this.props.resetActiveItem()
-                        this.props.interactionWithDagger()
+                        this.props.interactionWithDagger('list')
                     }}>
                         {isEdit ? 'Назад' : 'Отменить'}
                     </button>

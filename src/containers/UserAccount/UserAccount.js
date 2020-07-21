@@ -3,8 +3,9 @@ import './UserAccount.scss'
 import {connect} from 'react-redux'
 import InputInformation from '../../components/InputInformation/InputInformation'
 import {logout} from '../../store/authentication/authActions'
+import {fetchOrderList, passwordChange, setUserInfo} from '../../store/user/userActions'
+import {subscribe} from '../../store/courier/courierAction'
 import {Redirect} from 'react-router-dom'
-import {fetchOrderList, passwordChange, setUserInfo, subscribe} from '../../store/user/userActions'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
 import {cancelOrder, reOrder} from '../../store/order/orderActions'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
@@ -19,6 +20,10 @@ class UserAccount extends Component {
         isOrderModalOpen: false,
         cpfIsOpen: false,
         editItem: null
+    }
+
+    componentDidMount() {
+        document.title = 'EasyWays | Личный кабинет'
     }
 
     interactionWithOrderModal = () => {

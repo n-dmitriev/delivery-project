@@ -57,7 +57,7 @@ $button-bg: #0D52E9;
     visibility: visible;
     opacity: 1;
     backdrop-filter: blur(1px);
-    transition: height 250ms;
+    transition: height 1ms;
   }
 
   & .is-open.modal-content {

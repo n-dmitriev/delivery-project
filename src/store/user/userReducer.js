@@ -8,7 +8,7 @@ import {
     EDIT_SENT_ORDER_ITEM,
     FETCH_USER_START,
     SET_USER_AL_SUCCESS,
-    SET_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, ADD_USER_FL_SUCCESS, AL_END, FL_END
+    SET_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, ADD_USER_FL_SUCCESS, AL_END, FL_END, AL_CHANGE
 } from './actionTypes'
 import {SORT_ORDER_LIST} from '../courier/actionTypes'
 
@@ -45,6 +45,10 @@ export default function userReducer(state = initialState, action) {
         case ADD_USER_AL_SUCCESS:
             return {
                 ...state, loading: false, listOfCurrentOrders: state.listOfCurrentOrders.concat(action.item)
+            }
+        case AL_CHANGE:
+            return {
+                ...state,  listOfCurrentOrders: action.item
             }
         case SET_USER_FL_SUCCESS:
             return {

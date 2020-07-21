@@ -25,7 +25,7 @@ export default class OrderListAndMenu extends Component {
     }
 
     addedNewOrderItem = () => {
-        if ((this.props.nameOfShop === '' && this.props.activeTab === 'shop-tab') || (this.props.nameOfRestaurant === '' && this.props.activeTab === 'restaurant-tab'))
+        if (((this.props.nameOfShop === '' && this.props.activeTab === 'shop-tab') || (this.props.nameOfRestaurant === '' && this.props.activeTab === 'restaurant-tab')) && !this.props.isEdit)
             this.props.interactionWithDagger('name')
         else
             this.props.interactionWithDagger('form')
@@ -84,7 +84,7 @@ export default class OrderListAndMenu extends Component {
                         || (this.props.activeTab === 'restaurant-tab' && Object.keys(this.props.restaurantOrder).length !== 0) || this.props.isEdit === true
                             ? <div className="button-section button-section_bottom mb-1">
                                 <button className="main-item-style mr-15 ml-1" onClick={this.props.sendOrderHandler}>
-                                    {this.props.isEdit === true ? 'Применить' : 'Заказать'}
+                                   Далее
                                 </button>
                                 <button className="main-item-style main-item-style_danger" onClick={() =>
                                     this.props.isEdit === true ? this.props.onClose() : this.props.deleteOrder()

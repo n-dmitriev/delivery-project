@@ -63,6 +63,7 @@ export default class DeliveredOrder extends Component {
 
     render() {
         const deliveredOrder = this.props.ordersList[0]
+        console.log(this.props.ordersList)
         if (deliveredOrder)
             return (
                 <div className={'courier-panel__delivered'}>

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Order from '../../RenderOrderList/Order'
+import List from '../../RenderOrderList/List'
 
 export default class OrdersList extends Component {
     constructor(props) {
@@ -17,26 +17,26 @@ export default class OrdersList extends Component {
             this.setState({
                 listIsOpen: !this.state.listIsOpen,
             })
-            this.props.subscribeUsers(this.state.listIsOpen, 'active', 'courierId', '', [0], this.props.coordinate)
+            // await this.props.fetchOrderList('active', 'courierId', '', [0], 0)
+            this.props.subscribeUsers(this.state.listIsOpen, this.props.coordinate, 0)
         }
+    }
+
+    changeOrderData = async (status, data) => {
+        if (status === 1)
+            await this.interactionWithList()
+        this.props.changeOrderData(status, data)
     }
 
     sortOrderList = () => {
         if (this.props.ordersList.length > 0) {
             return (
-                <>
-                    {
-                        this.props.ordersList.map((orderInfo) => (
-                            <div key={orderInfo.id}>
-                                <Order
-                                    orderInfo={orderInfo}
-                                    changeOrderData={this.props.changeOrderData}
-                                    type={'active-courier'}
-                                />
-                            </div>
-                        ))
-                    }
-                </>
+                <List
+                    increaseNumberElements={() => {}}
+                    orderList={this.props.ordersList}
+                    changeOrderData={this.props.changeOrderData}
+                    type={'active-courier'}
+                />
             )
         } else
             return (

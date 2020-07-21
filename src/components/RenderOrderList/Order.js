@@ -79,8 +79,16 @@ export default class Order extends Component {
                 {
                     this.props.type === 'finish-user'
                         ?
-                        <i className="fa fa-refresh fa-animate" aria-hidden="true"
-                           onClick={this.reOrder}/>
+                        <Tooltip
+                            content={'Возобновить заказ'}
+                            direction="up"
+                            tagName="span"
+                            className="target"
+                            useDefaultStyles
+                        >
+                            <i className="fa fa-refresh fa-animate" aria-hidden="true"
+                               onClick={this.reOrder}/>
+                        </Tooltip>
                         : null
                 }
             </>

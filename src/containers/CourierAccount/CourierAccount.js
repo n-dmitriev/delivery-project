@@ -10,19 +10,23 @@ import {fetchOrderList, passwordChange} from '../../store/user/userActions'
 import CourierPanel from '../../components/CourierPanelWithOrders/CourierPanel'
 import {
     changeOrderData,
-    interactWithPurchased, calculateThePrice, subscribeOrderInfo, updateCourierStatus,
+    interactWithPurchased, calculateThePrice, subscribeOrderInfo, updateCourierStatus
 } from '../../store/courier/courierAction'
-import {subscribe} from '../../store/user/userActions'
+import {subscribe} from '../../store/courier/courierAction'
 import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
 
 class CourierAccount extends Component {
     state = {
-        cpfIsOpen: false,
+        cpfIsOpen: false
+    }
+
+    componentDidMount() {
+        document.title = 'EasyWays | Личный кабнет курьера'
     }
 
     interactionWithChangeModal = () => {
         this.setState({
-            cpfIsOpen: !this.state.cpfIsOpen,
+            cpfIsOpen: !this.state.cpfIsOpen
         })
     }
 
@@ -33,6 +37,15 @@ class CourierAccount extends Component {
     logout = async () => {
         await this.props.updateCourierStatus(-1)
         await this.props.logout()
+    }
+
+
+    increaseNumberElementsD = async () => {
+        if (!this.props.dlEnd) {
+            const list = this.props.listOfDeliveredOrders
+            await this.props.fetchOrderList('finish', 'courierId', null, [3, 4],
+                list.length !== 0 ? list[list.length - 1].id : 0)
+        }
     }
 
     renderCourierPanel = () => {
@@ -54,14 +67,15 @@ class CourierAccount extends Component {
                         ordersList={this.props.listOfCurrentOrders}
                         subscribeUsers={this.props.subscribe}
                         subscribeOrderInfo={this.props.subscribeOrderInfo}
-                        loading={this.props.listLoading}
                         courierStatus={+this.props.userInfo.courierStatus}
                         changeOrderData={this.props.changeOrderData}
                         interactWithPurchased={this.props.interactWithPurchased}
                         calculateThePrice={this.props.calculateThePrice}
+                        loading={this.props.loading}
+                        clEnd={this.props.clEnd}
                     />
 
-                    <div className={'mb-30'}> </div>
+                    <br className={'mb-30'}/>
 
                     <RenderOrderList description={'завершённых заказов'}
                                      orderList={this.props.listOfDeliveredOrders}
@@ -70,6 +84,8 @@ class CourierAccount extends Component {
                                      statusList={[3, 4]}
                                      fetchOrderList={this.props.fetchOrderList}
                                      subscribe={this.props.subscribe}
+                                     loading={this.props.loading}
+                                     increaseNumberElements={this.increaseNumberElementsD}
                     />
                 </>
             )
@@ -85,7 +101,7 @@ class CourierAccount extends Component {
 
                 <div className={'container'}>
                     <div className="row">
-                        <div className="col-lg-2 col-md-1 col-sm-0"> </div>
+                        <div className="col-lg-2 col-md-1 col-sm-0"/>
                         <div className="col-lg-8 col-md-10 col-sm-12">
                             <div className="app__main-content">
                                 {
@@ -109,7 +125,7 @@ class CourierAccount extends Component {
                                 }
                             </div>
                         </div>
-                        <div className="col-lg-2 col-md-1 col-sm-0"> </div>
+                        <div className="col-lg-2 col-md-1 col-sm-0"/>
                     </div>
                 </div>
             </div>
@@ -124,10 +140,11 @@ function mapStateToProps(state) {
         error: state.authReducer.isError,
         userInfo: state.userReducer.info,
         errorPassword: state.userReducer.error,
-        loading: state.courierReducer.loading,
-        listLoading: state.userReducer.loading,
+        loading: state.userReducer.loading,
         listOfCurrentOrders: state.userReducer.listOfCurrentOrders,
         listOfDeliveredOrders: state.userReducer.listOfDeliveredOrders,
+        clEnd: state.userReducer.alEnd,
+        dlEnd: state.userReducer.flEnd
     }
 }
 
@@ -136,7 +153,7 @@ function mapDispatchToProps(dispatch) {
         logout: () => dispatch(logout()),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
         auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
-        subscribe: (listening, listType, typeId, soughtId, statusList, coordinates) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList, coordinates)),
+        subscribe: (listening, coordinates, skip) => dispatch(subscribe(listening, coordinates, skip)),
         subscribeOrderInfo: (listening, id) => dispatch(subscribeOrderInfo(listening, id)),
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),

@@ -11,9 +11,8 @@ import {
     SET_USER_FL_SUCCESS, ADD_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, AL_END, FL_END
 } from './actionTypes'
 import {dispatchAction} from '../universalFunctions'
-import {FETCH_O_STOP} from '../courier/actionTypes'
 import {ADD_SAMPLE, SAMPLE_END, SET_SAMPLE} from '../admin/actionTypes'
-import {sortArrayByDistance} from '../courier/courierAction'
+import {FETCH_O_STOP} from '../courier/actionTypes'
 
 //Фунцкция запрашивающая пользовательские данные
 export function fetchUserInfo() {
@@ -27,7 +26,7 @@ export function fetchUserInfo() {
             const answer = await docRef.get()
             const data = answer.data()
             dispatch(dispatchAction(FETCH_USER_INFO_SUCCESS, data))
-            if (collection === 'couriers') {
+            if (collection === 'couriers' && data.courierStatus > 0) {
                 dispatch(fetchOrderList('active', 'courierId', null, [1, 2]))
                 dispatch(dispatchAction(FETCH_O_STOP, null))
             }
@@ -89,14 +88,14 @@ export function fetchOrderList(listType = '', typeId = '', soughtId = '', status
             endOfList = SAMPLE_END
         }
         if (statusList.length > 0) {
-            const limit = 2
+            const limit = 5
             dispatch(dispatchAction(FETCH_USER_START, null))
             let answer
 
             if (typeId === 'all')
                 answer = await dataBase.collection('user-orders')
                     .where('status', 'in', statusList).orderBy('orderId')
-                    .startAt(0).limit(5).get()
+                    .startAt(skip).limit(limit).get()
             else {
                 if (soughtId === null)
                     soughtId = getState().authReducer.id
@@ -123,24 +122,10 @@ export function fetchOrderList(listType = '', typeId = '', soughtId = '', status
                 orderList.push(orderData)
             }
 
-            if(listOrdersInfo < limit)
+            if (listOrdersInfo.length < limit)
                 dispatch(dispatchAction(endOfList, null))
             dispatch(dispatchAction(actionType, orderList))
         } else
             dispatch(dispatchAction(actionType, []))
-    }
-}
-
-//Подписка
-export function subscribe(listening, listType, typeId, soughtId, statusList, coordinates) {
-    return (dispatch) => {
-        const un = dataBase.collection('orders')
-            .onSnapshot(async () => {
-                await dispatch(fetchOrderList(listType, typeId, soughtId, statusList))
-                if (coordinates !== null)
-                    dispatch(sortArrayByDistance(coordinates))
-            })
-        if (!listening)
-            un()
     }
 }

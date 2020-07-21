@@ -7,28 +7,25 @@ export default class AuthShape extends Component {
         this.password = React.createRef()
         this.state = {
             loginIsValid: true,
-            passwordIsValid: true,
+            passwordIsValid: true
         }
     }
 
     validateUserData = () => {
         this.setState({
             loginIsValid: this.login.current.value.replace(/\s+/g, '') !== '',
-            passwordIsValid: this.password.current.value.length > 6,
+            passwordIsValid: this.password.current.value.length > 6
         })
     }
 
     authHandler = async (e) => {
         e.preventDefault()
         if (this.password && this.login) {
-            {
-                await this.validateUserData()
-                if (this.state.loginIsValid && this.state.passwordIsValid) {
-                    this.props.auth(this.login.current.value, this.password.current.value)
-                }
+            await this.validateUserData()
+            if (this.state.loginIsValid && this.state.passwordIsValid) {
+                this.props.auth(this.login.current.value, this.password.current.value)
             }
         }
-
     }
 
     renderAuthForm = () => {
@@ -44,7 +41,7 @@ export default class AuthShape extends Component {
                        ref={this.password}/>
                 <small className={this.props.isError === true ? 'error' : 'hide'}>Неверный логин или пароль!</small>
 
-                <span className={this.props.trySendOrderNotAuth ? 'placeholder': 'hide'}>
+                <span className={this.props.trySendOrderNotAuth ? 'placeholder' : 'hide'}>
                     Прежде чем сдеать заказ, авторизуйтесь или зарегистрируйтесь
                 </span>
 

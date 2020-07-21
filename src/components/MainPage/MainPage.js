@@ -2,6 +2,10 @@ import React, {Component} from 'react'
 import './MainPage.scss'
 
 export default class MainPage extends Component {
+    componentDidMount() {
+        document.title = 'EasyWays | Сервис доставки еды'
+    }
+
     render() {
         return (
             <div className={'main-page'}>

@@ -2,6 +2,7 @@ import {dataBase} from '../../firebase/firebase'
 import {dispatchAction, getDate, getElementById} from '../universalFunctions'
 import {fetchOrderList, fetchUserInfo} from '../user/userActions'
 import {SORT_ORDER_LIST} from './actionTypes'
+import {ADD_USER_AL_SUCCESS, AL_CHANGE, FETCH_USER_START} from '../user/actionTypes'
 
 // 6 статусов
 // 0 - заказ отменён курьером, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
@@ -101,6 +102,7 @@ export function subscribeOrderInfo(listening, id) {
 }
 
 export function updateCourierStatus(status) {
+    console.log(status)
     return async (dispatch, getState) => {
         const id = getState().authReducer.id
         await dataBase.collection('couriers').doc(id).update({courierStatus: status})
@@ -140,14 +142,17 @@ export function interactWithPurchased(id, flag) {
 }
 
 export function sortArrayByDistance(coordinate) {
+    console.log('da')
     return async (dispatch, getState) => {
         const arr = []
         const ordersList = getState().userReducer.listOfCurrentOrders
 
-        for (let i of ordersList) {
-            const route = await window.ymaps.route([coordinate, i.coordinate])
-            i.distance = Math.ceil(route.getLength()) / 1000
-            arr.push(i)
+        for (let order of ordersList) {
+            if (order.distance === undefined) {
+                const route = await window.ymaps.route([coordinate, order.coordinate])
+                order.distance = Math.ceil(route.getLength()) / 1000
+            }
+            arr.push(order)
         }
 
         arr.sort((a, b) => {
@@ -158,5 +163,94 @@ export function sortArrayByDistance(coordinate) {
 
 
         dispatch(dispatchAction(SORT_ORDER_LIST, arr))
+    }
+}
+
+
+export function subscribe(listening, coordinates = null, skip = 0) {
+    return async (dispatch, getState) => {
+        const subscribeOrderList = () => {
+            const idList = []
+
+            const orderList = getState().userReducer.listOfCurrentOrders
+
+            for (let el of orderList) {
+                idList.push(el.id)
+            }
+
+            console.log(idList)
+
+            if(idList.length === 0)
+                return
+
+            const unsubscribeCurOrders = dataBase.collection('orders').where('id', 'in', idList)
+                .onSnapshot((querySnapshot) => {
+                    querySnapshot.docChanges().forEach((change) => {
+                        if (change.type === 'modified') {
+                            console.log('modified', change.doc.data())
+                            const data = change.doc.data()
+                            const index = getElementById(orderList, data.id)
+                            if (index === -1) {
+                                return null
+                            }
+
+                            if (orderList[index].status === 0) {
+                                orderList[index] = data
+                                dispatch(dispatchAction(AL_CHANGE, orderList))
+                                if (coordinates !== null)
+                                    dispatch(sortArrayByDistance(coordinates))
+                            } else {
+                                orderList.splice(index, 1)
+                                dispatch(dispatchAction(AL_CHANGE, [...orderList]))
+                            }
+                        }
+                        if (change.type === 'removed') {
+                            console.log('removed', change.doc.data())
+                            const data = change.doc.data()
+                            const index = getElementById(orderList, data.id)
+                            orderList[index] = data
+                            if (index === -1) {
+                                return null
+                            }
+                            orderList.splice(index, 1)
+                            dispatch(dispatchAction(AL_CHANGE, [...orderList]))
+                        }
+                    })
+                })
+            if (!listening) {
+                unsubscribeCurOrders()
+            }
+        }
+
+        dispatch(dispatchAction(FETCH_USER_START, null))
+
+        const unsubscribeAllOrders = await dataBase.collection('orders')
+            .where('status', '==', 0).orderBy('id')
+            .onSnapshot((querySnapshot) => {
+                querySnapshot.docChanges().forEach(async (added) => {
+                    if (added.type === 'added') {
+                        const order = added.doc.data()
+                        console.log('add', order)
+
+                        if(order.id === undefined)
+                            order.id = added.doc.id
+
+                        await dispatch(dispatchAction(ADD_USER_AL_SUCCESS, order))
+                    }
+                })
+                subscribeOrderList()
+                if (coordinates !== null)
+                    dispatch(sortArrayByDistance(coordinates))
+            })
+
+        // if (getState().userReducer.listOfCurrentOrders.length < limit){
+        //     console.log(getState().userReducer.listOfCurrentOrders)
+        //     dispatch(dispatchAction(AL_END, null))
+        // }
+        if (!listening) {
+            console.log('net')
+            unsubscribeAllOrders()
+            subscribeOrderList()
+        }
     }
 }

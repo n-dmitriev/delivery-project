@@ -25,6 +25,10 @@ class Admin extends Component {
         editingCourier: null,
     }
 
+    componentDidMount() {
+        document.title = 'EasyWays | Панель администратора'
+    }
+
     interactionWithEditModal = () => {
         this.setState({
             editModalIsOpen: !this.state.editModalIsOpen,

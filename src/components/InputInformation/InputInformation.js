@@ -20,7 +20,7 @@ export default class InputInformation extends Component {
     validateUserInformation = () => {
         this.setState({
             nameIsValid: this.name.current.value.replace(/\s+/g, '') !== '',
-            numberPhoneIsValid: this.numberPhone.current.value.replace(/\s+/g, '') !== '',
+            numberPhoneIsValid: this.numberPhone.replace(/\s+/g, '') !== '',
             addressIsValid: this.address.current.value.replace(/\s+/g, '') !== '',
         })
     }
@@ -52,6 +52,7 @@ export default class InputInformation extends Component {
         let isEdit = false
         if (this.props.userInfo) {
             isEdit = true
+            this.numberPhone = this.props.userInfo.numberPhone
         }
         return (
             <>

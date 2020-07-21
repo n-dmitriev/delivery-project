@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import List from './List'
-import MiniPreloader from '../UI/Preloaders/MiniPrleloader'
 
 export default class RenderOrderList extends Component {
     state = {
@@ -19,9 +18,9 @@ export default class RenderOrderList extends Component {
             orderListIsOpen: !this.state.orderListIsOpen,
         })
         if (!this.state.orderListIsOpen) {
-            this.props.fetchOrderList(type, this.props.soughtId, null, this.props.statusList)
+            this.props.fetchOrderList(type, this.props.soughtId, null, this.props.statusList, 0)
         }
-        this.props.subscribe(!this.state.orderListIsOpen, type, this.props.soughtId, null, this.props.statusList, null)
+        //this.props.subscribe(!this.state.orderListIsOpen, type, this.props.soughtId, null, this.props.statusList, null)
     }
 
     render() {
@@ -37,10 +36,8 @@ export default class RenderOrderList extends Component {
                 </span>
 
                 {
-                    this.props.loading && this.state.orderListIsOpen
+                    this.state.orderListIsOpen
                         ?
-                        <MiniPreloader/>
-                        :
                         <div className={this.state.orderListIsOpen ? '' : 'hide'}>
                             <List
                                 orderList={this.props.orderList}
@@ -50,8 +47,12 @@ export default class RenderOrderList extends Component {
                                 setEditItem={this.props.setEditItem}
                                 remove={this.props.remove}
                                 reOrder={this.props.reOrder}
+                                loading={this.props.loading}
+                                increaseNumberElements={this.props.increaseNumberElements}
                             />
                         </div>
+                        :
+                            null
                 }
             </div>
         )

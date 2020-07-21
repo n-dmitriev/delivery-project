@@ -35,14 +35,13 @@ export default class UserOrdersPanel extends Component {
         if (activeTab !== '') {
             this.props.fetchOrderList(data.type, 'userId', null, data.statusList, 0)
         }
-        this.props.subscribe(activeTab !== '', data.type, 'userId', null, data.statusList)
+        //this.props.subscribe(activeTab !== '', data.type, 'userId', null, data.statusList)
     }
 
     increaseNumberElements = async () => {
         const data = this.getActiveTabData()
         if(!this.props.arrOfLists[data.num].isEnd) {
             const list = this.props.arrOfLists[data.num].orderList
-            console.log(data, list)
             await this.props.fetchOrderList(data.type, 'userId', null, data.statusList,
                 list.length !== 0 ? list[list.length-1].id : 0)
         }

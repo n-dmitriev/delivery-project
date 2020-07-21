@@ -72,6 +72,11 @@
     opacity: 0.8;
     white-space: nowrap;
 
+
+    &:hover {
+      opacity: 1;
+    }
+
     & .fa {
       font-size: 30px;
     }
@@ -79,10 +84,6 @@
     .name {
       font-size: 23px;
       margin: 0 10px 0 10px;
-    }
-
-    &:hover {
-      opacity: 1;
     }
   }
 }

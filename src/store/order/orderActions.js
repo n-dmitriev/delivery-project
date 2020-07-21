@@ -4,12 +4,13 @@ import {
     DELETE_ORDER, EDIT_ORDER_RESTAURANT_ITEM,
     EDIT_ORDER_SHOP_ITEM, REMOVE_P_FROM_RESTAURANT_ORDER,
     REMOVE_P_FROM_SHOP_ORDER,
-    SEND_ORDER,
+    SEND_ORDER
 } from './actionTypes'
 import {dataBase} from '../../firebase/firebase'
 import {fetchOrderList, fetchUserInfo} from '../user/userActions'
 import {dispatchAction, getDate, getElementById} from '../universalFunctions'
-import {ADD_P_TO_SENT_ORDER, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} from '../user/actionTypes'
+import {ADD_P_TO_SENT_ORDER, AL_CHANGE, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} from '../user/actionTypes'
+import {updateCourierStatus} from '../courier/courierAction'
 
 //Обновление localStorage при внесении изменений в заказ
 function updateLocalStorage(getState, list) {
@@ -51,11 +52,11 @@ export function sendOrder(info) {
             fullOrderInfo.name = state.nameOfShop === '' ? 'Из любого магизна' : state.nameOfShop
             fullOrderInfo.order = state.shopOrder
 
-            const orders = dataBase.collection("orders")
+            const orders = dataBase.collection('orders')
             const docRef = await orders.add(fullOrderInfo)
             const orderId = docRef.id
             await orders.doc(orderId).update({
-                id: orderId,
+                id: orderId
             })
 
             await dataBase.collection('user-orders').add({
@@ -69,11 +70,11 @@ export function sendOrder(info) {
             fullOrderInfo.name = state.nameOfRestaurant
             fullOrderInfo.order = state.restaurantOrder
 
-            const orders = dataBase.collection("orders")
+            const orders = dataBase.collection('orders')
             const docRef = await orders.add(fullOrderInfo)
             const orderId = docRef.id
             await orders.doc(orderId).update({
-                id: orderId,
+                id: orderId
             })
 
             await dataBase.collection('user-orders').add({
@@ -91,11 +92,13 @@ export function sendOrder(info) {
 
 //Отмена заказа пользователем
 export function cancelOrder(id) {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
         try {
             const userOrders = dataBase.collection('user-orders')
             const answer = await userOrders.where('orderId', '==', id).get()
             answer.forEach((el) => {
+                const courierId = el.data().courierId
+                dataBase.collection('couriers').doc(courierId).update({courierStatus: 0})
                 userOrders.doc(el.id).update({
                     status: 4
                 })
@@ -107,7 +110,14 @@ export function cancelOrder(id) {
                 status: 4
             })
 
+            const arr = getState().userReducer.listOfCurrentOrders
 
+            const index = getElementById(arr, id)
+            if (index === -1) {
+                return null
+            }
+            arr.splice(index, 1)
+            dispatch(dispatchAction(AL_CHANGE, [...arr]))
             dispatch(fetchOrderList('active', 'userId', null, [0, 1, 2]))
         } catch (e) {
             console.log(e)
@@ -301,19 +311,19 @@ export function reOrder(orderInfo) {
             clientNumberPhone: orderInfo.clientNumberPhone
         }
 
-            const orders = dataBase.collection("orders")
-            const docRef = await orders.add(fullOrderInfo)
-            const orderId = docRef.id
-            await orders.doc(orderId).update({
-                id: orderId,
-            })
+        const orders = dataBase.collection('orders')
+        const docRef = await orders.add(fullOrderInfo)
+        const orderId = docRef.id
+        await orders.doc(orderId).update({
+            id: orderId
+        })
 
-            dataBase.collection('user-orders').add({
-                userId: userId,
-                orderId:orderId,
-                courierId: '',
-                status: 0
-            })
-        dispatch(fetchOrderList('active', 'userId', null, [0, 1, 2]))
+        dataBase.collection('user-orders').add({
+            userId: userId,
+            orderId: orderId,
+            courierId: '',
+            status: 0
+        })
+        //dispatch(fetchOrderList('active', 'userId', null, [0, 1, 2]))
     }
 }
