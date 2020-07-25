@@ -8,21 +8,16 @@ export default class AdminPanelWithOrders extends Component {
         this.findOrder = React.createRef()
         this.selectId = React.createRef()
         this.selectSort = React.createRef()
-        this.statusZero = React.createRef()
-        this.statusOne = React.createRef()
-        this.statusTwo = React.createRef()
-        this.statusThree = React.createRef()
-        this.statusFour = React.createRef()
-        this.statusTroll = React.createRef()
     }
 
     state = {
         menuIsOpen: false,
+        filters: []
     }
 
     interactWithMenu = () => {
         this.setState({
-            menuIsOpen: !this.state.menuIsOpen,
+            menuIsOpen: !this.state.menuIsOpen
         })
     }
 
@@ -30,27 +25,28 @@ export default class AdminPanelWithOrders extends Component {
         this.props.fetchOrderList('sample', this.selectId.current.value, this.findOrder.current.value, [-1, 0, 1, 2, 3, 4])
     }
 
-    sort = () => {
-        const filters = []
-
-        if (this.statusTroll.current.checked)
-            filters.push(-1, 5)
-        if (this.statusZero.current.checked)
-            filters.push(0)
-        if (this.statusOne.current.checked)
-            filters.push(1)
-        if (this.statusTwo.current.checked)
-            filters.push(2)
-        if (this.statusThree.current.checked)
-            filters.push(3)
-        if (this.statusFour.current.checked)
-            filters.push(4)
-
-        if(this.state.menuIsOpen)
-            this.interactWithMenu()
-
+    onChecked = (e) => {
+        const filters = this.state.filters
+        if(e.target.checked) {
+            filters.push(parseInt(e.target.id))
+        }
+        else {
+            const index = filters.indexOf(0)
+            filters.splice(index, 1)
+        }
+        this.setState({
+            filters
+        })
         if (filters.length > 0)
-            this.props.fetchOrderList('sample', 'all', null, filters)
+            this.props.fetchOrderList('sample', 'all', null, filters, 0)
+    }
+
+    increaseNumberElements = async () => {
+        const orderList = this.selectSort.current && this.selectSort.current.value === 'ascendingOrder' ? this.props.orderList : this.props.orderList.reverse()
+        if (!this.props.isEnd) {
+            await this.props.fetchOrderList('sample', 'all', null, this.state.filters,
+                orderList.length !== 0 ? orderList[orderList.length - 1].id : 0)
+        }
     }
 
     renderOrderList = () => {
@@ -58,12 +54,13 @@ export default class AdminPanelWithOrders extends Component {
         return (
             <List
                 orderList={orderList}
-                soughtId={'courierId'}
                 type={'admin'}
                 cancelOrder={this.props.cancelOrder}
                 setEditItem={this.props.setEditItem}
                 remove={this.props.remove}
                 changeOrderData={this.props.changeOrderData}
+                increaseNumberElements={this.increaseNumberElements}
+                loading={this.props.loading}
             />
         )
     }
@@ -85,50 +82,53 @@ export default class AdminPanelWithOrders extends Component {
                     </div>
 
                     <div className={'checkbox mb-15'}>
-                        <input ref={this.statusZero}
+                        <input id={0}
+                               onClick={this.onChecked}
                                type="checkbox" name="todo" defaultValue={'true'}/>
                         <label className={'checkbox__label_mini'} htmlFor="todo">
                             В ожидании
                         </label>
                     </div>
                     <div className={'checkbox mb-15'}>
-                        <input ref={this.statusOne}
+                        <input id={1}
+                               onClick={this.onChecked}
                                type="checkbox" name="todo"/>
                         <label className={'checkbox__label_mini'} htmlFor="todo">
                             Закупка
                         </label>
                     </div>
                     <div className={'checkbox mb-15'}>
-                        <input ref={this.statusTwo}
+                        <input id={2}
+                               onClick={this.onChecked}
                                type="checkbox" name="todo"/>
                         <label className={'checkbox__label_mini'} htmlFor="todo">
                             Доставка
                         </label>
                     </div>
                     <div className={'checkbox mb-15'}>
-                        <input ref={this.statusThree}
+                        <input id={3}
+                               onClick={this.onChecked}
                                type="checkbox" name="todo"/>
                         <label className={'checkbox__label_mini'} htmlFor="todo">
                             Завершённые
                         </label>
                     </div>
                     <div className={'checkbox mb-15'}>
-                        <input ref={this.statusFour}
+                        <input id={4}
+                               onClick={this.onChecked}
                                type="checkbox" name="todo"/>
                         <label className={'checkbox__label_mini'} htmlFor="todo">
                             Отменённые
                         </label>
                     </div>
                     <div className={'checkbox mb-15'}>
-                        <input ref={this.statusTroll}
+                        <input id={5}
+                               onClick={this.onChecked}
                                type="checkbox" name="todo"/>
                         <label className={'checkbox__label_mini'} htmlFor="todo">
                             Троллинг
                         </label>
                     </div>
-                </div>
-                <div onClick={this.sort} className={'admin-panel__button'}>
-                    Поиск
                 </div>
             </div>
         )

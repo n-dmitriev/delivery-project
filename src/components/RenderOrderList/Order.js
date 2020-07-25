@@ -209,7 +209,7 @@ export default class Order extends Component {
                             ? 'Скрыть заказ'
                             : 'Показать заказ'
                     }
-                    <i className={`fa fa-caret-${this.state.productListIsOpen ? 'up' : 'down'}`} aria-hidden="true"/>
+                    <i className={`fa fa-animate fa-caret-${this.state.productListIsOpen ? 'up' : 'down'}`} aria-hidden="true"/>
                 </span>
                 <div className={this.state.productListIsOpen ? '' : 'hide'}>
                     {

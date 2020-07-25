@@ -11,7 +11,7 @@ import {
     SET_USER_FL_SUCCESS, ADD_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, AL_END, FL_END
 } from './actionTypes'
 import {dispatchAction} from '../universalFunctions'
-import {ADD_SAMPLE, SAMPLE_END, SET_SAMPLE} from '../admin/actionTypes'
+import {ADD_SAMPLE, ADMIN_START, SAMPLE_END, SET_SAMPLE} from '../admin/actionTypes'
 import {FETCH_O_STOP} from '../courier/actionTypes'
 
 //Фунцкция запрашивающая пользовательские данные
@@ -89,19 +89,21 @@ export function fetchOrderList(listType = '', typeId = '', soughtId = '', status
         }
         if (statusList.length > 0) {
             const limit = 5
-            dispatch(dispatchAction(FETCH_USER_START, null))
+            if (listType === 'sample')
+                dispatch(dispatchAction(ADMIN_START, null))
+            else
+                dispatch(dispatchAction(FETCH_USER_START, null))
             let answer
 
             if (typeId === 'all')
                 answer = await dataBase.collection('user-orders')
                     .where('status', 'in', statusList).orderBy('orderId')
-                    .startAt(skip).limit(limit).get()
+                    .startAfter(skip).limit(limit).get()
             else {
                 if (soughtId === null)
                     soughtId = getState().authReducer.id
 
                 const userOrders = dataBase.collection('user-orders')
-
                 answer = await userOrders
                     .where(typeId, '==', soughtId).where('status', 'in', statusList)
                     .orderBy('orderId').startAfter(skip).limit(limit).get()
@@ -112,7 +114,6 @@ export function fetchOrderList(listType = '', typeId = '', soughtId = '', status
             answer.forEach((item) => {
                 listOrdersInfo.push(item.data())
             })
-
 
             const orderRef = dataBase.collection('orders')
 

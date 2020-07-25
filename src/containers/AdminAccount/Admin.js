@@ -76,6 +76,8 @@ class Admin extends Component {
                 <AdminPanelWithOrders
                     fetchOrderList={this.props.fetchOrderList}
                     orderList={this.props.orderList}
+                    isEnd={this.props.isEnd}
+                    loading={this.props.loading}
                 />
 
                 <hr/>
@@ -157,6 +159,8 @@ function mapStateToProps(state) {
         users: state.adminReducer.users,
         couriers: state.adminReducer.couriers,
         orderList: state.adminReducer.orderList,
+        isEnd: state.adminReducer.sampleListIsEnd,
+        loading: state.adminReducer.loading,
     }
 }
 

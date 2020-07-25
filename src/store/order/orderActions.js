@@ -10,7 +10,7 @@ import {dataBase} from '../../firebase/firebase'
 import {fetchOrderList, fetchUserInfo} from '../user/userActions'
 import {dispatchAction, getDate, getElementById} from '../universalFunctions'
 import {ADD_P_TO_SENT_ORDER, AL_CHANGE, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} from '../user/actionTypes'
-import {updateCourierStatus} from '../courier/courierAction'
+
 
 //Обновление localStorage при внесении изменений в заказ
 function updateLocalStorage(getState, list) {

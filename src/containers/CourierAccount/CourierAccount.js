@@ -41,7 +41,7 @@ class CourierAccount extends Component {
 
 
     increaseNumberElementsD = async () => {
-        if (!this.props.dlEnd) {
+        if (!this.props.dlEnd && !this.props.loading) {
             const list = this.props.listOfDeliveredOrders
             await this.props.fetchOrderList('finish', 'courierId', null, [3, 4],
                 list.length !== 0 ? list[list.length - 1].id : 0)
@@ -83,7 +83,6 @@ class CourierAccount extends Component {
                                      soughtId={'courierId'}
                                      statusList={[3, 4]}
                                      fetchOrderList={this.props.fetchOrderList}
-                                     subscribe={this.props.subscribe}
                                      loading={this.props.loading}
                                      increaseNumberElements={this.increaseNumberElementsD}
                     />
