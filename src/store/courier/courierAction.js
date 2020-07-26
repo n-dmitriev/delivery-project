@@ -1,8 +1,8 @@
 import {dataBase} from '../../firebase/firebase'
 import {dispatchAction, getDate, getElementById} from '../universalFunctions'
-import {fetchOrderList, fetchUserInfo} from '../user/userActions'
+import {fetchUserInfo} from '../user/userActions'
 import {SORT_ORDER_LIST} from './actionTypes'
-import {ADD_USER_AL_SUCCESS, AL_CHANGE, FETCH_USER_START} from '../user/actionTypes'
+import {ADD_USER_AL_SUCCESS, AL_CHANGE, FETCH_USER_START, SET_USER_AL_SUCCESS} from '../user/actionTypes'
 
 // 6 статусов
 // 0 - заказ отменён курьером, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
@@ -89,20 +89,7 @@ export function changeOrderData(status, data) {
     }
 }
 
-//Подписка на конкретный заказ
-export function subscribeOrderInfo(listening, id) {
-    return (dispatch) => {
-        const unsubscribe = dataBase.collection('orders').doc(id)
-            .onSnapshot(() => {
-                dispatch(fetchOrderList('active', 'courierId', null, [1]))
-            })
-        if (!listening)
-            unsubscribe()
-    }
-}
-
 export function updateCourierStatus(status) {
-    console.log(status)
     return async (dispatch, getState) => {
         const id = getState().authReducer.id
         await dataBase.collection('couriers').doc(id).update({courierStatus: status})
@@ -142,7 +129,6 @@ export function interactWithPurchased(id, flag) {
 }
 
 export function sortArrayByDistance(coordinate) {
-    console.log('da')
     return async (dispatch, getState) => {
         const arr = []
         const ordersList = getState().userReducer.listOfCurrentOrders
@@ -161,11 +147,29 @@ export function sortArrayByDistance(coordinate) {
             else return 0
         })
 
-
         dispatch(dispatchAction(SORT_ORDER_LIST, arr))
     }
 }
 
+//Подписка на конкретный заказ
+export function subscribeOrderInfo(listening, id) {
+    return (dispatch) => {
+        const unsubscribe = dataBase.collection('orders').doc(id)
+            .onSnapshot((change) => {
+                const data = change.data()
+                console.log(data)
+                if (data.status === 0) {
+                    dispatch(fetchUserInfo())
+                } else {
+                    dispatch(dispatchAction(SET_USER_AL_SUCCESS, [data]))
+                }
+                //dispatch(fetchOrderList('active', 'courierId', null, [1]))
+            })
+        if (!listening) {
+            unsubscribe()
+        }
+    }
+}
 
 export function subscribe(listening, coordinates = null, skip = 0) {
     return async (dispatch, getState) => {
@@ -178,16 +182,14 @@ export function subscribe(listening, coordinates = null, skip = 0) {
                 idList.push(el.id)
             }
 
-            console.log(idList)
-
-            if(idList.length === 0)
+            if (idList.length === 0)
                 return
 
             const unsubscribeCurOrders = dataBase.collection('orders').where('id', 'in', idList)
                 .onSnapshot((querySnapshot) => {
                     querySnapshot.docChanges().forEach((change) => {
                         if (change.type === 'modified') {
-                            console.log('modified', change.doc.data())
+                            //console.log('modified', change.doc.data())
                             const data = change.doc.data()
                             const index = getElementById(orderList, data.id)
                             if (index === -1) {
@@ -205,7 +207,7 @@ export function subscribe(listening, coordinates = null, skip = 0) {
                             }
                         }
                         if (change.type === 'removed') {
-                            console.log('removed', change.doc.data())
+                            //console.log('removed', change.doc.data())
                             const data = change.doc.data()
                             const index = getElementById(orderList, data.id)
                             orderList[index] = data
@@ -230,9 +232,9 @@ export function subscribe(listening, coordinates = null, skip = 0) {
                 querySnapshot.docChanges().forEach(async (added) => {
                     if (added.type === 'added') {
                         const order = added.doc.data()
-                        console.log('add', order)
+                        //console.log('add', order)
 
-                        if(order.id === undefined)
+                        if (order.id === undefined)
                             order.id = added.doc.id
 
                         await dispatch(dispatchAction(ADD_USER_AL_SUCCESS, order))
@@ -248,7 +250,7 @@ export function subscribe(listening, coordinates = null, skip = 0) {
         //     dispatch(dispatchAction(AL_END, null))
         // }
         if (!listening) {
-            console.log('net')
+            // console.log('net')
             unsubscribeAllOrders()
             subscribeOrderList()
         }

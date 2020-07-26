@@ -11,7 +11,7 @@ export function authActions(email, password, isLogin, collectionType) {
     return async dispatch => {
         try {
             dispatch(dispatchAction(AUTH_START, null))
-            if(isLogin)
+            if (isLogin)
                 await authWithFirebase.signInWithEmailAndPassword(email, password)
             else
                 await authWithFirebase.createUserWithEmailAndPassword(email, password)
@@ -20,16 +20,15 @@ export function authActions(email, password, isLogin, collectionType) {
 
             authWithFirebase.onAuthStateChanged(async (user) => {
                 if (user) {
-                    if(isLogin){
+                    if (isLogin) {
                         const answer = await collection.doc(user.uid).get()
                         const data = answer.data()
 
-                        if(data === undefined){
+                        if (data === undefined) {
                             dispatch(dispatchAction(AUTH_ERROR, null))
                             return
                         }
-                    }
-                    else {
+                    } else {
                         const info = {
                             name: '',
                             numberPhone: '',
@@ -44,8 +43,15 @@ export function authActions(email, password, isLogin, collectionType) {
 
                     const path = collectionType === 'users' ? '/user-account/' : '/courier-account/'
 
-                    if(collectionType === 'couriers' )
-                        await collection.doc(user.uid).update({courierStatus: 0})
+                    if (collectionType === 'couriers') {
+                        const userOrders = dataBase.collection('user-orders')
+                        const answer = await userOrders
+                            .where('courierId', '==', user.uid).where('status', 'in', [1, 2]).get()
+                        answer.forEach(item => {
+                            const status = item.data().status
+                            collection.doc(user.uid).update({courierStatus: status})
+                        })
+                    }
 
                     dispatch(dispatchAction(AUTH_SUCCESS, {id: user.uid, path}))
                     localStorage.setItem('id', JSON.stringify(user.uid))
@@ -64,7 +70,7 @@ export function authActions(email, password, isLogin, collectionType) {
 //Функция обнуления ошибки, используется при переключении между окнами
 export function removeError() {
     return {
-        type: AUTH_OK,
+        type: AUTH_OK
     }
 }
 
@@ -73,6 +79,6 @@ export function logout() {
     localStorage.removeItem('id')
     localStorage.removeItem('path')
     return {
-        type: AUTH_LOGOUT,
+        type: AUTH_LOGOUT
     }
 }

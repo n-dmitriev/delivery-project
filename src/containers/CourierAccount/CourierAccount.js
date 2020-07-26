@@ -10,9 +10,8 @@ import {fetchOrderList, passwordChange} from '../../store/user/userActions'
 import CourierPanel from '../../components/CourierPanelWithOrders/CourierPanel'
 import {
     changeOrderData,
-    interactWithPurchased, calculateThePrice, subscribeOrderInfo, updateCourierStatus
+    interactWithPurchased, calculateThePrice, subscribeOrderInfo, updateCourierStatus, subscribe
 } from '../../store/courier/courierAction'
-import {subscribe} from '../../store/courier/courierAction'
 import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
 
 class CourierAccount extends Component {
