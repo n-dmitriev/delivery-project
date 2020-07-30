@@ -4,11 +4,9 @@ import {connect} from 'react-redux'
 import InputInformation from '../../components/InputInformation/InputInformation'
 import {logout} from '../../store/authentication/authActions'
 import {fetchOrderList, passwordChange, setUserInfo} from '../../store/user/userActions'
-import {subscribe} from '../../store/courier/courierAction'
 import {Redirect} from 'react-router-dom'
 import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
-import {cancelOrder, reOrder} from '../../store/order/orderActions'
-import OrderModalForm from '../OrderModalForm/OrderModalForm'
+import {reOrder} from '../../store/order/orderActions'
 import Footer from '../../components/UI/Footer/Footer'
 import UserOrdersPanel from '../../components/UserPanelWithOrders/UserOrdersPanel'
 import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
@@ -17,18 +15,11 @@ import toaster from 'toasted-notes'
 
 class UserAccount extends Component {
     state = {
-        isOrderModalOpen: false,
-        cpfIsOpen: false,
-        editItem: null
+        cpfIsOpen: false
     }
 
     componentDidMount() {
         document.title = 'EasyWays | Личный кабинет'
-    }
-
-    interactionWithOrderModal = () => {
-        window.scrollTo(0, 0)
-        this.setState({isOrderModalOpen: !this.state.isOrderModalOpen})
     }
 
     interactionWithChangeModal = () => {
@@ -49,13 +40,6 @@ class UserAccount extends Component {
         )
     }
 
-    setEditItem = (item) => {
-        this.setState({
-            editItem: item
-        })
-        this.interactionWithOrderModal()
-    }
-
     render() {
         if ((this.props.match.path === '/user-account/:number' && this.props.match.params.number !== this.props.id)
             || this.props.userInfo === undefined)
@@ -68,16 +52,6 @@ class UserAccount extends Component {
                                         passwordChange={this.props.passwordChange}
                                         isOpen={this.state.cpfIsOpen}
                                         onClose={this.interactionWithChangeModal}/>
-
-                    <OrderModalForm
-                        trySendOrder={false} isAuth={true}
-                        isOpen={this.state.isOrderModalOpen}
-                        onClose={this.interactionWithOrderModal}
-                        isEdit={true}
-                        editItem={this.state.editItem}
-                        remove={this.props.remove}
-                    />
-
 
                     <div className={'container'}>
                         <div className="row">
@@ -110,9 +84,6 @@ class UserAccount extends Component {
 
                                     <UserOrdersPanel
                                         fetchOrderList={this.props.fetchOrderList}
-                                        editItem={this.props.editItem}
-                                        subscribe={this.props.subscribe}
-                                        cancelOrder={this.props.cancelOrder}
                                         reOrder={this.props.reOrder}
                                         setEditItem={this.setEditItem}
                                         loading={this.props.loading}
@@ -120,13 +91,11 @@ class UserAccount extends Component {
                                             {
                                                 orderList: this.props.listOfCurrentOrders,
                                                 type: 'active-user',
-                                                soughtId: 'userId',
                                                 isEnd: this.props.clEnd
                                             },
                                             {
                                                 orderList: this.props.listOfDeliveredOrders,
                                                 type: 'finish-user',
-                                                soughtId: 'userId',
                                                 isEnd: this.props.dlEnd
                                             }
                                         ]}
@@ -161,8 +130,6 @@ function mapDispatchToProps(dispatch) {
         logout: () => dispatch(logout()),
         setUserInfo: (info) => dispatch(setUserInfo(info)),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
-        cancelOrder: (id) => dispatch(cancelOrder(id)),
-        subscribe: (listening, listType, typeId, soughtId, statusList, coordinates) => dispatch(subscribe(listening, listType, typeId, soughtId, statusList, coordinates)),
         fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status)),
         reOrder: (orderInfo) => dispatch(reOrder(orderInfo))
     }

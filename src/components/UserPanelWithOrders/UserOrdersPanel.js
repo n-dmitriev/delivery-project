@@ -68,12 +68,6 @@ export default class UserOrdersPanel extends Component {
                             ? <List
                                 orderList={this.props.arrOfLists[0].orderList}
                                 type={this.props.arrOfLists[0].type}
-                                soughtId={this.props.arrOfLists[0].soughtId}
-                                cancelOrder={this.props.cancelOrder}
-                                setEditItem={this.props.setEditItem}
-                                remove={this.props.remove}
-                                changeOrderData={this.props.changeOrderData}
-                                reOrder={this.props.reOrder}
                                 increaseNumberElements={this.increaseNumberElements}
                                 loading={this.props.loading}
                             />
@@ -81,11 +75,6 @@ export default class UserOrdersPanel extends Component {
                             ? <List
                                 orderList={this.props.arrOfLists[1].orderList}
                                 type={this.props.arrOfLists[1].type}
-                                soughtId={this.props.arrOfLists[1].soughtId}
-                                cancelOrder={this.props.cancelOrder}
-                                setEditItem={this.props.setEditItem}
-                                remove={this.props.remove}
-                                changeOrderData={this.props.changeOrderData}
                                 reOrder={this.props.reOrder}
                                 increaseNumberElements={this.increaseNumberElements}
                                 loading={this.props.loading}

@@ -2,21 +2,24 @@ import React, {Component} from 'react'
 import toaster from 'toasted-notes'
 import Item from './Item'
 import {confirm} from '../UI/Confirm/Confirm'
-import {Progress} from 'react-sweet-progress'
-import Tooltip from "react-tooltip-lite"
+import Tooltip from 'react-tooltip-lite'
+import {NavLink} from 'react-router-dom'
+import ProgressBar from '../UI/ProgressBar/ProgressBar'
 
 export default class Order extends Component {
     state = {
         productListIsOpen: false
     }
 
-    interactionWithProductList = () => {
+    interactionWithProductList = (e) => {
+        e.preventDefault()
         this.setState({
             productListIsOpen: !this.state.productListIsOpen
         })
     }
 
-    reOrder = () => {
+    reOrder = (e) => {
+        e.preventDefault()
         confirm(
             'возобновить заказ', async () => {
                 await this.props.reOrder(this.props.orderInfo)
@@ -39,17 +42,6 @@ export default class Order extends Component {
                 duration: 3000
             })
         })
-    }
-
-    cancelOrder = () => {
-        confirm('отменить заказ',
-            () => {
-                this.props.cancelOrder(this.props.orderInfo.id)
-                toaster.notify('Заказ отменён!', {
-                    position: 'bottom-right',
-                    duration: 3000
-                })
-            })
     }
 
     troll = () => {
@@ -95,61 +87,6 @@ export default class Order extends Component {
         )
     }
 
-    renderProgressBar = () => {
-        let percent, status, theme
-
-        switch (this.props.orderInfo.status) {
-            case -1:
-                percent = 100
-                status = 'error'
-                theme = {
-                    error: {
-                        symbol: '🤔',
-                        color: '#fbc630'
-                    }
-                }
-                break
-            case 0:
-                percent = 10
-                status = ''
-                theme = {}
-                break
-            case 1:
-                percent = 30
-                status = ''
-                theme = {}
-                break
-            case 2:
-                percent = 70
-                status = ''
-                theme = {}
-                break
-            case 3:
-                percent = 100
-                status = 'success'
-                theme = {}
-                break
-            case 4:
-                percent = 100
-                status = 'error'
-                theme = {}
-                break
-            case 5:
-                percent = 100
-                status = 'error'
-                theme = {}
-                break
-            default:
-                percent = 0
-                status = ''
-                theme = {}
-                break
-        }
-
-        return (
-            <Progress percent={percent} status={status} theme={theme}/>
-        )
-    }
 
     renderBody = () => {
         return (
@@ -160,7 +97,7 @@ export default class Order extends Component {
                             ? <>
                                 <li><b>{this.props.orderInfo.description}</b></li>
                                 <li className={'mb-15'}>
-                                    {this.renderProgressBar()}
+                                    <ProgressBar status={this.props.orderInfo.status}/>
                                 </li>
                             </>
                             : null
@@ -209,7 +146,8 @@ export default class Order extends Component {
                             ? 'Скрыть заказ'
                             : 'Показать заказ'
                     }
-                    <i className={`fa fa-animate fa-caret-${this.state.productListIsOpen ? 'up' : 'down'}`} aria-hidden="true"/>
+                    <i className={`fa fa-animate fa-caret-${this.state.productListIsOpen ? 'up' : 'down'}`}
+                       aria-hidden="true"/>
                 </span>
                 <div className={this.state.productListIsOpen ? '' : 'hide'}>
                     {
@@ -230,82 +168,120 @@ export default class Order extends Component {
 
     renderButtonSection = () => {
         return (
-            <>
-                {
-                    this.props.type === 'active-user'
-                        ?
-                        <div className="button-section mt-30">
-                            {
-                                this.props.orderInfo.status >= 2
-                                ? <Tooltip
-                                        content={'Эот заказ нельзя редактировать!'}
-                                        direction="up"
-                                        tagName="span"
-                                        className="target"
-                                        useDefaultStyles
-                                    >
-                                        <button className={`main-item-style mr-15 non-click`}>
-                                            Редактировать
-                                        </button>
-                                    </Tooltip>
-                                    :  <button
-                                        className={`main-item-style mr-15`}
-                                        onClick={() => this.props.setEditItem(this.props.orderInfo)}>
-                                        Редактировать
-                                    </button>
-                            }
-                            <button
-                                className={'main-item-style main-item-style_danger'}
-                                onClick={this.cancelOrder}>
-                                Отменить
-                            </button>
-                        </div>
-                        : null
-                }
-                {
-                    this.props.type === 'active-courier'
-                        ? <div className="button-section mt-30">
-                            <button
-                                className={`main-item-style mr-15`}
-                                onClick={this.takeOrder}>
-                                Взять
-                            </button>
-                            <button
-                                className={`main-item-style main-item-style_danger`}
-                                onClick={this.troll}>
-                                Тролль!
-                            </button>
-                        </div>
-                        : null
-                }
-                {
-                    this.props.type === 'admin'
-                        ?
-                        <>
-                        </>
-                        : null
-                }
-            </>
+            <div className="button-section mt-30">
+                <button
+                    className={`main-item-style mr-15`}
+                    onClick={this.takeOrder}>
+                    Взять
+                </button>
+                <button
+                    className={`main-item-style main-item-style_danger`}
+                    onClick={this.troll}>
+                    Тролль!
+                </button>
+            </div>
         )
     }
 
     render() {
-        return (
-            <div className={'list__item'}>
-                <div className="list__title">
-                    {
-                        this.renderTitle()
-                    }
+        if (this.props.type === 'active-courier')
+            return (
+                <div className={'list__item'}>
+                    <div className="list__title">
+                        {
+                            this.renderTitle()
+                        }
+                    </div>
+                    <div className="list__body">
+                        {
+                            this.renderBody()
+                        }
+                        {
+                            this.renderButtonSection()
+                        }
+                    </div>
                 </div>
-                <div className="list__body">
-                    {
-                        this.renderBody()
-                    }
-                    {
-                        this.renderButtonSection()
-                    }
-                </div>
-            </div>
-        )
+            )
+        else
+        {
+            return (
+                <NavLink to={`/order/${this.props.orderInfo.id}?${this.props.type}`}>
+                    <div className={'list__item'}>
+                        <div className="list__title">
+                            {
+                                this.renderTitle()
+                            }
+                        </div>
+                        <div className="list__body">
+                            {
+                                this.renderBody()
+                            }
+                        </div>
+                    </div>
+                </NavLink>
+            )
+        }
     }
 }
+
+
+// renderButtonSection2 = () => {
+//         return (
+//             <>
+//                 {
+//                     this.props.type === 'active-user'
+//                         ?
+//                         <div className="button-section mt-30">
+//                             {
+//                                 this.props.orderInfo.status >= 2
+//                                     ? <Tooltip
+//                                         content={'Эот заказ нельзя редактировать!'}
+//                                         direction="up"
+//                                         tagName="span"
+//                                         className="target"
+//                                         useDefaultStyles
+//                                     >
+//                                         <button className={`main-item-style mr-15 non-click`}>
+//                                             Редактировать
+//                                         </button>
+//                                     </Tooltip>
+//                                     : <button
+//                                         className={`main-item-style mr-15`}
+//                                         onClick={() => this.props.setEditItem(this.props.orderInfo)}>
+//                                         Редактировать
+//                                     </button>
+//                             }
+//                             <button
+//                                 className={'main-item-style main-item-style_danger'}
+//                                 onClick={this.cancelOrder}>
+//                                 Отменить
+//                             </button>
+//                         </div>
+//                         : null
+//                 }
+//                 {
+//                     this.props.type === 'active-courier'
+//                         ? <div className="button-section mt-30">
+//                             <button
+//                                 className={`main-item-style mr-15`}
+//                                 onClick={this.takeOrder}>
+//                                 Взять
+//                             </button>
+//                             <button
+//                                 className={`main-item-style main-item-style_danger`}
+//                                 onClick={this.troll}>
+//                                 Тролль!
+//                             </button>
+//                         </div>
+//                         : null
+//                 }
+//                 {
+//                     this.props.type === 'admin'
+//                         ?
+//                         <>
+//                         </>
+//                         : null
+//                 }
+//             </>
+//         )
+//     }

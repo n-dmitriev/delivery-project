@@ -18,9 +18,6 @@ export default class List extends Component {
                             <div key={orderInfo.id}>
                                 <Order orderInfo={orderInfo}
                                        type={this.props.type}
-                                       cancelOrder={this.props.cancelOrder}
-                                       setEditItem={this.props.setEditItem}
-                                       remove={this.props.remove}
                                        reOrder={this.props.reOrder}
                                        changeOrderData={this.props.changeOrderData}
                                 />
