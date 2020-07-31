@@ -7,7 +7,7 @@ import {
     fetchDataBase,
     registrationNewCourier,
     removeCourier,
-    setCourierInfo,
+    setCourierInfo
 } from '../../store/admin/adminActions'
 import AddCourier from '../../components/AddCourier/AddCourier'
 import {dispatchAction} from '../../store/universalFunctions'
@@ -19,19 +19,21 @@ import {fetchOrderList} from '../../store/user/userActions'
 import toaster from 'toasted-notes'
 
 class Admin extends Component {
+    constructor() {
+        super()
+
+        document.title = 'EasyWays | Панель администратора'
+    }
+
     state = {
         isAddCourierOpen: false,
         editModalIsOpen: false,
-        editingCourier: null,
-    }
-
-    componentDidMount() {
-        document.title = 'EasyWays | Панель администратора'
+        editingCourier: null
     }
 
     interactionWithEditModal = () => {
         this.setState({
-            editModalIsOpen: !this.state.editModalIsOpen,
+            editModalIsOpen: !this.state.editModalIsOpen
         })
     }
 
@@ -43,11 +45,11 @@ class Admin extends Component {
     editCourier = (courier) => {
         window.scrollTo(0, 0)
         this.setState({
-            editingCourier: courier,
+            editingCourier: courier
         })
         toaster.notify('Данные курьера отредактированы!', {
             position: 'bottom-right',
-            duration: 3000,
+            duration: 3000
         })
         this.interactionWithEditModal()
     }
@@ -63,7 +65,7 @@ class Admin extends Component {
     removeCourier = (id) => {
         toaster.notify('Курьер удалён!', {
             position: 'bottom-right',
-            duration: 3000,
+            duration: 3000
         })
         this.props.removeCourier(id)
     }
@@ -123,7 +125,7 @@ class Admin extends Component {
                 />
                 <div className={'container'}>
                     <div className="row">
-                        <div className="col-lg-2 col-md-2 col-sm-0"> </div>
+                        <div className="col-lg-2 col-md-2 col-sm-0"></div>
                         <div className="col-lg-8 col-md-8 col-sm-12">
                             <div className="app__main-content">
                                 <h1>Панель админа</h1>
@@ -144,7 +146,7 @@ class Admin extends Component {
                                 }
                             </div>
                         </div>
-                        <div className="col-lg-2 col-md-2 col-sm-0"> </div>
+                        <div className="col-lg-2 col-md-2 col-sm-0"></div>
                     </div>
                 </div>
             </div>
@@ -160,7 +162,7 @@ function mapStateToProps(state) {
         couriers: state.adminReducer.couriers,
         orderList: state.adminReducer.orderList,
         isEnd: state.adminReducer.sampleListIsEnd,
-        loading: state.adminReducer.loading,
+        loading: state.adminReducer.loading
     }
 }
 
@@ -172,7 +174,7 @@ function mapDispatchToProps(dispatch) {
         registrNewCourier: (email, password) => dispatch(registrationNewCourier(email, password)),
         setCourierInfo: (info) => dispatch(setCourierInfo(info)),
         removeCourier: (id) => dispatch(removeCourier(id)),
-        fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status)),
+        fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status))
     }
 }
 

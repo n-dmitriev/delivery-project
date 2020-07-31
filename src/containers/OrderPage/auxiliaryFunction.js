@@ -2,6 +2,7 @@ import {dataBase} from '../../firebase/firebase'
 
 export const accessCheck = async (adminId = null, userId = null, path = '', number = '', type = '') => {
     let access = false
+    const shortType = type.split('-')[1]
 
     if (adminId !== null && type === 'admin') {
         const docRef = dataBase.collection('appData').doc(this.props.adminId)
@@ -11,7 +12,7 @@ export const accessCheck = async (adminId = null, userId = null, path = '', numb
         if (data !== undefined && data.role === 'admin') {
             access = true
         }
-    } else if (path === '/user-account/' && type === 'user' && userId) {
+    } else if (path === '/user-account/' && shortType === 'user' && userId) {
         const userOrders = dataBase.collection('user-orders')
         const answer = await userOrders.where('userId', '==', userId)
             .where('orderId', '==', number).get()
@@ -20,7 +21,7 @@ export const accessCheck = async (adminId = null, userId = null, path = '', numb
             if (data !== undefined)
                 access = true
         })
-    } else if (path === '/courier-account/' && type === 'courier' && userId) {
+    } else if (path === '/courier-account/' && shortType === 'courier' && userId) {
         const userOrders = dataBase.collection('courier-orders')
         const answer = await userOrders.where('courierId', '==', userId)
             .where('orderId', '==', number).get()

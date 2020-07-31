@@ -1,25 +1,24 @@
 import React, {Component} from 'react'
-import './UserAccount.scss'
 import {connect} from 'react-redux'
-import InputInformation from '../../components/InputInformation/InputInformation'
-import {logout} from '../../store/authentication/authActions'
-import {fetchOrderList, passwordChange, setUserInfo} from '../../store/user/userActions'
-import {Redirect} from 'react-router-dom'
-import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
-import {reOrder} from '../../store/order/orderActions'
-import Footer from '../../components/UI/Footer/Footer'
-import UserOrdersPanel from '../../components/UserPanelWithOrders/UserOrdersPanel'
-import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
 import {confirm} from '../../components/UI/Confirm/Confirm'
 import toaster from 'toasted-notes'
+import {Redirect} from 'react-router-dom'
+import PasswordChangeForm from '../../components/PasswordChangeForm/PasswordChangeForm'
+import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
+import InputInformation from '../../components/InputInformation/InputInformation'
+import Footer from '../../components/UI/Footer/Footer'
+import {logout} from '../../store/authentication/authActions'
+import {passwordChange, setUserInfo} from '../../store/user/userActions'
 
-class UserAccount extends Component {
-    state = {
-        cpfIsOpen: false
+class element extends Component {
+    constructor() {
+        super()
+
+        document.title = 'EasyWays | Личный кабинет'
     }
 
-    componentDidMount() {
-        document.title = 'EasyWays | Личный кабинет'
+    state = {
+        cpfIsOpen: false
     }
 
     interactionWithChangeModal = () => {
@@ -41,13 +40,12 @@ class UserAccount extends Component {
     }
 
     render() {
-        if ((this.props.match.path === '/user-account/:number' && this.props.match.params.number !== this.props.id)
-            || this.props.userInfo === undefined)
+        if ((this.props.match.path === '/user-account/:number/user-info' && this.props.match.params.number !== this.props.id)
+            || Object.keys(this.props.userInfo).length === 0)
             return <Redirect to={'/'}/>
         else
             return (
                 <div className={'user-account'}>
-
                     <PasswordChangeForm errorPassword={this.props.errorPassword}
                                         passwordChange={this.props.passwordChange}
                                         isOpen={this.state.cpfIsOpen}
@@ -59,7 +57,7 @@ class UserAccount extends Component {
                             <div className="col-lg-8 col-md-10 col-sm-12">
                                 <div className="app__main-content">
                                     <h1 className={'mb-30'}>
-                                        Личный кабинет
+                                       Личный кабинет
                                     </h1>
 
                                     <FunctionalButtons
@@ -75,31 +73,7 @@ class UserAccount extends Component {
                                             userInfo={this.props.userInfo}
                                             type={'user'}
                                         />
-                                        <hr/>
                                     </div>
-
-                                    <h2 className={'mb-30'}>
-                                        Заказы
-                                    </h2>
-
-                                    <UserOrdersPanel
-                                        fetchOrderList={this.props.fetchOrderList}
-                                        reOrder={this.props.reOrder}
-                                        setEditItem={this.setEditItem}
-                                        loading={this.props.loading}
-                                        arrOfLists={[
-                                            {
-                                                orderList: this.props.listOfCurrentOrders,
-                                                type: 'active-user',
-                                                isEnd: this.props.clEnd
-                                            },
-                                            {
-                                                orderList: this.props.listOfDeliveredOrders,
-                                                type: 'finish-user',
-                                                isEnd: this.props.dlEnd
-                                            }
-                                        ]}
-                                    />
                                 </div>
                                 <Footer/>
                             </div>
@@ -108,6 +82,7 @@ class UserAccount extends Component {
                     </div>
                 </div>
             )
+
     }
 }
 
@@ -115,13 +90,7 @@ function mapStateToProps(state) {
     return {
         id: state.authReducer.id,
         userInfo: state.userReducer.info,
-        errorPassword: state.userReducer.error,
-        listOfDeliveredOrders: state.userReducer.listOfDeliveredOrders,
-        listOfCurrentOrders: state.userReducer.listOfCurrentOrders,
-        loading: state.userReducer.loading,
-        remove: state.userReducer.remove,
-        clEnd: state.userReducer.alEnd,
-        dlEnd: state.userReducer.flEnd
+        errorPassword: state.userReducer.error
     }
 }
 
@@ -129,10 +98,8 @@ function mapDispatchToProps(dispatch) {
     return {
         logout: () => dispatch(logout()),
         setUserInfo: (info) => dispatch(setUserInfo(info)),
-        passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
-        fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status)),
-        reOrder: (orderInfo) => dispatch(reOrder(orderInfo))
+        passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserAccount)
+export default connect(mapStateToProps, mapDispatchToProps)(element)

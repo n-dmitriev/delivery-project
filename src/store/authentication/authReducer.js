@@ -4,9 +4,7 @@ const id = localStorage.getItem('id') ? JSON.parse(localStorage.getItem('id')) :
 localStorage.setItem('id', JSON.stringify(id))
 const path = localStorage.getItem('path') ? JSON.parse(localStorage.getItem('path')) : '/'
 localStorage.setItem('path', JSON.stringify(path))
-let isAuth = false
-if (id !== '')
-    isAuth = true
+const isAuth = id !== ''
 
 const initialState = {
     isAuth: isAuth,

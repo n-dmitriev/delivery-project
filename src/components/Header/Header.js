@@ -5,21 +5,11 @@ import logo from '../../img/logo.png'
 import {confirmAlert} from 'react-confirm-alert'
 import AppModalWindows from './AppModalWindows'
 
-class Header extends Component {
+export default class Header extends Component {
     state = {
         menuIsOpen: false,
-        weClosed: false,
         isOrderModalOpen: false,
         isAuthModalOpen: false
-    }
-
-    componentDidMount() {
-        const hour = new Date().getHours()
-        if (hour < 10 || hour > 19) {
-            this.setState({
-                weClosed: true
-            })
-        }
     }
 
     interactWithMenu = () => {
@@ -34,6 +24,11 @@ class Header extends Component {
 
     interactionWithAuthModal = () => {
         this.setState({isAuthModalOpen: !this.state.isAuthModalOpen})
+    }
+
+    order = () => {
+        this.interactWithMenu()
+        this.interactionWithOrderModal()
     }
 
     confirm = () => {
@@ -51,8 +46,7 @@ class Header extends Component {
                             <div className="d-flex">
                                 <button className={'btn btn-dark mr-2'}
                                         onClick={() => {
-                                            this.interactWithMenu()
-                                            this.interactionWithOrderModal()
+                                            this.order()
                                             onClose()
                                         }}
                                 >
@@ -66,44 +60,64 @@ class Header extends Component {
             })
     }
 
-    getNavMenu = () => {
-        return (
-            <>
-                {
-                    this.props.path === '/courier-account/'
-                        ?
-                        null
-                        :
-                        this.state.weClosed
-                            ? <button className={'main-item-style'} onClick={this.confirm}>
-                                Заказать
-                            </button>
-                            : <button className={'main-item-style'} onClick={() => {
-                                this.interactWithMenu()
-                                this.interactionWithOrderModal()
-                            }
-                            }>
-                                Заказать
-                            </button>
-                }
+    checkTime = () => {
+        const hour = new Date().getHours()
+        const weClose = hour < 10 || hour > 19
+        if (weClose) {
+            this.confirm()
+        } else {
+            this.order()
+        }
+    }
 
-                {
-                    this.props.isAuth === true
-                        ? <NavLink className={'header__user'}
-                                   onClick={() => this.interactWithMenu()}
-                                   to={(this.props.path + this.props.id) || '/'}>
-                            <i className="fa fa-user-circle-o" aria-hidden="true"/>
-                            <span className={'name'}>{this.props.name}</span>
-                        </NavLink>
-                        : <button className={'main-item-style'} onClick={() => {
-                            this.interactWithMenu()
-                            this.interactionWithAuthModal()
-                        }}>
-                            Войти
+    getNavMenu = () => {
+        if (this.props.isAuth) {
+            if (this.props.path === '/courier-account/') {
+                return (
+                    <NavLink className={'header__link'}
+                             onClick={this.interactWithMenu}
+                             to={(this.props.path + this.props.id) || '/'}>
+                        <i className="fa fa-user-circle-o" aria-hidden="true"/>
+                        <span className={'name'}>Личный кабинет</span>
+                    </NavLink>
+                )
+            } else if (this.props.path === '/user-account/') {
+                return (
+                    <>
+                        <button className={'header__link'} onClick={this.checkTime}>
+                            <i className="fa fa-pencil" aria-hidden="true"/>
+                            <span className={'name'}>Заказать</span>
                         </button>
-                }
-            </>
-        )
+                        <NavLink className={'header__link'}
+                                 to={(this.props.path + this.props.id + '/user-orders') || '/'}>
+                            <i className="fa fa-list" aria-hidden="true"/>
+                            <span className={'name'}>Заказы</span>
+                        </NavLink>
+                        <NavLink className={'header__link'}
+                                 onClick={this.interactWithMenu}
+                                 to={(this.props.path + this.props.id + '/user-info') || '/'}>
+                            <i className="fa fa-user-circle-o" aria-hidden="true"/>
+                            <span className={'name'}>Личный кабинет</span>
+                        </NavLink>
+                    </>
+                )
+            }
+        } else
+            return (
+                <>
+                    <button className={'header__link'} onClick={this.checkTime}>
+                        <i className="fa fa-pencil" aria-hidden="true"/>
+                        <span className={'name'}>Заказать</span>
+                    </button>
+                    <button className={'header__link'} onClick={() => {
+                        this.interactWithMenu()
+                        this.interactionWithAuthModal()
+                    }}>
+                        <i className="fa fa-sign-in" aria-hidden="true"/>
+                        <span className={'name'}>Войти</span>
+                    </button>
+                </>
+            )
     }
 
     render() {
@@ -111,10 +125,8 @@ class Header extends Component {
             <>
                 <header>
                     <nav className={'header'}>
-                        <NavLink to={'/'}>
-                            <span className={'header__title'}>
-                                <img className={'header__title-logo'} src={logo} alt="EasyWays"/>
-                            </span>
+                        <NavLink to={'/'} className={'header__title'}>
+                            <img className={'header__title-logo'} src={logo} alt="EasyWays"/>
                         </NavLink>
 
                         <div className={'header__navigation-section d-none d-sm-block'}>
@@ -151,5 +163,3 @@ class Header extends Component {
         )
     }
 }
-
-export default Header

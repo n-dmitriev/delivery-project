@@ -3,7 +3,7 @@ import './MainPage.scss'
 
 export default class MainPage extends Component {
     componentDidMount() {
-        document.title = 'EasyWays | Сервис доставки еды в г. Вологда'
+        document.title = 'EasyWays | Сервис доставки еды по г. Вологда'
     }
 
     render() {

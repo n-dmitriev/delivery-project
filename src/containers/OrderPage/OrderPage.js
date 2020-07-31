@@ -15,6 +15,12 @@ import {cancelOrder, reOrder} from '../../store/order/orderActions'
 import {subscribeOrderInfo} from '../../store/courier/courierAction'
 
 class OrderPage extends Component {
+    constructor() {
+        super();
+
+        document.title = 'EasyWays | Заказ'
+    }
+
     state = {
         access: false,
         loading: true,
@@ -26,23 +32,23 @@ class OrderPage extends Component {
     }
 
     componentDidMount = async () => {
-        document.title = 'EasyWays | Заказ'
-
         const path = localStorage.getItem('path') ? JSON.parse(localStorage.getItem('path')) : '/',
             userId = localStorage.getItem('id') ? JSON.parse(localStorage.getItem('id')) : '',
             adminId = localStorage.getItem('adminId') ? JSON.parse(localStorage.getItem('adminId')) : null,
             orderId = this.props.match.params.number
-        accessCheck(adminId, userId, path, orderId, this.props.location.search.split('?')[1].split('-')[1])
+        accessCheck(adminId, userId, path, orderId, this.props.location.search.split('?')[1])
             .then(async (access) => {
-                let unsubscribe =  () => {}
+                let unsubscribe = () => {}
                 if (access) {
-                     unsubscribe = subscribe(orderId, (info) => this.setState({orderInfo: info}))
+                    unsubscribe = subscribe(orderId, this.updateOrderInfo)
                 }
                 this.setState({
                     access, loading: false, unsubscribe
                 })
             })
     }
+
+    updateOrderInfo = (info) => this.setState({orderInfo: info})
 
     componentWillUnmount() {
         this.state.unsubscribe()
@@ -170,7 +176,6 @@ class OrderPage extends Component {
     }
 
     render() {
-        console.log(this.state, this.props  )
         if (!this.state.loading && this.state.access) {
             const orderInfo = this.state.orderInfo
             return (

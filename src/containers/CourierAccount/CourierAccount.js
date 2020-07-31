@@ -15,12 +15,14 @@ import {
 import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
 
 class CourierAccount extends Component {
-    state = {
-        cpfIsOpen: false
+    constructor() {
+        super()
+
+        document.title = 'EasyWays | Личный кабнет курьера'
     }
 
-    componentDidMount() {
-        document.title = 'EasyWays | Личный кабнет курьера'
+    state = {
+        cpfIsOpen: false
     }
 
     interactionWithChangeModal = () => {
