@@ -18,7 +18,7 @@ export default class OrdersList extends Component {
                 listIsOpen: !this.state.listIsOpen,
             })
             // await this.props.fetchOrderList('active', 'courierId', '', [0], 0)
-            this.props.subscribeUsers(this.state.listIsOpen, this.props.coordinate, 0)
+            this.props.subscribeOrders(this.props.coordinate, 0)
         }
     }
 
@@ -28,11 +28,11 @@ export default class OrdersList extends Component {
         this.props.changeOrderData(status, data)
     }
 
-    sortOrderList = () => {
+    orderList = () => {
         if (this.props.ordersList.length > 0) {
             return (
                 <List
-                    increaseNumberElements={() => {}}
+                    increaseNumberElements={this.props.increaseNumberElements}
                     orderList={this.props.ordersList}
                     changeOrderData={this.props.changeOrderData}
                     type={'active-courier'}
@@ -83,7 +83,7 @@ export default class OrdersList extends Component {
 
                 <div className={this.state.listIsOpen ? 'courier-panel__content' : 'hide'}>
                     {
-                        this.sortOrderList()
+                        this.orderList()
                     }
                 </div>
             </>

@@ -10,7 +10,7 @@ import {fetchOrderList, passwordChange} from '../../store/user/userActions'
 import CourierPanel from '../../components/CourierPanelWithOrders/CourierPanel'
 import {
     changeOrderData,
-    interactWithPurchased, calculateThePrice, subscribeOrderInfo, updateCourierStatus, subscribe
+    interactWithPurchased, calculateThePrice, subscribeOrderInfo, updateCourierStatus, subscribe, unsubscribeAllOrders
 } from '../../store/courier/courierAction'
 import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
 
@@ -66,14 +66,15 @@ class CourierAccount extends Component {
                     <CourierPanel
                         fetchOrderList={this.props.fetchOrderList}
                         ordersList={this.props.listOfCurrentOrders}
-                        subscribeUsers={this.props.subscribe}
+                        subscribeOrders={this.props.subscribe}
                         subscribeOrderInfo={this.props.subscribeOrderInfo}
-                        courierStatus={+this.props.userInfo.courierStatus}
+                        courierInfo={this.props.userInfo}
                         changeOrderData={this.props.changeOrderData}
                         interactWithPurchased={this.props.interactWithPurchased}
-                        calculateThePrice={this.props.calculateThePrice}
                         loading={this.props.loading}
                         clEnd={this.props.clEnd}
+                        unsubscribeAllOrders={this.props.unsubscribeAllOrders}
+                        unsubscribeList={this.props.unsubscribeList}
                     />
 
                     <br className={'mb-30'}/>
@@ -144,7 +145,8 @@ function mapStateToProps(state) {
         listOfCurrentOrders: state.userReducer.listOfCurrentOrders,
         listOfDeliveredOrders: state.userReducer.listOfDeliveredOrders,
         clEnd: state.userReducer.alEnd,
-        dlEnd: state.userReducer.flEnd
+        dlEnd: state.userReducer.flEnd,
+        unsubscribeList: state.courierReducer.unsubscribeList
     }
 }
 
@@ -153,13 +155,14 @@ function mapDispatchToProps(dispatch) {
         logout: () => dispatch(logout()),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
         auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
-        subscribe: (listening, coordinates, skip) => dispatch(subscribe(listening, coordinates, skip)),
-        subscribeOrderInfo: (listening, id) => dispatch(subscribeOrderInfo(listening, id)),
+        subscribe: (coordinates, skip) => dispatch(subscribe(coordinates, skip)),
+        subscribeOrderInfo: (id, status) => dispatch(subscribeOrderInfo(id, status)),
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),
         fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status)),
         calculateThePrice: (id, price, distance) => dispatch(calculateThePrice(id, price, distance)),
-        updateCourierStatus: (status) => dispatch(updateCourierStatus(status))
+        updateCourierStatus: (status) => dispatch(updateCourierStatus(status)),
+        unsubscribeAllOrders: () => dispatch(unsubscribeAllOrders())
     }
 }
 

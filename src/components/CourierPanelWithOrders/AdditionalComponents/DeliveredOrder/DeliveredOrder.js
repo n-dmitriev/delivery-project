@@ -7,15 +7,16 @@ export default class DeliveredOrder extends Component {
     state = {
         positionIsValid: true,
         quantityIsValid: true,
-        orderIsOpen: false,
+        orderIsOpen: false
     }
+
 
     interactWithOrder = (e) => {
         e.preventDefault()
         this.setState({
-            orderIsOpen: !this.state.orderIsOpen,
+            orderIsOpen: !this.state.orderIsOpen
         })
-        this.props.subscribeOrderInfo(!this.state.orderIsOpen, this.props.ordersList[0].id)
+        this.props.subscribeOrderInfo(this.props.ordersList[0].id)
     }
 
     finishBuy = () => {
@@ -27,22 +28,22 @@ export default class DeliveredOrder extends Component {
         }
         if (counter / orderList.length < 0.6) {
             this.setState({
-                quantityIsValid: false,
+                quantityIsValid: false
             })
             toaster.notify('Преобретите как минимум 60% товаров!', {
                 position: 'bottom-right',
-                duration: 3000,
+                duration: 3000
             })
         } else {
             confirm(
                 'закончить закупку', async () => {
                     this.setState({
-                        quantityIsValid: true,
+                        quantityIsValid: true
                     })
                     this.props.changeOrderData(2, this.props.ordersList[0])
                     toaster.notify('Заказ переведён в состояние "доставка"!', {
                         position: 'bottom-right',
-                        duration: 3000,
+                        duration: 3000
                     })
                 }
             )
@@ -54,7 +55,7 @@ export default class DeliveredOrder extends Component {
             'отказаться от заказа', async () => {
                 toaster.notify('Заказ отменён!', {
                     position: 'bottom-right',
-                    duration: 3000,
+                    duration: 3000
                 })
                 this.props.changeOrderData(0, deliveredOrder)
             }
@@ -94,9 +95,10 @@ export default class DeliveredOrder extends Component {
                                         deliveredOrder.order.length > 0
                                             ?
                                             deliveredOrder.order.map((product) =>
-                                               <div key={product.id}>
-                                                   <DeliveredItem product={product} interactWithPurchased={this.props.interactWithPurchased}/>
-                                               </div>
+                                                <div key={product.id}>
+                                                    <DeliveredItem product={product}
+                                                                   interactWithPurchased={this.props.interactWithPurchased}/>
+                                                </div>
                                             )
                                             :
                                             <span>Оу заказ пуст!:(</span>

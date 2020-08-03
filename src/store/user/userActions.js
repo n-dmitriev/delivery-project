@@ -12,7 +12,6 @@ import {
 } from './actionTypes'
 import {dispatchAction} from '../universalFunctions'
 import {ADD_SAMPLE, ADMIN_START, SAMPLE_END, SET_SAMPLE} from '../admin/actionTypes'
-import {FETCH_O_STOP} from '../courier/actionTypes'
 
 //Фунцкция запрашивающая пользовательские данные
 export function fetchUserInfo() {
@@ -26,10 +25,6 @@ export function fetchUserInfo() {
             const answer = await docRef.get()
             const data = answer.data()
             dispatch(dispatchAction(FETCH_USER_INFO_SUCCESS, data))
-            if (collection === 'couriers' && data.courierStatus > 0) {
-                dispatch(fetchOrderList('active', 'courierId', null, [1, 2]))
-                dispatch(dispatchAction(FETCH_O_STOP, null))
-            }
         } catch (e) {
             dispatch(dispatchAction(FETCH_USER_INFO_ERROR, e))
         }

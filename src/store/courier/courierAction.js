@@ -1,7 +1,7 @@
 import {dataBase} from '../../firebase/firebase'
 import {dispatchAction, getDate, getElementById} from '../universalFunctions'
 import {fetchUserInfo} from '../user/userActions'
-import {SORT_ORDER_LIST} from './actionTypes'
+import {SORT_ORDER_LIST, ADD_UNSUBSCRIBE, REMOVE_UNSUBSCRIBE_LIST} from './actionTypes'
 import {ADD_USER_AL_SUCCESS, AL_CHANGE, FETCH_USER_START, SET_USER_AL_SUCCESS} from '../user/actionTypes'
 
 // 6 статусов
@@ -141,118 +141,107 @@ export function sortArrayByDistance(coordinate) {
             arr.push(order)
         }
 
-        arr.sort((a, b) => {
-            if (a.distance > b.distance) return 1
-            if (a.distance < b.distance) return -1
-            else return 0
-        })
+        // arr.sort((a, b) => {
+        //     if (a.distance > b.distance) return 1
+        //     if (a.distance < b.distance) return -1
+        //     else return 0
+        // })
 
         dispatch(dispatchAction(SORT_ORDER_LIST, arr))
     }
 }
 
 //Подписка на конкретный заказ
-export function subscribeOrderInfo(listening, id) {
-    return (dispatch) => {
-        const unsubscribe = dataBase.collection('orders').doc(id)
-            .onSnapshot((change) => {
-                const data = change.data()
-                console.log(data)
-                if (data.status === 0) {
-                    dispatch(fetchUserInfo())
-                } else {
-                    dispatch(dispatchAction(SET_USER_AL_SUCCESS, [data]))
-                }
-                //dispatch(fetchOrderList('active', 'courierId', null, [1]))
-            })
-        if (!listening) {
-            unsubscribe()
+export function subscribeOrderInfo(courierId, status) {
+    return async (dispatch, getState) => {
+        const answer = await dataBase.collection('user-orders')
+            .where('status', '==', status)
+            .where('courierId', '==', courierId)
+            .get()
+
+        let id
+
+        answer.forEach((doc) => {
+            id = doc.data().orderId
+        })
+
+
+        if (id) {
+            const unsubscribe = dataBase.collection('orders').doc(id)
+                .onSnapshot((change) => {
+                    const data = change.data()
+                    if (data.status === 0) {
+                        dispatch(fetchUserInfo())
+                    } else {
+                        dispatch(dispatchAction(SET_USER_AL_SUCCESS, [data]))
+                    }
+                })
+            dispatch(dispatchAction(ADD_UNSUBSCRIBE, unsubscribe))
         }
     }
 }
 
-export function subscribe(listening, coordinates = null, skip = 0) {
+export function subscribe(coordinates = null, skip = 0) {
     return async (dispatch, getState) => {
-        const subscribeOrderList = () => {
-            const idList = []
+        dispatch(dispatchAction(FETCH_USER_START, null))
+        const orderList = getState().userReducer.listOfCurrentOrders
 
-            const orderList = getState().userReducer.listOfCurrentOrders
+        const unsubscribe = await dataBase.collection('orders')
+            .where('status', '==', 0).orderBy('id')
+            .startAfter(skip).limit(2)
+            .onSnapshot((querySnapshot) => {
+                querySnapshot.docChanges().forEach((change) => {
+                    console.log(change.type, change.doc.data())
+                    if (change.type === 'added') {
+                        const order = change.doc.data()
 
-            for (let el of orderList) {
-                idList.push(el.id)
-            }
+                        if (order.id === undefined)
+                            order.id = change.doc.id
 
-            if (idList.length === 0)
-                return
-
-            const unsubscribeCurOrders = dataBase.collection('orders').where('id', 'in', idList)
-                .onSnapshot((querySnapshot) => {
-                    querySnapshot.docChanges().forEach((change) => {
-                        if (change.type === 'modified') {
-                            //console.log('modified', change.doc.data())
-                            const data = change.doc.data()
-                            const index = getElementById(orderList, data.id)
-                            if (index === -1) {
-                                return null
-                            }
-
-                            if (orderList[index].status === 0) {
-                                orderList[index] = data
-                                dispatch(dispatchAction(AL_CHANGE, orderList))
-                                if (coordinates !== null)
-                                    dispatch(sortArrayByDistance(coordinates))
-                            } else {
-                                orderList.splice(index, 1)
-                                dispatch(dispatchAction(AL_CHANGE, [...orderList]))
-                            }
+                        dispatch(dispatchAction(ADD_USER_AL_SUCCESS, order))
+                    }
+                    if (change.type === 'modified') {
+                        const data = change.doc.data()
+                        const index = getElementById(orderList, data.id)
+                        if (index === -1) {
+                            return null
                         }
-                        if (change.type === 'removed') {
-                            //console.log('removed', change.doc.data())
-                            const data = change.doc.data()
-                            const index = getElementById(orderList, data.id)
+
+                        if (orderList[index].status === 0) {
                             orderList[index] = data
-                            if (index === -1) {
-                                return null
-                            }
+                            dispatch(dispatchAction(AL_CHANGE, orderList))
+                        } else {
                             orderList.splice(index, 1)
                             dispatch(dispatchAction(AL_CHANGE, [...orderList]))
                         }
-                    })
-                })
-            if (!listening) {
-                unsubscribeCurOrders()
-            }
-        }
-
-        dispatch(dispatchAction(FETCH_USER_START, null))
-
-        const unsubscribeAllOrders = await dataBase.collection('orders')
-            .where('status', '==', 0).orderBy('id')
-            .onSnapshot((querySnapshot) => {
-                querySnapshot.docChanges().forEach(async (added) => {
-                    if (added.type === 'added') {
-                        const order = added.doc.data()
-                        //console.log('add', order)
-
-                        if (order.id === undefined)
-                            order.id = added.doc.id
-
-                        await dispatch(dispatchAction(ADD_USER_AL_SUCCESS, order))
                     }
-                })
-                subscribeOrderList()
-                if (coordinates !== null)
-                    dispatch(sortArrayByDistance(coordinates))
-            })
+                    if (change.type === 'removed') {
+                        const data = change.doc.data()
+                        const index = getElementById(orderList, data.id)
+                        orderList[index] = data
+                        if (index === -1) {
+                            return null
+                        }
+                        orderList.splice(index, 1)
+                        dispatch(dispatchAction(AL_CHANGE, [...orderList]))
+                    }
 
-        // if (getState().userReducer.listOfCurrentOrders.length < limit){
-        //     console.log(getState().userReducer.listOfCurrentOrders)
-        //     dispatch(dispatchAction(AL_END, null))
-        // }
-        if (!listening) {
-            // console.log('net')
-            unsubscribeAllOrders()
-            subscribeOrderList()
-        }
+                    if (coordinates !== null)
+                        dispatch(sortArrayByDistance(coordinates))
+                })
+            })
+        //dispatch(dispatchAction(ADD_UNSUBSCRIBE, unsubscribe))
+    }
+}
+
+export function unsubscribeAllOrders() {
+    return (dispatch, getState) => {
+        const unsubscribeList = getState().courierReducer.unsubscribeList
+
+        unsubscribeList.forEach(unsubscribe => {
+            unsubscribe()
+        })
+
+        dispatch(dispatchAction(REMOVE_UNSUBSCRIBE_LIST, null))
     }
 }
