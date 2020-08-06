@@ -1,0 +1,80 @@
+@import "../../css/mixins";
+
+.input-coordinate {
+  border-bottom: 1px solid gray;
+  -webkit-box-shadow: 0px 7px 5px -5px rgba(34, 60, 80, 0.6);
+  -moz-box-shadow: 0px 7px 5px -5px rgba(34, 60, 80, 0.6);
+  box-shadow: 0px 7px 5px -5px rgba(34, 60, 80, 0.6);
+
+  &__search {
+    display: flex;
+    align-items: flex-end;
+
+    & .form-group {
+      width: 100%;
+      margin: 0 !important;
+
+      & input {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+      }
+    }
+
+    & button {
+      height: 36px;
+      margin-left: auto;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      color: white;
+      background-color: rgb(52, 58, 64);
+      @include animate();
+
+      &:hover {
+        color: rgb(52, 58, 64);
+        background-color: white;
+        border: 1px solid rgb(52, 58, 64);
+      }
+    }
+  }
+
+  & .input-dagger {
+    position: absolute;
+    top: 20px;
+    right: 5px  ;
+    font-size: 30px;
+    border: none;
+  }
+
+  &__map {
+    height: 350px;
+  }
+
+  &__price {
+    position: absolute;
+    z-index: 800;
+    margin: 10px 0 0 10px;
+    padding: 2px 7px;
+    background-color: #fff;
+    border-color: transparent;
+    box-shadow: 0 1px 2px 1px rgba(0, 0, 0, .15), 0 2px 5px -3px rgba(0, 0, 0, .15);
+    box-sizing: border-box !important;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    background-clip: border-box;
+    color: #000;
+    vertical-align: middle;
+    text-decoration: none;
+    font-size: 15px;
+    cursor: pointer;
+    -webkit-transition: background-color .15s ease-out, border-color .15s ease-out, opacity .15s ease-out;
+    transition: background-color .15s ease-out, border-color .15s ease-out, opacity .15s ease-out;
+    display: inline-block;
+    text-align: left;
+    height: 28px;
+
+    &_cheked {
+      background-color: #ffeba0;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import './MainPage.scss'
+import InputCoordinate from '../InputInformation/InputCoordinate'
 
 export default class MainPage extends Component {
     componentDidMount() {
@@ -10,6 +11,8 @@ export default class MainPage extends Component {
         return (
             <div className={'main-page'}>
                 <h1>Главная страница</h1>
+
+                <InputCoordinate/>
             </div>
         )
     }

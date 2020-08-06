@@ -11,7 +11,7 @@ export default class InputInformation extends Component {
         this.state = {
             nameIsValid: true,
             numberPhoneIsValid: true,
-            addressIsValid: true,
+            addressIsValid: true
         }
     }
 
@@ -21,7 +21,7 @@ export default class InputInformation extends Component {
         this.setState({
             nameIsValid: this.name.current.value.replace(/\s+/g, '') !== '',
             numberPhoneIsValid: this.numberPhone.replace(/\s+/g, '') !== '',
-            addressIsValid: this.address.current.value.replace(/\s+/g, '') !== '',
+            addressIsValid: this.address.current.value.replace(/\s+/g, '') !== ''
         })
     }
 
@@ -34,10 +34,10 @@ export default class InputInformation extends Component {
                     name: this.name.current.value,
                     numberPhone: this.numberPhone,
                     address: this.address.current.value,
-                    role: this.props.type,
+                    role: this.props.type
                 }
 
-                if ( this.props.type !== 'courier') {
+                if (this.props.type !== 'courier') {
                     const answer = await window.ymaps.geocode(this.address.current.value)
                     info.coordinate = answer.geoObjects.get(0).geometry.getCoordinates()
                 }
@@ -71,7 +71,8 @@ export default class InputInformation extends Component {
 
                 <div className={'input-field'}>
                     <label className={'mb-15'}>Номер телефона*</label>
-                    <div className={`number-block mb-30 ${this.state.numberPhoneIsValid === false ? 'input-error' : ''}`}>
+                    <div
+                        className={`number-block mb-30 ${this.state.numberPhoneIsValid === false ? 'input-error' : ''}`}>
                         <IMaskInput
                             mask={'+{7}(000)000-00-00'}
                             unmask={false}

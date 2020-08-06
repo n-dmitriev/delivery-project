@@ -6,14 +6,14 @@ import {
     deleteOrder,
     editOrderItem,
     removeProductFromOrder,
-    sendOrder,
+    sendOrder
 } from '../../store/order/orderActions'
 import ProductForm from '../../components/OrderModalWindows/Form'
 import {
     addProductToSentOrder,
     editSentOrder,
     editSentOrderItem,
-    removeProductFromSentOrder,
+    removeProductFromSentOrder
 } from '../../store/order/orderActions'
 import toaster from 'toasted-notes'
 import InputInformation from '../../components/InputInformation/InputInformation'
@@ -29,13 +29,13 @@ class OrderModalForm extends Component {
     state = {
         activeTab: 'shop-tab', // Активная вкладка 2 состояния shop-tab и restaurant-tab
         activeWin: 'list', // Активный комонент, list - список заказов, form - форма ввода, name - имя заведения, info - инф о клиенте
-        activeItem: null, // В переменной хранится элемент, который выбран для редактирования
+        activeItem: null // В переменной хранится элемент, который выбран для редактирования
     }
 
     //Функция открывающая/закрывающая форму ввода
     interactionWithDagger = (activeWin) => {
         this.setState({
-            activeWin,
+            activeWin
         })
     }
 
@@ -43,14 +43,14 @@ class OrderModalForm extends Component {
     clickItemHandler = (event) => {
         this.setState({
             activeTab: event.target.id,
-            activeWin: 'list',
+            activeWin: 'list'
         })
     }
 
     // Обработчик, возвращает activeItem в начальное состояние
     resetActiveItem = () => {
         this.setState({
-            activeItem: null,
+            activeItem: null
         })
     }
 
@@ -67,15 +67,15 @@ class OrderModalForm extends Component {
         this.props.isEdit === true
             ?
             this.setState({
-                activeItem: this.props.editItem.order[e.target.id],
+                activeItem: this.props.editItem.order[e.target.id]
             })
             :
             this.state.activeTab === 'shop-tab'
                 ? this.setState({
-                    activeItem: this.props.shopOrder[e.target.id],
+                    activeItem: this.props.shopOrder[e.target.id]
                 })
                 : this.setState({
-                    activeItem: this.props.restaurantOrder[e.target.id],
+                    activeItem: this.props.restaurantOrder[e.target.id]
                 })
 
         this.interactionWithDagger('form')
@@ -86,7 +86,7 @@ class OrderModalForm extends Component {
         this.props.addProductToSentOrder(this.props.editItem.id, item)
         toaster.notify('Продукт добавлен в заказ!', {
             position: 'bottom-right',
-            duration: 3000,
+            duration: 3000
         })
     }
 
@@ -95,7 +95,7 @@ class OrderModalForm extends Component {
         this.props.editSentOrderItem(this.props.editItem.id, item)
         toaster.notify('Продукт отредактирован!', {
             position: 'bottom-right',
-            duration: 3000,
+            duration: 3000
         })
     }
 
@@ -109,7 +109,7 @@ class OrderModalForm extends Component {
             this.props.onOpenAuth()
             toaster.notify('Сперва зарегистируйтесь!', {
                 position: 'bottom-right',
-                duration: null,
+                duration: null
             })
         }
     }
@@ -119,7 +119,7 @@ class OrderModalForm extends Component {
             this.props.editSentOrder(this.props.editItem, info)
             toaster.notify('Ваш заказ отредактирован!', {
                 position: 'bottom-right',
-                duration: null,
+                duration: null
             })
         } else {
             this.props.setUserInfo(info)
@@ -127,7 +127,7 @@ class OrderModalForm extends Component {
 
             toaster.notify('Ваш заказ отправлен!', {
                 position: 'bottom-right',
-                duration: null,
+                duration: null
             })
         }
         this.close()
@@ -166,7 +166,7 @@ class OrderModalForm extends Component {
         />
     }
 
-        renderInputName = () => {
+    renderInputName = () => {
         return <InputName
             interactionWithDagger={this.interactionWithDagger}
             nameOfRestaurant={this.props.nameOfRestaurant}
@@ -183,10 +183,10 @@ class OrderModalForm extends Component {
             activeTab={this.state.activeTab}
             tabList={[{
                 title: 'Из магазина',
-                id: 'shop-tab',
+                id: 'shop-tab'
             }, {
                 title: 'Из заведения',
-                id: 'restaurant-tab',
+                id: 'restaurant-tab'
             }]}
         />
     }
@@ -244,7 +244,7 @@ function mapStateToProps(state) {
         restaurantOrder: state.orderReducer.restaurantOrder,
         nameOfRestaurant: state.orderReducer.nameOfRestaurant,
         nameOfShop: state.orderReducer.nameOfShop,
-        userInfo: state.userReducer.info,
+        userInfo: state.userReducer.info
     }
 }
 
@@ -262,8 +262,8 @@ function mapDispatchToProps(dispatch) {
         removeProductFromSentOrder: (listid, id) => dispatch(removeProductFromSentOrder(listid, id)),
         addProductToSentOrder: (listid, item) => dispatch(addProductToSentOrder(listid, item)),
         editSentOrderItem: (listid, item) => dispatch(editSentOrderItem(listid, item)),
-        editSentOrder: (orderInfo, userInfo) => dispatch(editSentOrder(orderInfo,userInfo)),
-        setUserInfo: (info) => dispatch(setUserInfo(info)),
+        editSentOrder: (orderInfo, userInfo) => dispatch(editSentOrder(orderInfo, userInfo)),
+        setUserInfo: (info) => dispatch(setUserInfo(info))
     }
 }
 

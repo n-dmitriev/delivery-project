@@ -9,6 +9,9 @@ export default class DeliveryPanel extends Component {
         this.orderValue = React.createRef()
         this.check = React.createRef()
         this.courierPosition = React.createRef()
+        this.map = null
+        this.ymaps = null
+        this.route = null
         this.state = {
             value: '',
             valueIsValid: true,
@@ -19,9 +22,7 @@ export default class DeliveryPanel extends Component {
         }
     }
 
-    map = null
-    ymaps = null
-    route = null
+
 
     handleApiAvaliable = ymaps => {
         console.log('da')
