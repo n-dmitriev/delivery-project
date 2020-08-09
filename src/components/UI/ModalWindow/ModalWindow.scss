@@ -6,6 +6,7 @@ $button-bg: #0D52E9;
 .modal-window {
   display: flex;
   justify-content: center;
+  align-items: center;
 
   & .modal-content,
   & .modal-background {
@@ -47,7 +48,7 @@ $button-bg: #0D52E9;
 
 
   & .is-open.modal-background {
-    z-index: 9997;
+    z-index: 998;
     position: fixed;
     top: 0;
     left: 0;
@@ -61,7 +62,7 @@ $button-bg: #0D52E9;
   }
 
   & .is-open.modal-content {
-    z-index: 9998;
+    z-index: 999;
     position: absolute;
     top: 2%;
     height: auto;

@@ -83,12 +83,12 @@ export default class OrderListAndMenu extends Component {
                         (this.props.activeTab === 'shop-tab' && Object.keys(this.props.shopOrder).length !== 0)
                         || (this.props.activeTab === 'restaurant-tab' && Object.keys(this.props.restaurantOrder).length !== 0) || this.props.isEdit === true
                             ? <div className="button-section button-section_bottom mb-1">
-                                <button className="main-item-style mr-15 ml-1" onClick={this.props.sendOrderHandler}>
-                                   Далее
-                                </button>
-                                <button className="main-item-style main-item-style_danger" onClick={() =>
+                                <button className="main-item-style main-item-style_danger mr-15 ml-1" onClick={() =>
                                     this.props.isEdit === true ? this.props.onClose() : this.props.deleteOrder()
                                 }>Отменить
+                                </button>
+                                <button className="main-item-style" onClick={this.props.sendOrderHandler}>
+                                    Далее
                                 </button>
                                 <span
                                     className={'dagger dagger_add'}

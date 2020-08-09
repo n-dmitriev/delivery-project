@@ -1,5 +1,5 @@
 import {dataBase} from '../../firebase/firebase'
-import {dispatchAction, getDate, getElementById} from '../universalFunctions'
+import {dispatchAction, getElementById} from '../universalFunctions'
 import {fetchUserInfo} from '../user/userActions'
 import {SORT_ORDER_LIST, ADD_UNSUBSCRIBE, REMOVE_UNSUBSCRIBE_LIST} from './actionTypes'
 import {ADD_USER_AL_SUCCESS, AL_CHANGE, FETCH_USER_START, SET_USER_AL_SUCCESS} from '../user/actionTypes'
@@ -42,18 +42,18 @@ export function changeOrderData(status, data) {
                 }
                 case 3: {
                     description = `Заказ завершён.`
-                    endTime = getDate()
+                    endTime = new Date()
                     break
                 }
                 case 4: {
                     description = 'Вы отменили заказ.'
-                    endTime = getDate()
+                    endTime = new Date()
                     break
                 }
                 case 5: {
                     description = 'Ваш заказ некорректно заполнен!'
                     courierId = ''
-                    endTime = getDate()
+                    endTime = new Date()
                     break
                 }
                 case -1: {

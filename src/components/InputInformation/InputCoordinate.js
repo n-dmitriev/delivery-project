@@ -10,8 +10,8 @@ import {
     YMaps,
     ZoomControl
 } from 'react-yandex-maps'
-import BigPreloader from '../UI/Preloaders/BigPreloader'
 import toaster from 'toasted-notes'
+import MiniPreloader from '../UI/Preloaders/MiniPrleloader'
 
 export default class InputCoordinate extends Component {
     constructor(props) {
@@ -22,7 +22,7 @@ export default class InputCoordinate extends Component {
         this.yellowZone = 2000
         this.redZone = 3000
         this.defaultPrice = 150
-        this.priceIn1Km = 10
+        this.priceIn1Km = 20
 
         this.map = null
         this.ymaps = null
@@ -37,9 +37,10 @@ export default class InputCoordinate extends Component {
             addressIsValid: false,
             errorMessage: '',
             deliveryValue: '',
+            address: '',
             empty: true,
             loading: true,
-            address: ''
+            priceListIsOpen: false
         }
     }
 
@@ -55,13 +56,25 @@ export default class InputCoordinate extends Component {
                 loading: false
             })
         })
+    }
 
+    instRef = (inst) => {
+        if (inst) {
+            inst.cursors.push('arrow')
+            inst.events.add('click', this.clickOnMap)
+        }
     }
 
     clear = () => {
         this.search.current.value = ''
         this.setState({
             empty: true
+        })
+    }
+
+    interactWithPriceList = () => {
+        this.setState({
+            priceListIsOpen: !this.state.priceListIsOpen
         })
     }
 
@@ -102,6 +115,7 @@ export default class InputCoordinate extends Component {
                 addressIsValid = false
             }
 
+            this.props.setAddressInfo(this.state.address, this.state.coordinate, deliveryValue)
 
             this.setState({
                 addressIsValid,
@@ -143,6 +157,7 @@ export default class InputCoordinate extends Component {
             if (coordinate) {
                 this.checkingAddressCorrectness(answer.geoObjects.get(0))
                 this.setState({
+                    address: search,
                     deliveryValue: '',
                     coordinate,
                     zoom: 17
@@ -159,22 +174,26 @@ export default class InputCoordinate extends Component {
         const address = answer.geoObjects.get(0)
 
         let addressLine = [address.getLocalities(), address.getThoroughfare(), address.getPremiseNumber()].join(', ')
-        this.search.current.value = addressLine
+
+        if (this.search.current)
+            this.search.current.value = addressLine
 
 
         this.checkingAddressCorrectness(address)
         this.setState({
+            address: [address.getLocalities(), address.getThoroughfare(), address.getPremiseNumber()].join(', '),
             deliveryValue: '',
             coordinate,
             zoom: 17
         })
     }
 
-    instRef = (inst) => {
-        if (inst) {
-            inst.cursors.push('arrow')
-            inst.events.add('click', this.clickOnMap)
-        }
+    geolocationControl = async (e) => {
+        //console.log(e.get('position'))
+        // const position = e.get('position')
+        // const answer = await this.ymaps.geocode(position)
+        // const address = answer.geoObjects.get(0)
+        // console.log(address)
     }
 
     render() {
@@ -205,7 +224,7 @@ export default class InputCoordinate extends Component {
                 <div className={'input-coordinate__map'}>
                     {
                         this.state.loading
-                            ? <BigPreloader/>
+                            ? <MiniPreloader/>
                             : null
                     }
                     <div className={this.state.loading ? 'hide' : ''}>
@@ -234,13 +253,15 @@ export default class InputCoordinate extends Component {
                                             : 'Расчитать стоимость доставки'
                                     }
                                 </div>
-                                <GeolocationControl options={{
-                                    float: 'none',
-                                    position: {
-                                        top: '55px',
-                                        left: '10px'
-                                    }
-                                }}/>
+                                <GeolocationControl
+                                    onCLick={this.geolocationControl}
+                                    options={{
+                                        float: 'none',
+                                        position: {
+                                            top: '55px',
+                                            left: '10px'
+                                        }
+                                    }}/>
                                 <FullscreenControl options={{
                                     float: 'none',
                                     position: {
@@ -307,32 +328,40 @@ export default class InputCoordinate extends Component {
                         </YMaps>
                     </div>
                 </div>
-                <h4 className={'text-center bg-dark text-white'}>Стоимость доставки</h4>
+                <h4
+                    onClick={this.interactWithPriceList}
+                    className={'bg-dark text-white text-center input-coordinate__price-list'}>
+                    Стоимость доставки
+                    {
+                        this.state.priceListIsOpen
+                            ? <i className="fa fa-caret-up fa-animate" aria-hidden="true"/>
+                            : <i className="fa fa-caret-down fa-animate" aria-hidden="true"/>
+                    }
+                </h4>
 
                 <div className={'row text-center'}>
-                    <div className="col-12 col-sm-4">
-                        <b className={'text-success'}>{this.defaultPrice} ₽</b>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                        <b className={'text-warning'}>
-                            {this.defaultPrice} ₽ +{this.priceIn1Km} ₽ за каждый км вне зеленой зоны
-                        </b>
-                    </div>
-                    <div className="col-12 col-sm-4">
-                        <b className={'text-danger'}>
-                            {this.defaultPrice} ₽ +{this.priceIn1Km * 2} ₽ за каждый км вне желтой зоны
-                        </b>
-                    </div>
+                    {
+                        this.state.priceListIsOpen
+                            ? <>
+                                <div className="col-12 col-sm-4">
+                                    <b className={'text-success'}>{this.defaultPrice} ₽</b>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <b className={'text-warning'}>
+                                        {this.defaultPrice} ₽ +{this.priceIn1Km} ₽ за каждый км вне зеленой зоны
+                                    </b>
+                                </div>
+                                <div className="col-12 col-sm-4">
+                                    <b className={'text-danger'}>
+                                        {this.defaultPrice} ₽ +{this.priceIn1Km * 2} ₽ за каждый км вне желтой зоны
+                                    </b>
+                                </div>
+                            </>
+                            : null
+                    }
+
                 </div>
             </div>
         )
     }
 }
-
-// search = async (e) => {
-//     const request = e.originalEvent.request
-//
-//     const answer = await window.ymaps.geocode(request)
-//     const coordinate = answer.geoObjects.get(0).geometry.getCoordinates()
-//
-// }

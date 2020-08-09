@@ -21,26 +21,25 @@ export default class InputInformation extends Component {
         this.setState({
             nameIsValid: this.name.current.value.replace(/\s+/g, '') !== '',
             numberPhoneIsValid: this.numberPhone.replace(/\s+/g, '') !== '',
-            addressIsValid: this.address.current.value.replace(/\s+/g, '') !== ''
+            addressIsValid: this.props.type === 'courier' ? this.address.current.value.replace(/\s+/g, '') !== '' : true
         })
     }
 
     saveUI = async (e) => {
         e.preventDefault()
-        if (this.name && this.numberPhone && this.address) {
+        if (this.name && this.numberPhone) {
             await this.validateUserInformation()
             if (this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid) {
                 const info = {
                     name: this.name.current.value,
                     numberPhone: this.numberPhone,
-                    address: this.address.current.value,
                     role: this.props.type
                 }
 
-                if (this.props.type !== 'courier') {
-                    const answer = await window.ymaps.geocode(this.address.current.value)
-                    info.coordinate = answer.geoObjects.get(0).geometry.getCoordinates()
+                if (this.props.type === 'courier') {
+                    info.address = this.address.current.value
                 }
+
                 if (this.props.userInfo !== undefined)
                     info.id = this.props.userInfo.id
                 this.props.saveContactInformation(info)
@@ -85,26 +84,29 @@ export default class InputInformation extends Component {
                     </div>
                 </div>
 
-                <div className={'input-field'}>
-                    <label className={'mb-15'}>
-                        {
-                            this.props.type === 'courier'
-                                ?
-                                'Ссылка на вк'
-                                :
-                                'Адрес*'
-                        }
-                    </label>
+                {
+                    this.props.type === 'courier'
+                        ?
+                        <div className={'input-field'}>
+                            <label className={'mb-15'}>
+                                {
+                                    this.props.type === 'courier'
+                                        ?
+                                        'Ссылка на вк'
+                                        :
+                                        'Адрес*'
+                                }
+                            </label>
+                            <input className={this.state.addressIsValid === false ? 'input-error mb-15' : 'mb-30'}
+                                   type="text"
+                                   ref={this.address}
+                                   defaultValue={isEdit ? this.props.userInfo.address : null}
+                                   placeholder={'Адрес*'}
+                            />
+                        </div>
+                        : null
+                }
 
-                    <input className={this.state.addressIsValid === false ? 'input-error mb-15' : 'mb-30'}
-                           type="text"
-                           ref={this.address}
-                           defaultValue={isEdit ? this.props.userInfo.address : null}
-                           placeholder={
-                               this.props.type !== 'courier' ? 'Город улица дом' : 'Адрес*'
-                           }
-                    />
-                </div>
 
                 <small
                     className={this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid ? 'hide' : 'error'}>
@@ -112,9 +114,17 @@ export default class InputInformation extends Component {
                 </small>
 
                 <div className={'button-section mt-15'}>
-                    <button className={'main-item-style mr-15'} onClick={this.saveUI}>Применить</button>
-                    {isEdit || this.props.trySend ? null :
-                        <button className={'main-item-style'} onClick={this.props.onClose}>Позже</button>}
+                    {
+                        this.props.page === 'order'
+                            ? <button className={'main-item-style mr-2'}
+                                      onClick={() => {
+                                          this.props.interactionWithDagger('map')
+                                      }}>
+                                Назад
+                            </button>
+                            : null
+                    }
+                    <button className={'main-item-style'} onClick={this.saveUI}>Применить</button>
                 </div>
             </>
         )

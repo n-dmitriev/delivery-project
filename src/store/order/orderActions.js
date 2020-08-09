@@ -7,8 +7,8 @@ import {
     SEND_ORDER
 } from './actionTypes'
 import {dataBase} from '../../firebase/firebase'
-import {fetchOrderList, fetchUserInfo} from '../user/userActions'
-import {dispatchAction, getDate, getElementById} from '../universalFunctions'
+import {fetchOrderList} from '../user/userActions'
+import {dispatchAction, getElementById} from '../universalFunctions'
 import {ADD_P_TO_SENT_ORDER, AL_CHANGE, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} from '../user/actionTypes'
 
 
@@ -37,17 +37,20 @@ export function sendOrder(info) {
         // 0 - заказ на обработке, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
         // 3 - заказ выполнен, 4 - заказ отменён пользователем, -1 - подозрение на троллинг
         const fullOrderInfo = {
-            startTime: getDate(),
+            startTime: new Date(),
             endTime: '',
             orderValue: '',
-            deliveryValue: '',
             description: 'Курьер ещё не принял ваш заказ.',
             status: 0,
             clientName: info.name,
             clientNumberPhone: info.numberPhone,
             clientAddress: info.address,
-            coordinate: info.coordinate
+            coordinate: info.coordinate,
+            deliveryValue: info.deliveryValue
         }
+
+        console.log(fullOrderInfo)
+
         if (state.shopOrder.length !== 0) {
             fullOrderInfo.name = state.nameOfShop === '' ? 'Из любого магизна' : state.nameOfShop
             fullOrderInfo.order = state.shopOrder
@@ -86,7 +89,6 @@ export function sendOrder(info) {
         }
         dispatch(dispatchAction(SEND_ORDER, null))
         updateLocalStorage(getState, null)
-        dispatch(fetchUserInfo())
     }
 }
 
@@ -106,7 +108,7 @@ export function cancelOrder(id) {
 
             await dataBase.collection('orders').doc(id).update({
                 description: 'Вы отменили заказ.',
-                endTime: getDate(),
+                endTime: new Date(),
                 status: 4
             })
 
@@ -277,9 +279,9 @@ export function editSentOrder(orderInfo, userInfo) {
             orderInfo.clientNumberPhone = userInfo.numberPhone
             orderInfo.clientAddress = userInfo.address
             orderInfo.coordinate = userInfo.coordinate
+            orderInfo.deliveryValue = userInfo.deliveryValue
 
             dataBase.collection('orders').doc(orderInfo.id).update(orderInfo)
-            dispatch(fetchUserInfo())
         } catch (e) {
             console.log(e)
         }
@@ -297,7 +299,7 @@ export function reOrder(orderInfo) {
         }
 
         const fullOrderInfo = {
-            startTime: getDate(),
+            startTime: new Date(),
             endTime: '',
             orderValue: '',
             deliveryValue: '',

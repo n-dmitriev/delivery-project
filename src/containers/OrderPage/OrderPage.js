@@ -13,6 +13,7 @@ import toaster from 'toasted-notes'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
 import {cancelOrder, reOrder} from '../../store/order/orderActions'
 import {subscribeOrderInfo} from '../../store/courier/courierAction'
+import {getDate} from '../../store/universalFunctions'
 
 class OrderPage extends Component {
     constructor() {
@@ -88,11 +89,11 @@ class OrderPage extends Component {
                     <li className={'mb-15'}>Адресс доставки: {orderInfo.clientAddress}</li>
                     <li className={'mb-15'}>Имя: {orderInfo.clientName}</li>
                     <li className={'mb-15'}>Контактный телефон: {orderInfo.clientNumberPhone}</li>
-                    <li className={'mb-15'}>Время начала заказа: {orderInfo.startTime}</li>
+                    <li className={'mb-15'}>Время начала заказа: {getDate(orderInfo.startTime)}</li>
                     {
                         orderInfo.endTime !== ''
                             ?
-                            <li className={'mb-15'}>Время окончания заказа: {orderInfo.endTime}</li>
+                            <li className={'mb-15'}>Время окончания заказа: {getDate(orderInfo.endTime)}</li>
                             : null
                     }
                     {

@@ -5,6 +5,7 @@ import {confirm} from '../UI/Confirm/Confirm'
 import Tooltip from 'react-tooltip-lite'
 import {NavLink} from 'react-router-dom'
 import ProgressBar from '../UI/ProgressBar/ProgressBar'
+import {getDate} from '../../store/universalFunctions'
 
 export default class Order extends Component {
     state = {
@@ -120,11 +121,11 @@ export default class Order extends Component {
                             </>
                             : null
                     }
-                    <li className={'mb-15'}>Время начала заказа: {this.props.orderInfo.startTime}</li>
+                    <li className={'mb-15'}>Время начала заказа: {getDate(this.props.orderInfo.startTime)}</li>
                     {
                         this.props.orderInfo.endTime !== ''
                             ?
-                            <li className={'mb-15'}>Время окончания заказа: {this.props.orderInfo.endTime}</li>
+                            <li className={'mb-15'}>Время окончания заказа: {getDate(this.props.orderInfo.endTime)}</li>
                             : null
                     }
                     {

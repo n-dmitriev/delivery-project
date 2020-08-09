@@ -40,7 +40,7 @@
   & .input-dagger {
     position: absolute;
     top: 20px;
-    right: 5px  ;
+    right: 5px;
     font-size: 30px;
     border: none;
   }
@@ -75,6 +75,24 @@
 
     &_cheked {
       background-color: #ffeba0;
+    }
+  }
+
+  &__price-list {
+    padding: 3px;
+    cursor: pointer !important;
+
+    & .fa {
+      color: #d7d7d7 !important;
+      float: right;
+      position: relative;
+      right: 5px;
+      width: 30px;
+      align-items: center;
+
+      &:hover {
+        color: #ffffff !important;
+      }
     }
   }
 }

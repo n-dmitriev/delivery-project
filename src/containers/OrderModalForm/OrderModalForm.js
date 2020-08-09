@@ -22,6 +22,7 @@ import TabPanel from '../../components/UI/TabPanel/TabPanel'
 import OrderListAndMenu from '../../components/OrderModalWindows/OrderListAndMenu'
 import InputName from '../../components/OrderModalWindows/InputName'
 import ModalWindow from '../../components/UI/ModalWindow/ModalWindow'
+import InputAddress from '../../components/OrderModalWindows/InputAddress'
 
 
 //Данный контейнер отвечает за рендеринг модального окна
@@ -29,7 +30,8 @@ class OrderModalForm extends Component {
     state = {
         activeTab: 'shop-tab', // Активная вкладка 2 состояния shop-tab и restaurant-tab
         activeWin: 'list', // Активный комонент, list - список заказов, form - форма ввода, name - имя заведения, info - инф о клиенте
-        activeItem: null // В переменной хранится элемент, который выбран для редактирования
+        activeItem: null, // В переменной хранится элемент, который выбран для редактирования
+        infFromMap: {}
     }
 
     //Функция открывающая/закрывающая форму ввода
@@ -102,7 +104,7 @@ class OrderModalForm extends Component {
 
     sendOrderHandler = () => {
         if (this.props.isAuth === true) {
-            this.interactionWithDagger('info')
+            this.interactionWithDagger('map')
         } else {
             this.props.onClose()
             this.props.trySendOrder(true)
@@ -115,15 +117,16 @@ class OrderModalForm extends Component {
     }
 
     saveContactInformation = (info) => {
+        const fullOrderInfo = Object.assign(this.state.infFromMap, info)
         if (this.props.isEdit === true) {
-            this.props.editSentOrder(this.props.editItem, info)
+            this.props.editSentOrder(this.props.editItem, fullOrderInfo)
             toaster.notify('Ваш заказ отредактирован!', {
                 position: 'bottom-right',
                 duration: null
             })
         } else {
-            this.props.setUserInfo(info)
-            this.props.sendOrder(info)
+            this.props.setUserInfo(fullOrderInfo)
+            this.props.sendOrder(fullOrderInfo)
 
             toaster.notify('Ваш заказ отправлен!', {
                 position: 'bottom-right',
@@ -131,6 +134,22 @@ class OrderModalForm extends Component {
             })
         }
         this.close()
+    }
+
+    setAddressInfo = (address, coordinate, deliveryValue) => {
+        this.setState({
+            infFromMap: {address, coordinate, deliveryValue}
+        })
+    }
+
+    nextStep = () => {
+        if (this.state.infFromMap.address?.replace(/\s+/g, '') !== '' && this.state.infFromMap.deliveryValue > 0) {
+            this.interactionWithDagger('info')
+        } else
+            toaster.notify('Укажите адрес и расчитате стоимость доставки!', {
+                position: 'bottom-right',
+                duration: 3000
+            })
     }
 
     renderOrderListAndNavigationMenu = () => {
@@ -193,37 +212,54 @@ class OrderModalForm extends Component {
 
     renderContent = () => {
         return (
-            <div className={'order-form'} key={'order-form'}>
-                {
-                    this.state.activeWin !== 'info'
-                        ? <>
-                            {
-                                this.props.isEdit === true
-                                    ? <div className={'mb-5'}/>
-                                    : this.renderTabPanel()
-                            }
-
-                            <div className={'order-constructor'}>
-                                {this.state.activeWin === 'form'
-                                    ? this.renderProductForm()
-                                    : this.state.activeWin === 'list'
-                                        ? this.renderOrderListAndNavigationMenu()
-                                        : this.state.activeWin === 'name'
-                                            ? this.renderInputName()
-                                            : null
+            <>
+                <div className={'order-form'} key={'order-form'}>
+                    {
+                        ['form', 'list', 'name'].indexOf(this.state.activeWin) !== -1
+                            ? <>
+                                {
+                                    this.props.isEdit === true
+                                        ? <div className={'mb-5'}/>
+                                        : this.renderTabPanel()
                                 }
+
+                                <div className={'order-constructor'}>
+                                    {this.state.activeWin === 'form'
+                                        ? this.renderProductForm()
+                                        : this.state.activeWin === 'list'
+                                            ? this.renderOrderListAndNavigationMenu()
+                                            : this.state.activeWin === 'name'
+                                                ? this.renderInputName()
+                                                : null
+                                    }
+                                </div>
+                            </>
+                            : null
+                    }
+                    {
+                        this.state.activeWin === 'info'
+                            ? <div className={'user-inf-input'}>
+                                <InputInformation
+                                    saveContactInformation={this.saveContactInformation}
+                                    userInfo={this.props.userInfo}
+                                    type={'user'}
+                                    page={'order'}
+                                    interactionWithDagger={this.interactionWithDagger}
+                                />
                             </div>
-                        </>
-                        :
-                        <div className={'user-inf-input'}>
-                            <InputInformation
-                                saveContactInformation={this.saveContactInformation}
-                                userInfo={this.props.userInfo}
-                                type={'user'}
-                            />
-                        </div>
+                            : null
+                    }
+                </div>
+                {
+                    this.state.activeWin === 'map'
+                        ? <InputAddress
+                            nextStep={this.nextStep}
+                            interactionWithDagger={this.interactionWithDagger}
+                            setAddressInfo={this.setAddressInfo}
+                        />
+                        : null
                 }
-            </div>
+            </>
         )
     }
 

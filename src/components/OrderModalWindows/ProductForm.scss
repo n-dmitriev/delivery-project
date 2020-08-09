@@ -28,9 +28,44 @@
   }
 }
 
+.input-name {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 20px 0 20px;
+}
+
+.contact-information {
+  padding: 0 20px 30px 20px;
+  border-right: 5px;
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+
+  .button-section {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 850px) {
+  .contact-information {
+    padding: 0 10px 10px 10px;
+    width: 500px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-information {
+    width: 400px;
+  }
+}
+
+@media (max-width: 400px) {
+  .contact-information {
+    width: 45vh;
+  }
+}
+
 @media (max-width: 500px) {
-
-
   .product-form__input-field {
 
     & label {
@@ -43,8 +78,6 @@
   & input {
     font-size: 18px !important;
   }
-
-
 }
 
 @media (max-width: 370px) {
@@ -74,10 +107,4 @@
   .product-form small {
     margin-bottom: 10px;
   }
-}
-
-.input-name {
-  display: flex;
-  flex-direction: column;
-  padding: 10px 20px 0 20px;
 }

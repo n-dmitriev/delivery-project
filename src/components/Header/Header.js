@@ -41,7 +41,7 @@ export default class Header extends Component {
                             <p className={'mb-3'}>Курьеры EasyWays принимают заказы только
                                 с <b>10:00</b> по <b>19:00</b>!
                                 <br/>
-                                Вы можете сделать заказ, но он будет доставлен, как только мы откроемся.</p>
+                                Вы можете сделать заказ сейчас, но он будет обработан позже.</p>
                             <b className={'mb-3'}>Вы уверены, что хотите сделать заказ?</b>
                             <div className="d-flex">
                                 <button className={'btn btn-dark mr-2'}
