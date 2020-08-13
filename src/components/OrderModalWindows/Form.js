@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './ProductForm.scss'
 
-export default class form extends Component {
+export default class Form extends Component {
     constructor(props) {
         super(props)
         this.inputName = React.createRef()
@@ -12,81 +12,51 @@ export default class form extends Component {
         this.state = {
             orderFormIsValid: true,
             //Список вопросов для магазина
-            listOfShopQuestions: [
+            listQuestions: [
                 {
                     id: 'name',
                     question: 'Название продукта*',
                     required: true,
                     ref: this.inputName,
-                    type: 'input',
+                    type: 'input'
                 },
                 {
                     id: 'quantity',
                     question: 'Объём/Кол-во*',
                     required: true,
                     ref: this.inputQuantity,
-                    type: 'input',
+                    type: 'input'
                 },
                 {
                     id: 'brand',
                     question: 'Бренд',
                     required: false,
                     ref: this.inputBrand,
-                    type: 'input',
+                    type: 'input'
                 },
                 {
                     id: 'price',
                     question: 'Примерная цена',
                     required: false,
                     ref: this.inputPrice,
-                    type: 'input',
+                    type: 'input'
                 },
                 {
                     id: 'description',
                     question: 'Примечание',
                     required: false,
                     ref: this.text,
-                    type: 'textarea',
-                },
-            ],
-            //Список вопросов для ресторана
-            listOfRestaurantQuestions: [
-                {
-                    id: 'name',
-                    question: 'Название блюда*',
-                    required: true,
-                    ref: this.inputName,
-                    type: 'input',
-                },
-                {
-                    id: 'quantity',
-                    question: 'Объём/Кол-во*',
-                    required: true,
-                    ref: this.inputQuantity,
-                    type: 'input',
-                },
-                {
-                    id: 'price',
-                    question: 'Примерная, ожидаемая цена',
-                    required: false,
-                    ref: this.inputPrice,
-                    type: 'input',
-                },
-                {
-                    id: 'description',
-                    question: 'Примечание',
-                    required: false,
-                    ref: this.text,
-                    type: 'textarea',
-                },
-            ],
+                    type: 'textarea'
+                }
+            ]
         }
     }
 
     // Валидация заказа
     validateOrderData = () => {
         this.setState({
-            orderFormIsValid: this.inputName.current.value.replace(/\s+/g, '') !== '' && this.inputQuantity.current.value.replace(/\s+/g, '') !== '',
+            orderFormIsValid: this.inputName.current.value.replace(/\s+/g, '') !== ''
+                && this.inputQuantity.current.value.replace(/\s+/g, '') !== ''
         })
     }
 
@@ -104,16 +74,13 @@ export default class form extends Component {
                 price: this.inputPrice.current.value,
                 description: this.text.current.value,
                 purchased: false,
+                brand: this.inputBrand.current.value
             }
-
-            // Если магазин, то в объект добавляем название бренда
-            if (this.props.activeTab === 'shop-tab')
-                item.brand = this.inputBrand.current.value
 
             // Если item(текущий редактируемый эл-т) пустой, значит надо добавить в заказ новый продукт и сгенерировать его id
             if (this.props.item === null) {
                 item.id = `note-${Math.random().toString(36).substr(2, 9)}`
-                if (this.props.isEdit === true)
+                if (this.props.isEdit)
                     this.props.addSentOrder(item)
                 else
                     this.props.addProductToOrder(item, this.props.activeTab)
@@ -121,24 +88,22 @@ export default class form extends Component {
             // Иначе item(текущий редактируемый эл-т) непустой, значит надо редактировать продукт в заказе, id достаём из item-а
             else {
                 item.id = this.props.item.id
-                if (this.props.isEdit === true)
-                    this.props.editSentOrder(item)
+                if (this.props.isEdit)
+                    this.props.editSentOrderItem(item)
                 else
-                    this.props.editOrderItem(item, this.props.activeTab)
+                    this.props.editOrderItem(item)
             }
-            this.props.interactionWithDagger('list')
+            this.props.changeActiveWindow('list')
             this.props.resetActiveItem()
         }
     }
 
     render() {
         const isEdit = this.props.item !== null
-        const listQuestions = this.props.activeTab === 'shop-tab' ? this.state.listOfShopQuestions : this.state.listOfRestaurantQuestions
-
         return (
             <div className={'product-form'}>
                 {
-                    listQuestions.map((question) => (
+                    this.state.listQuestions.map((question) => (
                         <div key={question.id} className={'product-form__input-field'}>
                             <label>{question.question}</label>
                             {
@@ -169,7 +134,7 @@ export default class form extends Component {
                     </button>
                     <button className="main-item-style main-item-style_danger" onClick={() => {
                         this.props.resetActiveItem()
-                        this.props.interactionWithDagger('list')
+                        this.props.changeActiveWindow('list')
                     }}>
                         {isEdit ? 'Назад' : 'Отменить'}
                     </button>

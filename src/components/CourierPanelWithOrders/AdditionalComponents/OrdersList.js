@@ -1,24 +1,28 @@
 import React, {Component} from 'react'
 import List from '../../RenderOrderList/List'
+import InputPosition from '../../InputInformation/InputPosition'
+import toaster from 'toasted-notes'
 
 export default class OrdersList extends Component {
-    constructor(props) {
-        super(props)
-        this.courierPosition = React.createRef()
-        this.state = {
-            value: '',
-            listIsOpen: false,
-        }
+    state = {
+        value: '',
+        listIsOpen: false
     }
 
     interactionWithList = async () => {
-        await this.props.changePosition(this.courierPosition.current.value)
         if (this.props.positionIsValid) {
             this.setState({
-                listIsOpen: !this.state.listIsOpen,
+                listIsOpen: !this.state.listIsOpen
             })
-            // await this.props.fetchOrderList('active', 'courierId', '', [0], 0)
-            this.props.subscribeOrders(this.props.coordinate, 0)
+            this.props.subscribeOrders(this.props.coordinate, 0, this.props.ordersList)
+        } else {
+            const errorMessage = this.props.errorMessage.replace(/\s+/g, '') !== ''
+                ? this.props.errorMessage
+                : 'Укажите ваше местоположение!'
+            toaster.notify(errorMessage, {
+                position: 'bottom-right',
+                duration: 3000
+            })
         }
     }
 
@@ -52,21 +56,11 @@ export default class OrdersList extends Component {
             <>
                 <div className="courier-panel__title">
                     <div className={!this.state.listIsOpen ? 'courier-panel__title_input' : 'hide'}>
-                        <div className="form-group">
-                            <input
-                                placeholder={'Укажите ваше местоположение'}
-                                defaultValue={this.props.position}
-                                className={!this.props.positionIsValid ? 'input-error mb-15' : 'mb-15'} type="text"
-                                ref={this.courierPosition}
-                                id="dynamic-label-input-0"
-                            />
-                            <label className={'label'} htmlFor="dynamic-label-input-2">Ваше местоположение</label>
-                            <small
-                                className={this.state.positionIsValid ? 'hide' : 'error mb-15'}>
-                                {!this.props.positionIsValid ? <> Вы указали неверное местоположение!</> : null}
-                            </small>
-                        </div>
-                        <div className="button-section">
+                        <InputPosition
+                            setAddressInfo={this.props.changePosition}
+                            options={{isEdit: false, type: 'courier'}}
+                        />
+                        <div className="button-section mt-4">
                             <button className="main-item-style" onClick={this.interactionWithList}>
                                 Загрузить список заказов
                             </button>

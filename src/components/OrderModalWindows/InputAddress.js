@@ -1,14 +1,14 @@
 import React, {Component} from 'react'
-import InputCoordinate from '../InputInformation/InputCoordinate'
+import InputPosition from '../InputInformation/InputPosition'
 
 export default class InputAddress extends Component {
     render() {
         return (
             <div className={'contact-information'}>
                 <h2 className={'mb-2'}>Укажите ваш адрес</h2>
-                <InputCoordinate
-                    saveMapInformation={this.props.saveMapInformation}
+                <InputPosition
                     setAddressInfo={this.props.setAddressInfo}
+                    options={this.props.options}
                 />
                 <div className="button-section mt-4">
                     <button

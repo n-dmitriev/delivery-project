@@ -2,13 +2,14 @@ import React, {Component} from 'react'
 import toaster from 'toasted-notes'
 import {Map, YMaps, ZoomControl} from 'react-yandex-maps'
 import {confirm} from '../../UI/Confirm/Confirm'
+import InputPosition from '../../InputInformation/InputPosition'
 
 export default class DeliveryPanel extends Component {
     constructor(props) {
         super(props)
         this.orderValue = React.createRef()
         this.check = React.createRef()
-        this.courierPosition = React.createRef()
+        //this.courierPosition = React.createRef()
         this.map = null
         this.ymaps = null
         this.route = null
@@ -19,13 +20,12 @@ export default class DeliveryPanel extends Component {
             checkIsValid: true,
             edit: false,
             listIsOpen: false,
+            infFromMap: {}
         }
     }
 
 
-
     handleApiAvaliable = ymaps => {
-        console.log('da')
         this.ymaps = ymaps
         ymaps
             .route([this.props.coordinate, this.props.ordersList[0].coordinate])
@@ -35,27 +35,27 @@ export default class DeliveryPanel extends Component {
     }
 
 
-    calculateThePrice = async () => {
-        await this.props.changePosition(this.courierPosition.current.value)
+    nextStep = async () => {
         await this.setState({
             valueIsValid: parseInt(this.orderValue.current.value),
-            checkIsValid: this.check.current.checked,
+            checkIsValid: this.check.current.checked
         })
         if (this.props.positionIsValid && this.state.valueIsValid && this.state.checkIsValid) {
-            const route = await window.ymaps.route([this.props.coordinate, this.props.ordersList[0].coordinate])
-            const distance = Math.ceil(route.getLength()) / 1000
-            this.props.calculateThePrice(this.props.ordersList[0].id, this.orderValue.current.value, distance)
             this.editInfo()
-        }
+        } else toaster.notify(this.props.errorMessage, {
+            position: 'bottom-right',
+            duration: 3000
+        })
     }
 
     finishOrder = () => {
         confirm(
             'завершить заказ', async () => {
+                this.props.unsubscribeAllOrders()
                 this.props.changeOrderData(3, this.props.ordersList[0])
                 toaster.notify('Заказ завершён!', {
                     position: 'bottom-right',
-                    duration: 3000,
+                    duration: 3000
                 })
             }
         )
@@ -67,7 +67,7 @@ export default class DeliveryPanel extends Component {
                 this.props.changeOrderData(4, this.props.ordersList[0])
                 toaster.notify('Заказ отменён!', {
                     position: 'bottom-right',
-                    duration: 3000,
+                    duration: 3000
                 })
             }
         )
@@ -75,16 +75,15 @@ export default class DeliveryPanel extends Component {
 
     editInfo = () => {
         this.setState({
-            edit: !this.state.edit,
+            edit: !this.state.edit
         })
     }
 
     interactionWithList = () => {
         this.setState({
-            listIsOpen: !this.state.listIsOpen,
+            listIsOpen: !this.state.listIsOpen
         })
     }
-
 
     render() {
         const deliveredOrder = this.props.ordersList[0]
@@ -94,6 +93,11 @@ export default class DeliveryPanel extends Component {
                     <div className="courier-panel__title">
                         <div
                             className={deliveredOrder.orderValue === '' || this.state.edit ? 'courier-panel__title_input' : 'hide'}>
+                            <InputPosition
+                                setAddressInfo={this.props.changePosition}
+                                options={{isEdit: false, type: 'courier'}}
+                            />
+
                             <div className="form-group">
                                 <input placeholder={'Укажите стоимость закупки'}
                                        defaultValue={this.props.ordersList[0].orderValue}
@@ -106,21 +110,6 @@ export default class DeliveryPanel extends Component {
                                 <small
                                     className={this.state.valueIsValid ? 'hide' : 'error'}>
                                     Цена не может быть пустой!
-                                </small>
-                            </div>
-                            <div className="form-group">
-                                <input
-                                    placeholder={'Укажите ваше текущее местоположение'}
-                                    defaultValue={this.props.position}
-                                    className={!this.props.positionIsValid ? 'input-error' : ''}
-                                    type="text"
-                                    ref={this.courierPosition}
-                                    id="dynamic-label-input-2"/>
-                                <label className={'label'} htmlFor="dynamic-label-input-2">Ваше текущее
-                                    местоположение</label>
-                                <small
-                                    className={this.props.positionIsValid ? 'hide' : 'error'}>
-                                    Вы указали неверное местоположение!
                                 </small>
                             </div>
                             <div className={'checkbox mb-15'}>
@@ -139,7 +128,7 @@ export default class DeliveryPanel extends Component {
                                 </small>
                             </div>
                             <div className="button-section">
-                                <button className="main-item-style" onClick={this.calculateThePrice}>
+                                <button className="main-item-style" onClick={this.nextStep}>
                                     Применить
                                 </button>
                             </div>

@@ -42,18 +42,18 @@ export function changeOrderData(status, data) {
                 }
                 case 3: {
                     description = `Заказ завершён.`
-                    endTime = new Date()
+                    endTime = `${new Date()}`
                     break
                 }
                 case 4: {
                     description = 'Вы отменили заказ.'
-                    endTime = new Date()
+                    endTime = `${new Date()}`
                     break
                 }
                 case 5: {
                     description = 'Ваш заказ некорректно заполнен!'
                     courierId = ''
-                    endTime = new Date()
+                    endTime = `${new Date()}`
                     break
                 }
                 case -1: {
@@ -153,7 +153,7 @@ export function sortArrayByDistance(coordinate) {
 
 //Подписка на конкретный заказ
 export function subscribeOrderInfo(courierId, status) {
-    return async (dispatch, getState) => {
+    return async (dispatch) => {
         const answer = await dataBase.collection('user-orders')
             .where('status', '==', status)
             .where('courierId', '==', courierId)
@@ -171,6 +171,7 @@ export function subscribeOrderInfo(courierId, status) {
                 .onSnapshot((change) => {
                     const data = change.data()
                     if (data.status === 0) {
+                        dispatch(unsubscribeAllOrders())
                         dispatch(fetchUserInfo())
                     } else {
                         dispatch(dispatchAction(SET_USER_AL_SUCCESS, [data]))
@@ -181,17 +182,18 @@ export function subscribeOrderInfo(courierId, status) {
     }
 }
 
-export function subscribe(coordinates = null, skip = 0) {
-    return async (dispatch, getState) => {
+export function subscribe(coordinates = null, skip = 0, ordersList = []) {
+    return async (dispatch) => {
         dispatch(dispatchAction(FETCH_USER_START, null))
-        const orderList = getState().userReducer.listOfCurrentOrders
+
+        console.log(coordinates, skip, ordersList)
 
         const unsubscribe = await dataBase.collection('orders')
             .where('status', '==', 0).orderBy('id')
             .startAfter(skip).limit(2)
             .onSnapshot((querySnapshot) => {
                 querySnapshot.docChanges().forEach((change) => {
-                    console.log(change.type, change.doc.data())
+                    //console.log(change.type, change.doc.data())
                     if (change.type === 'added') {
                         const order = change.doc.data()
 
@@ -202,35 +204,35 @@ export function subscribe(coordinates = null, skip = 0) {
                     }
                     if (change.type === 'modified') {
                         const data = change.doc.data()
-                        const index = getElementById(orderList, data.id)
+                        const index = getElementById(ordersList, data.id)
                         if (index === -1) {
                             return null
                         }
 
-                        if (orderList[index].status === 0) {
-                            orderList[index] = data
-                            dispatch(dispatchAction(AL_CHANGE, orderList))
+                        if (ordersList[index].status === 0) {
+                            ordersList[index] = data
+                            dispatch(dispatchAction(AL_CHANGE, ordersList))
                         } else {
-                            orderList.splice(index, 1)
-                            dispatch(dispatchAction(AL_CHANGE, [...orderList]))
+                            ordersList.splice(index, 1)
+                            dispatch(dispatchAction(AL_CHANGE, [...ordersList]))
                         }
                     }
                     if (change.type === 'removed') {
                         const data = change.doc.data()
-                        const index = getElementById(orderList, data.id)
-                        orderList[index] = data
+                        const index = getElementById(ordersList, data.id)
+                        ordersList[index] = data
                         if (index === -1) {
                             return null
                         }
-                        orderList.splice(index, 1)
-                        dispatch(dispatchAction(AL_CHANGE, [...orderList]))
+                        ordersList.splice(index, 1)
+                        dispatch(dispatchAction(AL_CHANGE, [...ordersList]))
                     }
 
                     if (coordinates !== null)
                         dispatch(sortArrayByDistance(coordinates))
                 })
             })
-        //dispatch(dispatchAction(ADD_UNSUBSCRIBE, unsubscribe))
+        dispatch(dispatchAction(ADD_UNSUBSCRIBE, unsubscribe))
     }
 }
 

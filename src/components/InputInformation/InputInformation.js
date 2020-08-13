@@ -118,7 +118,7 @@ export default class InputInformation extends Component {
                         this.props.page === 'order'
                             ? <button className={'main-item-style mr-2'}
                                       onClick={() => {
-                                          this.props.interactionWithDagger('map')
+                                          this.props.changeActiveWindow('map')
                                       }}>
                                 Назад
                             </button>

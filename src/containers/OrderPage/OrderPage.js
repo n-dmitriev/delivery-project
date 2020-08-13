@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import './OrderPage.scss'
 import {connect} from 'react-redux'
 import Footer from '../../components/UI/Footer/Footer'
-import {accessCheck, subscribe} from './auxiliaryFunction'
+import EditCurrentOrder, {accessCheck, editSentOrder, subscribe} from './auxiliaryFunction'
 import BigPreloader from '../../components/UI/Preloaders/BigPreloader'
 import {NavLink} from 'react-router-dom'
 import ProgressBar from '../../components/UI/ProgressBar/ProgressBar'
@@ -17,8 +17,7 @@ import {getDate} from '../../store/universalFunctions'
 
 class OrderPage extends Component {
     constructor() {
-        super();
-
+        super()
         document.title = 'EasyWays | Заказ'
     }
 
@@ -27,7 +26,6 @@ class OrderPage extends Component {
         loading: true,
         orderInfo: {},
         isOrderModalOpen: false,
-        editItem: null,
         unsubscribe: () => {
         }
     }
@@ -39,7 +37,8 @@ class OrderPage extends Component {
             orderId = this.props.match.params.number
         accessCheck(adminId, userId, path, orderId, this.props.location.search.split('?')[1])
             .then(async (access) => {
-                let unsubscribe = () => {}
+                let unsubscribe = () => {
+                }
                 if (access) {
                     unsubscribe = subscribe(orderId, this.updateOrderInfo)
                 }
@@ -59,13 +58,6 @@ class OrderPage extends Component {
         this.setState({isOrderModalOpen: !this.state.isOrderModalOpen})
     }
 
-    setEditItem = (item) => {
-        this.setState({
-            editItem: item
-        })
-        this.interactionWithOrderModal()
-    }
-
     cancelOrder = () => {
         confirm('отменить заказ',
             () => {
@@ -78,55 +70,56 @@ class OrderPage extends Component {
     }
 
     renderOrderInfoPage = (orderInfo) => {
-        return (
-            <>
-                <ul>
-                    <li className={'mb-2'}>{orderInfo.description}</li>
-                    <li className={'mb-15'}>
-                        <ProgressBar status={orderInfo.status}/>
-                    </li>
-                    <li className={'mb-15'}>Откуда: {orderInfo.name}</li>
-                    <li className={'mb-15'}>Адресс доставки: {orderInfo.clientAddress}</li>
-                    <li className={'mb-15'}>Имя: {orderInfo.clientName}</li>
-                    <li className={'mb-15'}>Контактный телефон: {orderInfo.clientNumberPhone}</li>
-                    <li className={'mb-15'}>Время начала заказа: {getDate(orderInfo.startTime)}</li>
-                    {
-                        orderInfo.endTime !== ''
-                            ?
-                            <li className={'mb-15'}>Время окончания заказа: {getDate(orderInfo.endTime)}</li>
-                            : null
-                    }
-                    {
-                        orderInfo.orderValue !== ''
-                            ?
-                            <>
-                                <li className={'mb-15'}>Стоимость заказа: {orderInfo.orderValue} ₽</li>
-                                <li className={'mb-15'}>Стоимость доставки: {orderInfo.deliveryValue} ₽</li>
-                                <li className={'mb-15'}>
-                                    <b>Итого: {parseInt(orderInfo.deliveryValue) + parseInt(orderInfo.orderValue)} ₽</b>
-                                </li>
-                            </>
-                            : null
-                    }
-                </ul>
+        if (Object.keys(orderInfo).length > 0)
+            return (
+                <>
+                    <ul>
+                        <li className={'mb-2'}>{orderInfo.description}</li>
+                        <li className={'mb-15'}>
+                            <ProgressBar status={orderInfo.status}/>
+                        </li>
+                        <li className={'mb-15'}>Откуда: {orderInfo.name}</li>
+                        <li className={'mb-15'}>Адресс доставки: {orderInfo.clientAddress}</li>
+                        <li className={'mb-15'}>Имя: {orderInfo.clientName}</li>
+                        <li className={'mb-15'}>Контактный телефон: {orderInfo.clientNumberPhone}</li>
+                        <li className={'mb-15'}>Время начала заказа: {getDate(orderInfo.startTime)}</li>
+                        {
+                            orderInfo.endTime !== ''
+                                ?
+                                <li className={'mb-15'}>Время окончания заказа: {getDate(orderInfo.endTime)}</li>
+                                : null
+                        }
+                        {
+                            orderInfo.orderValue !== ''
+                                ?
+                                <>
+                                    <li className={'mb-15'}>Стоимость заказа: {orderInfo.orderValue} ₽</li>
+                                    <li className={'mb-15'}>Стоимость доставки: {orderInfo.deliveryValue} ₽</li>
+                                    <li className={'mb-15'}>
+                                        <b>Итого: {parseInt(orderInfo.deliveryValue) + parseInt(orderInfo.orderValue)} ₽</b>
+                                    </li>
+                                </>
+                                : null
+                        }
+                    </ul>
 
 
-                <h3 className={'mb-3'}>Заказ</h3>
-                <div className={'mb-4'}>
-                    {
-                        orderInfo.order && orderInfo.order.length > 0
-                            ?
-                            orderInfo.order.map((product) => (
-                                <div key={product.id}>
-                                    <Item product={product} status={orderInfo.status}/>
-                                </div>
-                            ))
-                            :
-                            <span>Ваш заказ пуст! :(</span>
-                    }
-                </div>
-            </>
-        )
+                    <h3 className={'mb-3'}>Заказ</h3>
+                    <div className={'mb-4'}>
+                        {
+                            orderInfo.order && orderInfo.order.length > 0
+                                ?
+                                orderInfo.order.map((product) => (
+                                    <div key={product.id}>
+                                        <Item product={product} status={orderInfo.status}/>
+                                    </div>
+                                ))
+                                :
+                                <span>Ваш заказ пуст! :(</span>
+                        }
+                    </div>
+                </>
+            )
     }
 
     renderButtonSection = (orderInfo) => {
@@ -153,7 +146,7 @@ class OrderPage extends Component {
                                     </Tooltip>
                                     : <button
                                         className={`main-item-style mr-15`}
-                                        onClick={() => this.setEditItem(this.state.orderInfo)}>
+                                        onClick={this.interactionWithOrderModal}>
                                         Редактировать
                                     </button>
                             }
@@ -176,19 +169,37 @@ class OrderPage extends Component {
         )
     }
 
+    renderModalWindow = () => {
+        const editCurrentOrder = new EditCurrentOrder()
+        const orderInfo = JSON.parse(JSON.stringify(this.state.orderInfo))
+        editCurrentOrder.setOrderInfo(orderInfo)
+        return (
+            <OrderModalForm
+                trySendOrder={false}
+                isAuth={true}
+                isEdit={true}
+                isOpen={this.state.isOrderModalOpen}
+                onClose={this.interactionWithOrderModal}
+                editSentOrder={editSentOrder}
+                editOrder={editCurrentOrder.getOrderInfo()}
+                removeProductFromSentOrder={editCurrentOrder.removeProduct}
+                addProductToSentOrder={editCurrentOrder.addProduct}
+                editSentOrderItem={editCurrentOrder.editOrder}
+                changeSentOrderName={editCurrentOrder.editName}
+            />
+        )
+    }
+
     render() {
         if (!this.state.loading && this.state.access) {
             const orderInfo = this.state.orderInfo
             return (
                 <div className={'order-page'}>
-                    <OrderModalForm
-                        trySendOrder={false}
-                        isAuth={true}
-                        isOpen={this.state.isOrderModalOpen}
-                        onClose={this.interactionWithOrderModal}
-                        isEdit={true}
-                        editItem={this.state.editItem}
-                    />
+                    {
+                        this.state.isOrderModalOpen
+                            ? this.renderModalWindow()
+                            : null
+                    }
 
                     <div className={'container'}>
                         <div className="row">
@@ -202,7 +213,7 @@ class OrderPage extends Component {
                                         this.renderButtonSection(orderInfo)
                                     }
 
-                                    <hr className={'mb-4 mt-4'}/>
+                                    <div className={'mb-3 mt-3'}/>
 
                                     {
                                         this.renderOrderInfoPage(orderInfo)

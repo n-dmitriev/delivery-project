@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './MainPage.scss'
-import InputCoordinate from '../InputInformation/InputCoordinate'
+import InputPosition from '../InputInformation/InputPosition'
 
 export default class MainPage extends Component {
     componentDidMount() {
@@ -12,7 +12,9 @@ export default class MainPage extends Component {
             <div className={'main-page'}>
                 <h1>Главная страница</h1>
 
-                <InputCoordinate/>
+                <InputPosition
+                    options={{isEdit: false, type: 'landing'}}
+                />
             </div>
         )
     }

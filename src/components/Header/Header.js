@@ -85,13 +85,15 @@ export default class Header extends Component {
                 return (
                     <>
                         <button className={'header__link'} onClick={this.checkTime}>
-                            <i className="fa fa-pencil" aria-hidden="true"/>
-                            <span className={'name'}>Заказать</span>
+                            {/*<i className="fa fa-pencil" aria-hidden="true"/>*/}
+                            {/*<span className={'name'}>Заказать</span>*/}
+                            Заказать
                         </button>
                         <NavLink className={'header__link'}
                                  to={(this.props.path + this.props.id + '/user-orders') || '/'}>
-                            <i className="fa fa-list" aria-hidden="true"/>
-                            <span className={'name'}>Заказы</span>
+                            {/*<i className="fa fa-list" aria-hidden="true"/>*/}
+                            {/*<span className={'name'}>Заказы</span>*/}
+                            Заказы
                         </NavLink>
                         <NavLink className={'header__link'}
                                  onClick={this.interactWithMenu}
@@ -106,15 +108,17 @@ export default class Header extends Component {
             return (
                 <>
                     <button className={'header__link'} onClick={this.checkTime}>
-                        <i className="fa fa-pencil" aria-hidden="true"/>
-                        <span className={'name'}>Заказать</span>
+                        {/*<i className="fa fa-pencil" aria-hidden="true"/>*/}
+                        {/*<span className={'name'}>Заказать</span>*/}
+                        Заказать
                     </button>
                     <button className={'header__link'} onClick={() => {
                         this.interactWithMenu()
                         this.interactionWithAuthModal()
                     }}>
-                        <i className="fa fa-sign-in" aria-hidden="true"/>
-                        <span className={'name'}>Войти</span>
+                        {/*<i className="fa fa-sign-in" aria-hidden="true"/>*/}
+                        {/*<span className={'name'}>Войти</span>*/}
+                        Войти
                     </button>
                 </>
             )

@@ -10,7 +10,7 @@ import {fetchOrderList, passwordChange} from '../../store/user/userActions'
 import CourierPanel from '../../components/CourierPanelWithOrders/CourierPanel'
 import {
     changeOrderData,
-    interactWithPurchased, calculateThePrice, subscribeOrderInfo, updateCourierStatus, subscribe, unsubscribeAllOrders
+    interactWithPurchased, subscribeOrderInfo, updateCourierStatus, subscribe, unsubscribeAllOrders
 } from '../../store/courier/courierAction'
 import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
 
@@ -93,6 +93,7 @@ class CourierAccount extends Component {
     }
 
     render() {
+        console.log(this.props.unsubscribeList)
         return (
             <div className={'courier'}>
                 <PasswordChangeForm errorPassword={this.props.errorPassword}
@@ -155,12 +156,11 @@ function mapDispatchToProps(dispatch) {
         logout: () => dispatch(logout()),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
         auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
-        subscribe: (coordinates, skip) => dispatch(subscribe(coordinates, skip)),
+        subscribe: (coordinates, skip, ordersList) => dispatch(subscribe(coordinates, skip, ordersList)),
         subscribeOrderInfo: (id, status) => dispatch(subscribeOrderInfo(id, status)),
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),
         fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status)),
-        calculateThePrice: (id, price, distance) => dispatch(calculateThePrice(id, price, distance)),
         updateCourierStatus: (status) => dispatch(updateCourierStatus(status)),
         unsubscribeAllOrders: () => dispatch(unsubscribeAllOrders())
     }

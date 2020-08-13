@@ -13,35 +13,35 @@ import {
 import toaster from 'toasted-notes'
 import MiniPreloader from '../UI/Preloaders/MiniPrleloader'
 
-export default class InputCoordinate extends Component {
+export default class InputPosition extends Component {
     constructor(props) {
         super(props)
 
-        this.referencePoint = [59.220496, 39.891523]
-        this.greenZone = 1000
-        this.yellowZone = 2000
-        this.redZone = 3000
-        this.defaultPrice = 150
-        this.priceIn1Km = 20
-
-        this.map = null
-        this.ymaps = null
-        this.route = null
         this.search = React.createRef()
+    }
 
-        this.state = {
-            edit: false,
-            showBorders: true,
-            coordinate: this.referencePoint,
-            zoom: 12,
-            addressIsValid: false,
-            errorMessage: '',
-            deliveryValue: '',
-            address: '',
-            empty: true,
-            loading: true,
-            priceListIsOpen: false
-        }
+    greenZone = 1000
+    yellowZone = 2000
+    redZone = 3000
+    defaultPrice = 150
+    priceIn1Km = 20
+    referencePoint = [59.220496, 39.891523]
+    map = null
+    ymaps = null
+    route = null
+
+    state = {
+        edit: false,
+        showBorders: true,
+        coordinate: this.props.options?.isEdit ? this.props.options.coordinate : this.referencePoint,
+        zoom: this.props.options?.isEdit ? 17 : 12,
+        addressIsValid: this.props.options?.isEdit,
+        errorMessage: '',
+        deliveryValue: '',
+        address: this.props.options?.isEdit ? this.props.options.address : '',
+        empty: true,
+        loading: true,
+        priceListIsOpen: this.props.options?.type === 'landing'
     }
 
     showOrHide = () => {
@@ -115,7 +115,8 @@ export default class InputCoordinate extends Component {
                 addressIsValid = false
             }
 
-            this.props.setAddressInfo(this.state.address, this.state.coordinate, deliveryValue)
+            if (this.props.options?.type === 'user')
+                this.props.setAddressInfo(this.state.address, this.state.coordinate, deliveryValue)
 
             this.setState({
                 addressIsValid,
@@ -124,7 +125,7 @@ export default class InputCoordinate extends Component {
         }
     }
 
-    checkingAddressCorrectness = (address) => {
+    checkingAddressCorrectness = (address, coordinate) => {
         let addressIsValid = true, errorMessage = false
 
         if (address.getLocalities() === undefined) {
@@ -136,14 +137,23 @@ export default class InputCoordinate extends Component {
         } else if (address.getThoroughfare() === undefined && address.getPremiseNumber() === undefined) {
             addressIsValid = false
             errorMessage = 'Уточните название улицы!'
-        } else if (address.getPremiseNumber() === undefined) {
+        } else if (address.getPremiseNumber() === undefined && this.props.options?.type !== 'courier') {
             addressIsValid = false
             errorMessage = 'Уточните номер дома!'
         }
 
+        const thisAddress = addressIsValid ? [address.getLocalities(), address.getThoroughfare(), address.getPremiseNumber()].join(', ') : ''
+
+        if (this.props.options?.type === 'courier') {
+            this.props.setAddressInfo(thisAddress, coordinate, addressIsValid, errorMessage)
+        }
+
         this.setState({
             addressIsValid, errorMessage,
-            address: addressIsValid ? [address.getLocalities(), address.getThoroughfare(), address.getPremiseNumber()].join(', ') : ''
+            address: thisAddress,
+            deliveryValue: '',
+            coordinate,
+            zoom: 17
         })
     }
 
@@ -155,13 +165,7 @@ export default class InputCoordinate extends Component {
             const coordinate = answer.geoObjects.get(0)?.geometry.getCoordinates()
 
             if (coordinate) {
-                this.checkingAddressCorrectness(answer.geoObjects.get(0))
-                this.setState({
-                    address: search,
-                    deliveryValue: '',
-                    coordinate,
-                    zoom: 17
-                })
+                this.checkingAddressCorrectness(answer.geoObjects.get(0), coordinate)
             }
         }
     }
@@ -179,13 +183,7 @@ export default class InputCoordinate extends Component {
             this.search.current.value = addressLine
 
 
-        this.checkingAddressCorrectness(address)
-        this.setState({
-            address: [address.getLocalities(), address.getThoroughfare(), address.getPremiseNumber()].join(', '),
-            deliveryValue: '',
-            coordinate,
-            zoom: 17
-        })
+        this.checkingAddressCorrectness(address, coordinate)
     }
 
     geolocationControl = async (e) => {
@@ -201,12 +199,14 @@ export default class InputCoordinate extends Component {
             <div className={'input-coordinate'}>
                 <div className={'input-coordinate__search'}>
                     <div className="form-group">
-                        <input placeholder={'Укажите ваш адрес'}
-                            // defaultValue={this.props.ordersList[0].orderValue}
-                               ref={this.search}
-                               type='text'
-                               id="suggest"
-                               onChange={this.onChange}
+                        <input
+                            placeholder={this.props.options?.type === 'courier' ? 'Укажите ваше местоположение'
+                                : 'Укажите ваш адрес'}
+                            defaultValue={this.props.options?.isEdit ? this.props.options.address : ''}
+                            ref={this.search}
+                            type='text'
+                            id="suggest"
+                            onChange={this.onChange}
                         />
                         {
                             !this.state.empty
@@ -215,7 +215,12 @@ export default class InputCoordinate extends Component {
                                 </span>
                                 : null
                         }
-                        <label className={'label'} htmlFor="suggest">Ваш адрес</label>
+                        <label className={'label'} htmlFor="suggest">
+                            {
+                                this.props.options?.type === 'courier'
+                                    ? 'Местоположение'
+                                    : 'Ваш адрес'
+                            }</label>
                     </div>
                     <button onClick={this.submitSearch} className={'btn'}>
                         Поиск
@@ -238,21 +243,37 @@ export default class InputCoordinate extends Component {
                                  cursor={'arrow'}
                                  options={{suppressMapOpenBlock: true}}
                             >
-                                <Button
-                                    options={{maxWidth: 100, float: 'right'}}
-                                    data={{content: `Границы`}}
-                                    defaultState={{selected: true}}
-                                    onClick={this.showOrHide}
-                                />
-                                <div
-                                    onClick={this.calculateDeliveryValue}
-                                    className={'input-coordinate__price'}>
-                                    {
-                                        this.state.deliveryValue !== ''
-                                            ? `Стоимость доставки: ${this.state.deliveryValue}`
-                                            : 'Расчитать стоимость доставки'
-                                    }
-                                </div>
+                                {
+                                    this.props.options?.type !== 'courier'
+                                        ? <>
+                                            <Button
+                                                options={{maxWidth: 100, float: 'right'}}
+                                                data={{content: `Границы`}}
+                                                defaultState={{selected: true}}
+                                                onClick={this.showOrHide}
+                                            />
+                                            <div
+                                                onClick={this.calculateDeliveryValue}
+                                                className={'input-coordinate__price'}>
+                                                {
+                                                    this.props.options?.isEdit
+                                                        ?
+                                                        this.state.address === this.props.options.address
+                                                            ? <>Стоимость
+                                                                доставки: <b>{this.props.options.deliveryValue}</b></>
+                                                            :
+                                                            this.state.deliveryValue !== ''
+                                                                ? <>Стоимость доставки: <b>{this.state.deliveryValue}</b></>
+                                                                : 'Расчитать стоимость доставки'
+                                                        :
+                                                        this.state.deliveryValue !== ''
+                                                            ? <>Стоимость доставки: <b>{this.state.deliveryValue}</b></>
+                                                            : 'Расчитать стоимость доставки'
+                                                }
+                                            </div>
+                                        </>
+                                        : null
+                                }
                                 <GeolocationControl
                                     onCLick={this.geolocationControl}
                                     options={{
@@ -282,7 +303,7 @@ export default class InputCoordinate extends Component {
                                 }
 
                                 {
-                                    this.state.showBorders
+                                    this.state.showBorders && this.props.options?.type !== 'courier'
                                         ?
                                         <>
                                             <Circle
@@ -328,39 +349,45 @@ export default class InputCoordinate extends Component {
                         </YMaps>
                     </div>
                 </div>
-                <h4
-                    onClick={this.interactWithPriceList}
-                    className={'bg-dark text-white text-center input-coordinate__price-list'}>
-                    Стоимость доставки
-                    {
-                        this.state.priceListIsOpen
-                            ? <i className="fa fa-caret-up fa-animate" aria-hidden="true"/>
-                            : <i className="fa fa-caret-down fa-animate" aria-hidden="true"/>
-                    }
-                </h4>
+                {
+                    this.props.options?.type !== 'courier'
+                        ? <>
+                            <h4
+                                onClick={this.interactWithPriceList}
+                                className={'bg-dark text-white text-center input-coordinate__price-list'}>
+                                Стоимость доставки
+                                {
+                                    this.state.priceListIsOpen
+                                        ? <i className="fa fa-caret-up fa-animate" aria-hidden="true"/>
+                                        : <i className="fa fa-caret-down fa-animate" aria-hidden="true"/>
+                                }
+                            </h4>
 
-                <div className={'row text-center'}>
-                    {
-                        this.state.priceListIsOpen
-                            ? <>
-                                <div className="col-12 col-sm-4">
-                                    <b className={'text-success'}>{this.defaultPrice} ₽</b>
-                                </div>
-                                <div className="col-12 col-sm-4">
-                                    <b className={'text-warning'}>
-                                        {this.defaultPrice} ₽ +{this.priceIn1Km} ₽ за каждый км вне зеленой зоны
-                                    </b>
-                                </div>
-                                <div className="col-12 col-sm-4">
-                                    <b className={'text-danger'}>
-                                        {this.defaultPrice} ₽ +{this.priceIn1Km * 2} ₽ за каждый км вне желтой зоны
-                                    </b>
-                                </div>
-                            </>
-                            : null
-                    }
+                            <div className={'row text-center'}>
+                                {
+                                    this.state.priceListIsOpen
+                                        ? <>
+                                            <div className="col-12 col-sm-4">
+                                                <b className={'text-success'}>{this.defaultPrice} ₽</b>
+                                            </div>
+                                            <div className="col-12 col-sm-4">
+                                                <b className={'text-warning'}>
+                                                    {this.defaultPrice} ₽ +{this.priceIn1Km} ₽ за каждый км вне зеленой зоны
+                                                </b>
+                                            </div>
+                                            <div className="col-12 col-sm-4">
+                                                <b className={'text-danger'}>
+                                                    {this.defaultPrice} ₽ +{this.priceIn1Km * 2} ₽ за каждый км вне желтой зоны
+                                                </b>
+                                            </div>
+                                        </>
+                                        : null
+                                }
 
-                </div>
+                            </div>
+                        </>
+                        : null
+                }
             </div>
         )
     }

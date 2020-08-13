@@ -9,5 +9,9 @@ export function getElementById(arr, id) {
 }
 
 export function getDate(date) {
-    return ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ' ' + ('0' + date.getDate()).slice(-2) + '.' + ('0' + (date.getMonth() + 1)).slice(-2) + '.' + date.getFullYear()
+    const convertedDate = new Date(date)
+    //console.log(date, convertedDate)
+    return ('0' + convertedDate.getHours()).slice(-2) + ':' + ('0' + convertedDate.getMinutes()).slice(-2)
+        + ' ' + ('0' + convertedDate.getDate()).slice(-2) + '.' + ('0' + (convertedDate.getMonth() + 1)).slice(-2)
+        + '.' + convertedDate.getFullYear()
 }

@@ -1,43 +1,30 @@
 import {
-    ADD_P_TO_RESTAURANT_ORDER,
-    ADD_P_TO_SHOP_ORDER, CHANGE_RESTAURANT_NAME, CHANGE_SHOP_NAME,
-    DELETE_ORDER, EDIT_ORDER_RESTAURANT_ITEM,
-    EDIT_ORDER_SHOP_ITEM, REMOVE_P_FROM_RESTAURANT_ORDER,
-    REMOVE_P_FROM_SHOP_ORDER,
-    SEND_ORDER
+    ADD_PRODUCT, CHANGE_NAME,
+    DELETE_ORDER_INFO,
+    EDIT_ORDER,
+    REMOVE_PRODUCT
 } from './actionTypes'
 import {dataBase} from '../../firebase/firebase'
 import {fetchOrderList} from '../user/userActions'
 import {dispatchAction, getElementById} from '../universalFunctions'
 import {ADD_P_TO_SENT_ORDER, AL_CHANGE, EDIT_SENT_ORDER_ITEM, REMOVE_P_FROM_SENT_ORDER} from '../user/actionTypes'
 
-
-//Обновление localStorage при внесении изменений в заказ
-function updateLocalStorage(getState, list) {
-    if (list === 'shop-tab')
-        localStorage.setItem('shopOrder', JSON.stringify(getState().orderReducer.shopOrder))
-    else if (list === 'restaurant-tab')
-        localStorage.setItem('restaurantOrder', JSON.stringify(getState().orderReducer.restaurantOrder))
-    else {
-        localStorage.removeItem('shopOrder')
-        localStorage.removeItem('restaurantOrder')
-        localStorage.removeItem('nameOfRestaurant')
-        localStorage.removeItem('nameOfShop')
-    }
+function removeOrder() {
+    localStorage.removeItem('name')
+    localStorage.removeItem('order')
 }
 
 //Отправка заказа на сервер
 export function sendOrder(info) {
     return async (dispatch, getState) => {
-        const state = getState().orderReducer
-        const userId = getState().authReducer.id
-
+        const state = getState()
+        const orderReducer = state.orderReducer
 
         // 6 статусов
         // 0 - заказ на обработке, 1 - курьер принял заказ, 2 - курьер осуществляет доставку
         // 3 - заказ выполнен, 4 - заказ отменён пользователем, -1 - подозрение на троллинг
         const fullOrderInfo = {
-            startTime: new Date(),
+            startTime: `${new Date()}`,
             endTime: '',
             orderValue: '',
             description: 'Курьер ещё не принял ваш заказ.',
@@ -46,49 +33,26 @@ export function sendOrder(info) {
             clientNumberPhone: info.numberPhone,
             clientAddress: info.address,
             coordinate: info.coordinate,
-            deliveryValue: info.deliveryValue
+            deliveryValue: info.deliveryValue,
+            order: orderReducer.order,
+            name: orderReducer.name
         }
 
-        console.log(fullOrderInfo)
+        const orders = dataBase.collection('orders')
+        const docRef = await orders.add(fullOrderInfo)
+        const orderId = docRef.id
+        await orders.doc(orderId).update({
+            id: orderId
+        })
 
-        if (state.shopOrder.length !== 0) {
-            fullOrderInfo.name = state.nameOfShop === '' ? 'Из любого магизна' : state.nameOfShop
-            fullOrderInfo.order = state.shopOrder
-
-            const orders = dataBase.collection('orders')
-            const docRef = await orders.add(fullOrderInfo)
-            const orderId = docRef.id
-            await orders.doc(orderId).update({
-                id: orderId
-            })
-
-            await dataBase.collection('user-orders').add({
-                userId: userId,
-                orderId: orderId,
-                courierId: '',
-                status: 0
-            })
-        }
-        if (state.restaurantOrder.length !== 0 && state.nameOfRestaurant !== '') {
-            fullOrderInfo.name = state.nameOfRestaurant
-            fullOrderInfo.order = state.restaurantOrder
-
-            const orders = dataBase.collection('orders')
-            const docRef = await orders.add(fullOrderInfo)
-            const orderId = docRef.id
-            await orders.doc(orderId).update({
-                id: orderId
-            })
-
-            await dataBase.collection('user-orders').add({
-                userId: userId,
-                orderId: orderId,
-                courierId: '',
-                status: 0
-            })
-        }
-        dispatch(dispatchAction(SEND_ORDER, null))
-        updateLocalStorage(getState, null)
+        await dataBase.collection('user-orders').add({
+            userId: state.authReducer.id,
+            orderId: orderId,
+            courierId: '',
+            status: 0
+        })
+        dispatch(dispatchAction(DELETE_ORDER_INFO, null))
+        removeOrder()
     }
 }
 
@@ -108,7 +72,7 @@ export function cancelOrder(id) {
 
             await dataBase.collection('orders').doc(id).update({
                 description: 'Вы отменили заказ.',
-                endTime: new Date(),
+                endTime: `${new Date()}`,
                 status: 4
             })
 
@@ -128,82 +92,97 @@ export function cancelOrder(id) {
 }
 
 //Функция локально добавляющая продукт в заказ
-export function addProductToOrder(item, list) {
+export function addProductToOrder(item) {
     return (dispatch, getState) => {
-        list === 'shop-tab'
-            ? dispatch(dispatchAction(ADD_P_TO_SHOP_ORDER, item))
-            : dispatch(dispatchAction(ADD_P_TO_RESTAURANT_ORDER, item))
-        updateLocalStorage(getState, list)
+        dispatch(dispatchAction(ADD_PRODUCT, item))
+        localStorage.setItem('order', JSON.stringify(getState().orderReducer.order))
     }
 }
 
 //Функция локально редактирующая продукт в заказе
-export function editOrderItem(item, list) {
+export function editOrderItem(item) {
     return (dispatch, getState) => {
-        const state = getState().orderReducer
-        let arr, type
-        if (list === 'shop-tab') {
-            arr = state.shopOrder
-            type = EDIT_ORDER_SHOP_ITEM
-        } else {
-            arr = state.restaurantOrder
-            type = EDIT_ORDER_RESTAURANT_ITEM
-        }
-
+        const arr = getState().orderReducer.order
         const index = getElementById(arr, item.id)
         arr[index] = item
-        dispatch(dispatchAction(type, arr))
-        updateLocalStorage(getState, list)
+        dispatch(dispatchAction(EDIT_ORDER, arr))
+        localStorage.setItem('order', JSON.stringify(getState().orderReducer.order))
+    }
+}
+
+//Функция локально удаляющая продукт из заказа
+export function removeProductFromOrder(id) {
+    return (dispatch, getState) => {
+        const state = getState().orderReducer
+        const arr = state.order
+        const index = getElementById(arr, id)
+        if (index === -1) {
+            return null
+        }
+        arr.splice(index, 1)
+        dispatch(dispatchAction(REMOVE_PRODUCT, [...arr]))
+        localStorage.setItem('order', JSON.stringify(getState().orderReducer.order))
     }
 }
 
 //Функция локально удаляющая заказ
 export function deleteOrder() {
     return (dispatch, getState) => {
-        dispatch(dispatchAction(DELETE_ORDER, null))
-        updateLocalStorage(getState, null)
+        dispatch(dispatchAction(DELETE_ORDER_INFO, null))
+        removeOrder()
     }
 }
 
-//Функция локально удаляющая продукт из заказа
-export function removeProductFromOrder(id, list) {
+//Функция локально изменяющая имя
+export function changeName(name) {
     return (dispatch, getState) => {
-        const state = getState().orderReducer
-        let arr, type
-        if (list === 'shop-tab') {
-            arr = state.shopOrder
-            type = REMOVE_P_FROM_SHOP_ORDER
-        } else {
-            arr = state.restaurantOrder
-            type = REMOVE_P_FROM_RESTAURANT_ORDER
-        }
-        const index = getElementById(arr, id)
-        if (index === -1) {
-            return null
-        }
-        arr.splice(index, 1)
-        dispatch(dispatchAction(type, [...arr]))
-        updateLocalStorage(getState, list)
-    }
-}
-
-//Функция локально изменяющая имя ресторана
-export function changeRestaurantName(name) {
-    return (dispatch, getState) => {
-        dispatch(dispatchAction(CHANGE_RESTAURANT_NAME, name))
-        localStorage.setItem('nameOfRestaurant', JSON.stringify(getState().orderReducer.nameOfRestaurant))
-    }
-}
-
-//Функция локально изменяющая имя Магазина
-export function changeShopName(name) {
-    return (dispatch, getState) => {
-        dispatch(dispatchAction(CHANGE_SHOP_NAME, name))
-        localStorage.setItem('nameOfShop', JSON.stringify(getState().orderReducer.nameOfShop))
+        dispatch(dispatchAction(CHANGE_NAME, name))
+        localStorage.setItem('name', JSON.stringify(getState().orderReducer.name))
     }
 }
 
 //Далее идут фу-ии по работе с уже отправленным заказом
+
+export function reOrder(orderInfo) {
+    return async (dispatch, getState) => {
+        const userId = getState().authReducer.id
+
+        const order = orderInfo.order
+
+        for (let item of order) {
+            item.purchased = false
+        }
+
+        const fullOrderInfo = {
+            startTime: `${new Date()}`,
+            endTime: '',
+            orderValue: '',
+            deliveryValue: '',
+            description: 'Курьер ещё не принял заказ',
+            name: orderInfo.name,
+            order: order,
+            coordinate: orderInfo.coordinate,
+            status: 0,
+            clientAddress: orderInfo.clientAddress,
+            clientName: orderInfo.clientName,
+            clientNumberPhone: orderInfo.clientNumberPhone
+        }
+
+        const orders = dataBase.collection('orders')
+        const docRef = await orders.add(fullOrderInfo)
+        const orderId = docRef.id
+        await orders.doc(orderId).update({
+            id: orderId
+        })
+
+        dataBase.collection('user-orders').add({
+            userId: userId,
+            orderId: orderId,
+            courierId: '',
+            status: 0
+        })
+    }
+}
 
 //Функция локально добавляющая продукт в уже отправленный заказ, без отправки на сервер
 export function addProductToSentOrder(listId, item) {
@@ -257,7 +236,7 @@ export function removeProductFromSentOrder(listId, id) {
             }
             const order = ordersList[indexOrder].order
             const itemIndex = getElementById(order, id)
-            if (indexOrder === -1) {
+            if (itemIndex === -1) {
                 return null
             }
             order.splice(itemIndex, 1)
@@ -285,47 +264,5 @@ export function editSentOrder(orderInfo, userInfo) {
         } catch (e) {
             console.log(e)
         }
-    }
-}
-
-export function reOrder(orderInfo) {
-    return async (dispatch, getState) => {
-        const userId = getState().authReducer.id
-
-        const order = orderInfo.order
-
-        for (let item of order) {
-            item.purchased = false
-        }
-
-        const fullOrderInfo = {
-            startTime: new Date(),
-            endTime: '',
-            orderValue: '',
-            deliveryValue: '',
-            description: 'Курьер ещё не принял заказ',
-            name: orderInfo.name,
-            order: order,
-            coordinate: orderInfo.coordinate,
-            status: 0,
-            clientAddress: orderInfo.clientAddress,
-            clientName: orderInfo.clientName,
-            clientNumberPhone: orderInfo.clientNumberPhone
-        }
-
-        const orders = dataBase.collection('orders')
-        const docRef = await orders.add(fullOrderInfo)
-        const orderId = docRef.id
-        await orders.doc(orderId).update({
-            id: orderId
-        })
-
-        dataBase.collection('user-orders').add({
-            userId: userId,
-            orderId: orderId,
-            courierId: '',
-            status: 0
-        })
-        //dispatch(fetchOrderList('active', 'userId', null, [0, 1, 2]))
     }
 }

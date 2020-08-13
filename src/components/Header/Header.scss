@@ -70,10 +70,32 @@
     border: none !important;
     margin-left: 20px;
     background-color: inherit;
+    display: inline-block;
+    line-height: 1;
+    text-decoration: none;
+    position: relative;
     @include animate();
 
-    &:hover {
-      opacity: 0.75;
+
+    &::after {
+      display: block;
+      content: "";
+      background-color: #000501;
+      height: 2px;
+      bottom: -5px;
+      width: 0%;
+      left: 50%;
+      position: absolute;
+      -webkit-transition: width .3s ease-in-out;
+      -moz--transition: width .3s ease-in-out;
+      transition: width .3s ease-in-out;
+      -webkit-transform: translateX(-50%);
+      -moz-transform: translateX(-50%);
+      transform: translateX(-50%);
+    }
+
+    &:hover:after {
+      width: 100%;
     }
 
     & .fa {

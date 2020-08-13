@@ -16,7 +16,7 @@ export default class DeliveredOrder extends Component {
         this.setState({
             orderIsOpen: !this.state.orderIsOpen
         })
-        this.props.subscribeOrderInfo(this.props.ordersList[0].id)
+        //this.props.subscribeOrderInfo(this.props.ordersList[0].id)
     }
 
     finishBuy = () => {

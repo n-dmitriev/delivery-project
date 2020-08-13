@@ -128,12 +128,12 @@ export default class Order extends Component {
                             <li className={'mb-15'}>Время окончания заказа: {getDate(this.props.orderInfo.endTime)}</li>
                             : null
                     }
+                    <li className={'mb-15'}>Стоимость доставки: {this.props.orderInfo.deliveryValue} ₽</li>
                     {
                         this.props.orderInfo.orderValue !== ''
                             ?
                             <>
                                 <li className={'mb-15'}>Стоимость заказа: {this.props.orderInfo.orderValue} ₽</li>
-                                <li className={'mb-15'}>Стоимость доставки: {this.props.orderInfo.deliveryValue} ₽</li>
                                 <li className={'mb-15'}>
                                     <b>Итого: {parseInt(this.props.orderInfo.deliveryValue) + parseInt(this.props.orderInfo.orderValue)} ₽</b>
                                 </li>
