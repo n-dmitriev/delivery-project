@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './UserOrdersPanel.scss'
 import List from '../RenderOrderList/List'
-import TabPanel from '../UI/TabPanel/TabPanel'
+import MiniTabPanel from '../UI/MiniTabPanel/MiniTabPanel'
 
 export default class UserOrdersPanel extends Component {
     state = {
@@ -50,7 +50,7 @@ export default class UserOrdersPanel extends Component {
     render() {
         return (
             <div className={'user-panel'}>
-                <TabPanel
+                <MiniTabPanel
                     clickItemHandler={this.clickItemHandler}
                     activeTab={this.state.activeTab}
                     tabList={[{

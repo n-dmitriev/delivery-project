@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import './ProductForm.scss'
+import MiniTabPanel from '../UI/MiniTabPanel/MiniTabPanel'
+import Selector from '../UI/Selector/Selector'
 
 export default class Form extends Component {
     constructor(props) {
@@ -11,44 +13,8 @@ export default class Form extends Component {
         this.text = React.createRef()
         this.state = {
             orderFormIsValid: true,
-            //Список вопросов для магазина
-            listQuestions: [
-                {
-                    id: 'name',
-                    question: 'Название продукта*',
-                    required: true,
-                    ref: this.inputName,
-                    type: 'input'
-                },
-                {
-                    id: 'quantity',
-                    question: 'Объём/Кол-во*',
-                    required: true,
-                    ref: this.inputQuantity,
-                    type: 'input'
-                },
-                {
-                    id: 'brand',
-                    question: 'Бренд',
-                    required: false,
-                    ref: this.inputBrand,
-                    type: 'input'
-                },
-                {
-                    id: 'price',
-                    question: 'Примерная цена',
-                    required: false,
-                    ref: this.inputPrice,
-                    type: 'input'
-                },
-                {
-                    id: 'description',
-                    question: 'Примечание',
-                    required: false,
-                    ref: this.text,
-                    type: 'textarea'
-                }
-            ]
+            activeTab: 'shorty-tab',
+            activeType: ''
         }
     }
 
@@ -98,46 +64,110 @@ export default class Form extends Component {
         }
     }
 
+    clickItemHandler = async (event) => {
+        await this.setState({
+            activeTab: event.target.id
+        })
+    }
+
+    setType = (activeType) => {
+        this.setState({
+            activeType
+        })
+    }
+
     render() {
         const isEdit = this.props.item !== null
         return (
-            <div className={'product-form'}>
-                {
-                    this.state.listQuestions.map((question) => (
-                        <div key={question.id} className={'product-form__input-field'}>
-                            <label>{question.question}</label>
-                            {
-                                question.type === 'input'
-                                    ? <input type="text"
-                                             ref={question.ref}
-                                             defaultValue={isEdit ? this.props.item[question.id] : null}
-                                             className={
-                                                 question.required === true ? this.state.orderFormIsValid ? ' ' : 'input-error' : ' '
-                                             }/>
-                                    : <textarea
-                                        ref={question.ref} cols="30" rows="5"
-                                        defaultValue={isEdit ? this.props.item[question.id] : null}
-                                        className={
-                                            question.required === true ? this.state.orderFormIsValid ? '' : 'input-error' : ''
-                                        }>
-                                    </textarea>
-                            }
-                        </div>
-                    ))
-                }
-                <small className={this.state.orderFormIsValid ? '' : 'error'}>Поля
-                    помеченные * обязательные для заполнения</small>
+            <div className={'product-form product-form_h'}>
+                <MiniTabPanel
+                    clickItemHandler={this.clickItemHandler}
+                    activeTab={this.state.activeTab}
+                    tabList={[{
+                        title: 'Кратко',
+                        id: 'shorty-tab'
+                    }, {
+                        title: 'Развернуто',
+                        id: 'long-tab'
+                    }]}
+                    type={'invert'}
+                />
 
-                <div className="button-section mb-2">
-                    <button className="main-item-style mr-15" onClick={this.addAndEditOrder}>
-                        {isEdit ? 'Применить' : 'Сохранить'}
-                    </button>
-                    <button className="main-item-style main-item-style_danger" onClick={() => {
-                        this.props.resetActiveItem()
-                        this.props.changeActiveWindow('list')
-                    }}>
-                        {isEdit ? 'Назад' : 'Отменить'}
-                    </button>
+                <div className={'product-form__input-field'}>
+                    <label>Название продукта*</label>
+                    <input type="text"
+                           ref={this.inputName}
+                           defaultValue={isEdit ? this.props.item['name'] : null}
+                           className={this.state.orderFormIsValid ? ' ' : 'input-error'}/>
+                </div>
+                <div className={'product-form__input-field'}>
+                    <label>Объём/Кол-во*</label>
+                    <input type="text"
+                           ref={this.inputQuantity}
+                           defaultValue={isEdit ? this.props.item['quantity'] : null}
+                           className={this.state.orderFormIsValid ? ' ' : 'input-error'}/>
+                </div>
+                <div className={this.state.activeTab === 'shorty-tab' ? '' : 'hide'}>
+                    <Selector
+                        selectList={[
+                            {
+                                id: 'price',
+                                label: 'Цена'
+                            },
+                            {
+                                id: 'balance',
+                                label: 'Цена/Качество'
+                            },
+                            {
+                                id: 'quality',
+                                label: 'Качество'
+                            }
+                        ]}
+                        activeType={this.state.activeType}
+                        setType={this.setType}
+                        placeholder={'Выберите соотношение'}
+                    />
+                </div>
+
+                <div className={this.state.activeTab === 'long-tab' ? '' : 'hide'}>
+                    <div className={'product-form__input-field'}>
+                        <label>Бренд</label>
+                        <input type="text"
+                               ref={this.inputBrand}
+                               defaultValue={isEdit ? this.props.item['brand'] : null}/>
+                    </div>
+                    <div className={'product-form__input-field'}>
+                        <label>Примерная цена</label>
+                        <input type="text"
+                               ref={this.inputPrice}
+                               defaultValue={isEdit ? this.props.item['price'] : null}/>
+                    </div>
+                    <div className={'product-form__input-field'}>
+                        <label>Примечание</label>
+                        <textarea
+                            ref={this.text} cols="30" rows="5"
+                            defaultValue={isEdit ? this.props.item['description'] : null}>
+                                         </textarea>
+                    </div>
+                </div>
+
+
+                <div className={'mt-auto'}>
+                    <small className={this.state.orderFormIsValid ? '' : 'error'}>
+                        Поля помеченные * обязательные для заполнения
+                    </small>
+
+                    <div className="button-section mb-2 mt-3">
+                        <button className="main-item-style mr-15" onClick={this.addAndEditOrder}>
+                            {isEdit ? 'Применить' : 'Сохранить'}
+                        </button>
+                        <button className="main-item-style main-item-style_danger" onClick={() => {
+                            this.props.resetActiveItem()
+                            this.props.changeActiveWindow('list')
+                        }}>
+                            {isEdit ? 'Назад' : 'Отменить'}
+                        </button>
+                    </div>
                 </div>
             </div>
         )

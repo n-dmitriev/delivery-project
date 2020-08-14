@@ -18,10 +18,27 @@
 
   .fa {
     font-size: 37px;
-    color: white!important;
+    color: white !important;
 
     &:hover {
       color: #ccc !important;
+    }
+  }
+
+  &__logo {
+    &_e {
+      position: relative;
+      font-weight: bold;
+      font-size: 38px;
+      font-family: trebuchet ms;
+      font-style: italic;
+      top: 1px;
+    }
+
+    &_w {
+      font-size: 36px;
+      font-family: trebuchet ms;
+      font-weight: bold;
     }
   }
 }

@@ -1,20 +1,17 @@
 import React, {Component} from 'react'
 import './MainPage.scss'
-import InputPosition from '../InputInformation/InputPosition'
 
 export default class MainPage extends Component {
-    componentDidMount() {
+    constructor(props) {
+        super(props)
         document.title = 'EasyWays | Сервис доставки еды по г. Вологда'
     }
+
 
     render() {
         return (
             <div className={'main-page'}>
                 <h1>Главная страница</h1>
-
-                <InputPosition
-                    options={{isEdit: false, type: 'landing'}}
-                />
             </div>
         )
     }

@@ -3,13 +3,22 @@
   flex-direction: column;
   padding: 10px 20px 0 20px;
 
+  &_h {
+    height: 670px;
+  }
+
+  & .tab-panel-invert {
+    position: relative;
+    top: -11px;
+  }
+
   & small {
     margin-bottom: 30px;
   }
 
   &__input-field {
-    display: flex;
     margin-bottom: 30px;
+    display: flex;
 
     & label {
       margin-right: 10px;
@@ -19,10 +28,16 @@
     &_name {
       flex-direction: column;
       height: 550px;
+      display: flex;
 
       & input {
         max-height: 40px !important;
         font-size: 19px;
+
+        &:hover {
+          border: 1px solid black !important;
+          box-shadow: none;
+        }
       }
     }
   }
