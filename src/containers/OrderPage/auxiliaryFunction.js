@@ -45,8 +45,7 @@ export const subscribe = (id, updateOrderInfo) => {
 }
 
 export const editSentOrder = (orderInfo) => {
-    console.log(orderInfo)
-   //dataBase.collection('orders').doc(orderInfo.id).update(orderInfo)
+    dataBase.collection('orders').doc(orderInfo.id).update(orderInfo)
 }
 
 export default class EditCurrentOrder {

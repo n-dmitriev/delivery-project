@@ -41,6 +41,12 @@
       cursor: pointer;
     }
 
+    &__result {
+      padding-right: 5px;
+      overflow-y: scroll;
+      height: 256px;
+    }
+
     &__content {
       display: flex;
       flex-direction: column;

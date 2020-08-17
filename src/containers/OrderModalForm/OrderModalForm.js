@@ -256,10 +256,12 @@ class OrderModalForm extends Component {
         return (
             <>
                 <h2 className={'mb-15'}>Итог</h2>
-                <RenderFullOrderInfo
-                    type={'order'}
-                    orderInfo={orderInfo}
-                />
+                <div className={'order-constructor__result'}>
+                    <RenderFullOrderInfo
+                        type={'order'}
+                        orderInfo={orderInfo}
+                    />
+                </div>
                 <div className="button-section mt-15">
                     <div className="main-item-style mr-2" onClick={() => this.changeActiveWindow('info')}>Назад</div>
                     <div className="main-item-style" onClick={this.sendOrderHandler}>Зазказать</div>
@@ -275,23 +277,23 @@ class OrderModalForm extends Component {
                     this.state.activeWin === 'map'
                         ? this.renderInputAddress()
                         : <div className={'order-form'} key={'order-form'}>
-                                {
-                                    this.state.activeWin === 'info'
-                                        ? this.renderInputInformation()
-                                        : this.state.activeWin === 'result'
-                                            ? this.renderResult()
-                                            : <div className={'order-constructor'}>
-                                                {this.state.activeWin === 'form'
-                                                    ? this.renderProductForm()
-                                                    : this.state.activeWin === 'list'
-                                                        ? this.renderOrderListAndNavigationMenu()
-                                                        : this.state.activeWin === 'name'
-                                                            ? this.renderInputName()
-                                                            : null
-                                                }
-                                            </div>
-                                }
-                            </div>
+                            {
+                                this.state.activeWin === 'info'
+                                    ? this.renderInputInformation()
+                                    : this.state.activeWin === 'result'
+                                    ? this.renderResult()
+                                    : <div className={'order-constructor'}>
+                                        {this.state.activeWin === 'form'
+                                            ? this.renderProductForm()
+                                            : this.state.activeWin === 'list'
+                                                ? this.renderOrderListAndNavigationMenu()
+                                                : this.state.activeWin === 'name'
+                                                    ? this.renderInputName()
+                                                    : null
+                                        }
+                                    </div>
+                            }
+                        </div>
                 }
             </>
         )

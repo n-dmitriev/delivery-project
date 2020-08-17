@@ -47,8 +47,6 @@ export default class InputInformation extends Component {
                     }
                 }
 
-                if (this.props.userInfo !== undefined)
-                    info.id = this.props.userInfo.id
                 this.props.saveContactInformation(info)
             }
         }
@@ -120,7 +118,7 @@ export default class InputInformation extends Component {
                     Поля помеченные * обязательные для заполнения
                 </small>
 
-                <div className={'button-section mt-15'}>
+                <div className={'button-section mt-30'}>
                     {
                         this.props.page === 'order'
                             ? <button className={'main-item-style mr-2'}
