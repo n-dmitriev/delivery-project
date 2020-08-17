@@ -40,26 +40,20 @@ export default class Form extends Component {
                 price: this.inputPrice.current.value,
                 description: this.text.current.value,
                 purchased: false,
-                brand: this.inputBrand.current.value
+                brand: this.inputBrand.current.value,
+                relation: this.state.activeType.label ? this.state.activeType.label : ''
             }
 
             // Если item(текущий редактируемый эл-т) пустой, значит надо добавить в заказ новый продукт и сгенерировать его id
             if (this.props.item === null) {
                 item.id = `note-${Math.random().toString(36).substr(2, 9)}`
-                if (this.props.isEdit)
-                    this.props.addSentOrder(item)
-                else
-                    this.props.addProductToOrder(item, this.props.activeTab)
+                this.props.addProductToOrder(item)
             }
             // Иначе item(текущий редактируемый эл-т) непустой, значит надо редактировать продукт в заказе, id достаём из item-а
             else {
                 item.id = this.props.item.id
-                if (this.props.isEdit)
-                    this.props.editSentOrderItem(item)
-                else
-                    this.props.editOrderItem(item)
+                this.props.editOrderItem(item)
             }
-            this.props.changeActiveWindow('list')
             this.props.resetActiveItem()
         }
     }
@@ -93,7 +87,7 @@ export default class Form extends Component {
                     type={'invert'}
                 />
 
-                <div className={'product-form__input-field'}>
+                <div className={'product-form__input-field mt-2'}>
                     <label>Название продукта*</label>
                     <input type="text"
                            ref={this.inputName}
@@ -161,10 +155,7 @@ export default class Form extends Component {
                         <button className="main-item-style mr-15" onClick={this.addAndEditOrder}>
                             {isEdit ? 'Применить' : 'Сохранить'}
                         </button>
-                        <button className="main-item-style main-item-style_danger" onClick={() => {
-                            this.props.resetActiveItem()
-                            this.props.changeActiveWindow('list')
-                        }}>
+                        <button className="main-item-style main-item-style_danger" onClick={this.props.resetActiveItem}>
                             {isEdit ? 'Назад' : 'Отменить'}
                         </button>
                     </div>

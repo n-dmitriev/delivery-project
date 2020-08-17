@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../LoansAnalyzerFront/.idea/LoansAnalyzer.iml" filepath="$PROJECT_DIR$/../LoansAnalyzerFront/.idea/LoansAnalyzer.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/delivery-project.iml" filepath="$PROJECT_DIR$/.idea/delivery-project.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../tensor-test-task/.idea/tensor-test-task.iml" filepath="$PROJECT_DIR$/../tensor-test-task/.idea/tensor-test-task.iml" />
     </modules>
   </component>
 </project>

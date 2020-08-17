@@ -1,5 +1,1 @@
-export const ADD_PRODUCT = 'ADD_PRODUCT'
-export const EDIT_ORDER = 'EDIT_ORDER'
-export const REMOVE_PRODUCT = 'REMOVE_PRODUCT'
-export const CHANGE_NAME = 'CHANGE_NAME'
-export const DELETE_ORDER_INFO = 'DELETE_ORDER_INFO'
+export const UPDATE_ORDER_INFO = 'UPDATE_ORDER_INFO'

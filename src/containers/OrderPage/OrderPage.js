@@ -5,15 +5,13 @@ import Footer from '../../components/UI/Footer/Footer'
 import EditCurrentOrder, {accessCheck, editSentOrder, subscribe} from './auxiliaryFunction'
 import BigPreloader from '../../components/UI/Preloaders/BigPreloader'
 import {NavLink} from 'react-router-dom'
-import ProgressBar from '../../components/UI/ProgressBar/ProgressBar'
-import Item from '../../components/RenderOrderList/Item'
 import Tooltip from 'react-tooltip-lite'
 import {confirm} from '../../components/UI/Confirm/Confirm'
 import toaster from 'toasted-notes'
 import OrderModalForm from '../OrderModalForm/OrderModalForm'
 import {cancelOrder, reOrder} from '../../store/order/orderActions'
 import {subscribeOrderInfo} from '../../store/courier/courierAction'
-import {getDate} from '../../store/universalFunctions'
+import RenderFullOrderInfo from '../../components/RenderOrderList/RenderFullOrderInfo'
 
 class OrderPage extends Component {
     constructor() {
@@ -72,53 +70,10 @@ class OrderPage extends Component {
     renderOrderInfoPage = (orderInfo) => {
         if (Object.keys(orderInfo).length > 0)
             return (
-                <>
-                    <ul>
-                        <li className={'mb-2'}>{orderInfo.description}</li>
-                        <li className={'mb-15'}>
-                            <ProgressBar status={orderInfo.status}/>
-                        </li>
-                        <li className={'mb-15'}>Откуда: {orderInfo.name}</li>
-                        <li className={'mb-15'}>Адресс доставки: {orderInfo.clientAddress}</li>
-                        <li className={'mb-15'}>Имя: {orderInfo.clientName}</li>
-                        <li className={'mb-15'}>Контактный телефон: {orderInfo.clientNumberPhone}</li>
-                        <li className={'mb-15'}>Время начала заказа: {getDate(orderInfo.startTime)}</li>
-                        {
-                            orderInfo.endTime !== ''
-                                ?
-                                <li className={'mb-15'}>Время окончания заказа: {getDate(orderInfo.endTime)}</li>
-                                : null
-                        }
-                        {
-                            orderInfo.orderValue !== ''
-                                ?
-                                <>
-                                    <li className={'mb-15'}>Стоимость заказа: {orderInfo.orderValue} ₽</li>
-                                    <li className={'mb-15'}>Стоимость доставки: {orderInfo.deliveryValue} ₽</li>
-                                    <li className={'mb-15'}>
-                                        <b>Итого: {parseInt(orderInfo.deliveryValue) + parseInt(orderInfo.orderValue)} ₽</b>
-                                    </li>
-                                </>
-                                : null
-                        }
-                    </ul>
-
-
-                    <h3 className={'mb-3'}>Заказ</h3>
-                    <div className={'mb-4'}>
-                        {
-                            orderInfo.order && orderInfo.order.length > 0
-                                ?
-                                orderInfo.order.map((product) => (
-                                    <div key={product.id}>
-                                        <Item product={product} status={orderInfo.status}/>
-                                    </div>
-                                ))
-                                :
-                                <span>Ваш заказ пуст! :(</span>
-                        }
-                    </div>
-                </>
+                <RenderFullOrderInfo
+                    orderInfo={orderInfo}
+                    type={'user'}
+                />
             )
     }
 
@@ -185,7 +140,7 @@ class OrderPage extends Component {
                 removeProductFromSentOrder={editCurrentOrder.removeProduct}
                 addProductToSentOrder={editCurrentOrder.addProduct}
                 editSentOrderItem={editCurrentOrder.editOrder}
-                changeSentOrderName={editCurrentOrder.editName}
+                mergedSentOderData={editCurrentOrder.mergedData}
             />
         )
     }

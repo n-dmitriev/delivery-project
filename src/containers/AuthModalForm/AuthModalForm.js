@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import './AuthModalForm.scss'
 import {connect} from 'react-redux'
 import {authActions, removeError} from '../../store/authentication/authActions'
-import {sendOrder} from '../../store/order/orderActions'
 import InputInformation from '../../components/InputInformation/InputInformation'
 import AuthShape from '../../components/AuthShape/AuthShape'
 import {setUserInfo} from '../../store/user/userActions'
@@ -30,7 +29,6 @@ class AuthModalForm extends Component {
         if (this.props.isAuth) {
             if (this.props.trySendOrderNotAuth) {
                 this.props.trySendOrder(false)
-                this.props.sendOrder()
             }
             toaster.notify('Вы успешно авторизовались!', {
                 position: 'bottom-right',
@@ -46,8 +44,7 @@ class AuthModalForm extends Component {
         this.closeAuthWin('successRegistration')
         if (this.props.trySendOrderNotAuth) {
             this.props.trySendOrder(false)
-            this.props.sendOrder(info)
-            toaster.notify('Ваши данные сохранены, заказ отправлен!', {
+            toaster.notify('Ваши данные сохранены!', {
                 position: 'bottom-right',
                 duration: 3000
             })
@@ -153,7 +150,6 @@ function mapDispatchToProps(dispatch) {
     return {
         auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
         removeError: () => dispatch(removeError()),
-        sendOrder: (info) => dispatch(sendOrder(info)),
         setUserInfo: (info) => dispatch(setUserInfo(info))
     }
 }

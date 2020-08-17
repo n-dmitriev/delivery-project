@@ -30,9 +30,9 @@ export function authActions(email, password, isLogin, collectionType) {
                         }
                     } else {
                         const info = {
-                            name: '',
-                            numberPhone: '',
-                            address: '',
+                            clientName: '',
+                            clientNumberPhone: '',
+                            clientAddress: '',
                             email: email,
                             role: 'user',
                             id: user.uid

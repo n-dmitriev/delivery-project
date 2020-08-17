@@ -3,9 +3,6 @@ import {
     FETCH_USER_INFO_SUCCESS,
     SET_USER_PASSWORD_ERROR,
     SET_USER_PASSWORD_SUCCESS,
-    ADD_P_TO_SENT_ORDER,
-    REMOVE_P_FROM_SENT_ORDER,
-    EDIT_SENT_ORDER_ITEM,
     FETCH_USER_START,
     SET_USER_AL_SUCCESS,
     SET_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, ADD_USER_FL_SUCCESS, AL_END, FL_END, AL_CHANGE
@@ -19,8 +16,7 @@ const initialState = {
     listOfCurrentOrders: [],
     listOfDeliveredOrders: [],
     alEnd: false,
-    flEnd: false,
-    remove: false // костыль, без него почему-то не обновляется компонент....
+    flEnd: false
 }
 
 
@@ -74,21 +70,6 @@ export default function userReducer(state = initialState, action) {
             return {
                 ...state, error: action.error
             }
-        case ADD_P_TO_SENT_ORDER: {
-            return {
-                ...state, listOfCurrentOrders: action.item
-            }
-        }
-        case REMOVE_P_FROM_SENT_ORDER: {
-            return {
-                ...state, listOfCurrentOrders: action.item, remove: !state.remove
-            }
-        }
-        case EDIT_SENT_ORDER_ITEM: {
-            return {
-                ...state, listOfCurrentOrders: action.item
-            }
-        }
         case SORT_ORDER_LIST : {
             return {
                 ...state, listOfCurrentOrders: action.item

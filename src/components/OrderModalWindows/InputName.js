@@ -6,28 +6,50 @@ export default class InputName extends Component {
     constructor(props) {
         super(props)
         this.nameInput = React.createRef()
-        this.state = {
-            nameIsValid: true,
-            activeType: ''
-        }
+    }
+
+    state = {
+        nameIsValid: true,
+        typeIsValid: true,
+        errorMessage: '',
+        activeType: this.props.type ? {label: this.props.type} : ''
+    }
+
+    checkCorrected = () => {
+        const nameIsValid = this.nameInput.current.value.replace(/\s+/g, '') !== '',
+            typeIsValid = Object.keys(this.state.activeType).length > 0
+        let errorMessage = ''
+
+        if (!nameIsValid)
+            errorMessage = 'Имя не может быть пустым!'
+        if (!typeIsValid)
+            errorMessage += 'Укажите тип заедения!'
+
+
+        this.setState({
+            nameIsValid: nameIsValid,
+            typeIsValid: typeIsValid,
+            errorMessage
+        })
     }
 
     // Редактирование названия ресторана, с валидацией
-    editName = (e) => {
+    editName = async (e) => {
         e.preventDefault()
-        if (this.nameInput.current.value.replace(/\s+/g, '') !== '') {
-            this.props.changeName(this.nameInput.current.value)
-            this.props.changeActiveWindow('list')
-            this.setState({
-                nameIsValid: true
+        await this.checkCorrected()
+        if (this.state.errorMessage.replace(/\s+/g, '') === '') {
+            this.props.changeName({
+                name: this.nameInput.current.value, type: this.state.activeType.label
             })
+            this.props.changeActiveWindow('list')
             toaster.notify('Название сохранено!', {
                 position: 'bottom-right',
                 duration: 3000
             })
         } else {
-            this.setState({
-                restIsValid: false
+            toaster.notify(this.state.errorMessage, {
+                position: 'bottom-right',
+                duration: 3000
             })
         }
     }

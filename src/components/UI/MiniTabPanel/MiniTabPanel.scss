@@ -40,6 +40,7 @@
 .tab-panel-invert {
   border-top: 1px solid gray;
   border-bottom: none;
+  justify-content: flex-start;
 
   .tab-panel__tab {
     border-top: 0;

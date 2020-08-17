@@ -44,14 +44,9 @@ export const subscribe = (id, updateOrderInfo) => {
         })
 }
 
-export const editSentOrder = (orderInfo, userInfo) => {
-    orderInfo.clientName = userInfo.name
-    orderInfo.clientNumberPhone = userInfo.numberPhone
-    orderInfo.clientAddress = userInfo.address
-    orderInfo.coordinate = userInfo.coordinate
-    orderInfo.deliveryValue = userInfo.deliveryValue
-
-    dataBase.collection('orders').doc(orderInfo.id).update(orderInfo)
+export const editSentOrder = (orderInfo) => {
+    console.log(orderInfo)
+   //dataBase.collection('orders').doc(orderInfo.id).update(orderInfo)
 }
 
 export default class EditCurrentOrder {
@@ -85,7 +80,7 @@ export default class EditCurrentOrder {
         this.orderInfo.order[index] = product
     }
 
-    editName = (name) => {
-        this.orderInfo.name = name
+    mergedData = (data) => {
+        Object.assign(this.orderInfo, data)
     }
 }

@@ -30,14 +30,21 @@ export default class InputInformation extends Component {
         if (this.name && this.numberPhone) {
             await this.validateUserInformation()
             if (this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid) {
-                const info = {
-                    name: this.name.current.value,
-                    numberPhone: this.numberPhone,
-                    role: this.props.type
-                }
+                let info
 
-                if (this.props.type === 'courier') {
-                    info.address = this.address.current.value
+                if (this.props.type === 'courier')
+                    info = {
+                        name: this.name.current.value,
+                        numberPhone: this.numberPhone,
+                        role: this.props.type,
+                        address: this.address.current.value
+                    }
+                else {
+                    info = {
+                        clientName: this.name.current.value,
+                        clientNumberPhone: this.numberPhone,
+                        role: this.props.type
+                    }
                 }
 
                 if (this.props.userInfo !== undefined)
@@ -51,7 +58,7 @@ export default class InputInformation extends Component {
         let isEdit = false
         if (this.props.userInfo) {
             isEdit = true
-            this.numberPhone = this.props.userInfo.numberPhone
+            this.numberPhone = this.props.userInfo.clientNumberPhone
         }
         return (
             <>
@@ -63,7 +70,7 @@ export default class InputInformation extends Component {
                     <input className={this.state.nameIsValid === false ? 'input-error mb-30' : 'mb-30'}
                            type="text"
                            ref={this.name}
-                           defaultValue={isEdit ? this.props.userInfo.name : null}
+                           defaultValue={isEdit ? this.props.userInfo.clientName : null}
                            placeholder={'Иван Иванович'}
                     />
                 </div>
@@ -79,7 +86,7 @@ export default class InputInformation extends Component {
                                 (value) => this.numberPhone = value
                             }
                             placeholder='+7 ('
-                            value={isEdit ? this.props.userInfo.numberPhone : null}
+                            value={isEdit ? this.props.userInfo.clientNumberPhone : null}
                         />
                     </div>
                 </div>
@@ -124,7 +131,9 @@ export default class InputInformation extends Component {
                             </button>
                             : null
                     }
-                    <button className={'main-item-style'} onClick={this.saveUI}>Применить</button>
+                    <button className={'main-item-style'} onClick={this.saveUI}>
+                        {this.props.page === 'order' ? 'Далее' : 'Применить'}
+                    </button>
                 </div>
             </>
         )

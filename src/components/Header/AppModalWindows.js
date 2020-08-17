@@ -21,6 +21,7 @@ export default class AppModalWindows extends Component {
                     trySendOrder={this.trySendOrder}
                     isAuth={this.props.isAuth}
                     isOpen={this.props.isOrderModalOpen}
+                    isEdit={false}
                     onOpenAuth={this.props.interactionWithAuthModal}
                     onClose={this.props.interactionWithOrderModal}/>
                 <Auth

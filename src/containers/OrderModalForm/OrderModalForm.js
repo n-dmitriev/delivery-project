@@ -2,9 +2,9 @@ import React, {Component} from 'react'
 import './OrderModalForm.scss'
 import {connect} from 'react-redux'
 import {
-    addProductToOrder, changeName,
+    addProductToOrder,
     deleteOrder,
-    editOrderItem,
+    editOrderItem, mergedData,
     removeProductFromOrder,
     sendOrder
 } from '../../store/order/orderActions'
@@ -16,6 +16,7 @@ import OrderListAndMenu from '../../components/OrderModalWindows/OrderListAndMen
 import InputName from '../../components/OrderModalWindows/InputName'
 import ModalWindow from '../../components/UI/ModalWindow/ModalWindow'
 import InputAddress from '../../components/OrderModalWindows/InputAddress'
+import RenderFullOrderInfo from '../../components/RenderOrderList/RenderFullOrderInfo'
 
 
 //Данный контейнер отвечает за рендеринг модального окна
@@ -23,7 +24,6 @@ class OrderModalForm extends Component {
     state = {
         activeWin: 'list', // Активный комонент, list - список заказов, form - форма ввода, name - имя заведения, info - инф о клиенте
         activeItem: null, // В переменной хранится элемент, который выбран для редактирования
-        infFromMap: {},
         update: false // Костыль
     }
 
@@ -43,7 +43,8 @@ class OrderModalForm extends Component {
     // Обработчик, возвращает activeItem в начальное состояние
     resetActiveItem = () => {
         this.setState({
-            activeItem: null
+            activeItem: null,
+            activeWin: 'list'
         })
     }
 
@@ -57,15 +58,18 @@ class OrderModalForm extends Component {
             })
             :
             this.setState({
-                activeItem: this.props.order[e.target.id]
+                activeItem: this.props.orderInfo.order[e.target.id]
             })
 
         this.changeActiveWindow('form')
     }
 
     // Обработчик, добавляет в ранее отправленный заказ продукт
-    addSentOrder = (item) => {
-        this.props.addProductToSentOrder(item)
+    addProductToOrder = (item) => {
+        if (this.props.isEdit)
+            this.props.addProductToSentOrder(item)
+        else
+            this.props.addProductToOrder(item)
         this.setState({
             update: !this.props.update
         })
@@ -76,8 +80,11 @@ class OrderModalForm extends Component {
     }
 
     // Обработчик, редактирует в ранее отправленном закае продукт
-    editSentOrderItem = (product) => {
-        this.props.editSentOrderItem(product)
+    editOrderItem = (product) => {
+        if (this.props.isEdit)
+            this.props.editSentOrderItem(product)
+        else
+            this.props.editOrderItem(product)
         this.setState({
             update: !this.props.update
         })
@@ -87,15 +94,18 @@ class OrderModalForm extends Component {
         })
     }
 
-    removeProductFromSentOrder = (id) => {
-        this.props.removeProductFromSentOrder(id)
+    removeProduct = (id) => {
+        if (this.props.isEdit)
+            this.props.removeProductFromSentOrder(id)
+        else
+            this.props.removeProductFromOrder(id)
         this.setState({
             update: !this.props.update
         })
     }
 
-    sendOrderHandler = () => {
-        if (this.props.isAuth === true) {
+    tryToOpenMap = () => {
+        if (this.props.isAuth) {
             this.changeActiveWindow('map')
         } else {
             this.props.onClose()
@@ -109,17 +119,26 @@ class OrderModalForm extends Component {
     }
 
     saveContactInformation = (info) => {
-        const fullOrderInfo = Object.assign(this.state.infFromMap, info)
-        if (this.props.isEdit === true) {
-            this.props.editSentOrder(this.props.editOrder, fullOrderInfo)
+        this.changeActiveWindow('result')
+        if (this.props.isEdit) {
+            this.props.mergedSentOderData(info)
+        } else {
+            this.props.mergedData(info)
+            info.clientAddress = this.props.orderInfo.clientAddress
+            info.coordinate = this.props.orderInfo.coordinate
+            this.props.setUserInfo(info)
+        }
+    }
+
+    sendOrderHandler = () => {
+        if (this.props.isEdit) {
+            this.props.editSentOrder(this.props.editOrder)
             toaster.notify('Ваш заказ отредактирован!', {
                 position: 'bottom-right',
                 duration: 3000
             })
         } else {
-            this.props.setUserInfo(fullOrderInfo)
-            this.props.sendOrder(fullOrderInfo)
-
+            this.props.sendOrder(this.props.orderInfo)
             toaster.notify('Ваш заказ отправлен!', {
                 position: 'bottom-right',
                 duration: 3000
@@ -128,14 +147,25 @@ class OrderModalForm extends Component {
         this.close()
     }
 
-    setAddressInfo = (address, coordinate, deliveryValue) => {
-        this.setState({
-            infFromMap: {address, coordinate, deliveryValue}
-        })
+    setAddressInfo = (clientAddress, coordinate, deliveryValue) => {
+        if (this.props.isEdit)
+            this.props.mergedSentOderData({
+                clientAddress, coordinate, deliveryValue
+            })
+        else
+            this.props.mergedData({
+                clientAddress, coordinate, deliveryValue
+            })
+    }
+
+    checkingForCoordinate = () => {
+        return (!this.props.isEdit && this.props.orderInfo.clientAddress && this.props.orderInfo.deliveryValue > 0)
+            || (this.props.isEdit && this.props.editOrder.clientAddress && this.props.editOrder.deliveryValue > 0)
+
     }
 
     nextStep = () => {
-        if (this.state.infFromMap.address?.replace(/\s+/g, '') !== '' && this.state.infFromMap.deliveryValue > 0) {
+        if (this.checkingForCoordinate()) {
             this.changeActiveWindow('info')
         } else
             toaster.notify('Укажите адрес и расчитате стоимость доставки!', {
@@ -148,12 +178,9 @@ class OrderModalForm extends Component {
         return <OrderListAndMenu
             isEdit={this.props.isEdit}
             editProduct={this.editProduct}
-            order={this.props.order}
-            editOrder={this.props.editOrder}
-            name={this.props.name}
-            removeProductFromSentOrder={this.removeProductFromSentOrder}
-            removeProductFromOrder={this.props.removeProductFromOrder}
-            sendOrderHandler={this.sendOrderHandler}
+            orderInfo={this.props.isEdit ? this.props.editOrder : this.props.orderInfo}
+            removeProduct={this.removeProduct}
+            tryToOpenMap={this.tryToOpenMap}
             onClose={this.props.onClose}
             deleteOrder={this.props.deleteOrder}
             changeActiveWindow={this.changeActiveWindow}
@@ -163,38 +190,43 @@ class OrderModalForm extends Component {
     renderProductForm = () => {
         return <Form
             changeActiveWindow={this.changeActiveWindow}
-            addProductToOrder={this.props.addProductToOrder}
-            editOrderItem={this.props.editOrderItem}
-            editSentOrderItem={this.editSentOrderItem}
+            addProductToOrder={this.addProductToOrder}
+            editOrderItem={this.editOrderItem}
             item={this.state.activeItem}
             resetActiveItem={this.resetActiveItem}
             isEdit={this.props.isEdit}
-            addSentOrder={this.addSentOrder}
         />
     }
 
     renderInputName = () => {
-        let name, changeName
+        let name, changeName, type
         if (this.props.isEdit) {
             name = this.props.editOrder.name
-            changeName = this.props.changeSentOrderName
+            type = this.props.editOrder.type
+            changeName = this.props.mergedSentOderData
         } else {
-            name = this.props.name
-            changeName = this.props.changeName
+            name = this.props.orderInfo.name
+            type = this.props.orderInfo.type
+            changeName = this.props.mergedData
         }
         return <InputName
             changeActiveWindow={this.changeActiveWindow}
             name={name}
+            type={type}
             changeName={changeName}
         />
     }
 
     renderInputAddress = () => {
-        const options = {isEdit: this.props.isEdit, type: 'user'}
+        const options = {isEdit: this.checkingForCoordinate(), type: 'user'}
         if (this.props.isEdit) {
             options.address = this.props.editOrder.clientAddress
             options.coordinate = this.props.editOrder.coordinate
             options.deliveryValue = this.props.editOrder.deliveryValue
+        } else {
+            options.address = this.props.orderInfo.clientAddress
+            options.coordinate = this.props.orderInfo.coordinate
+            options.deliveryValue = this.props.orderInfo.deliveryValue
         }
 
         return (
@@ -214,8 +246,25 @@ class OrderModalForm extends Component {
                 userInfo={this.props.userInfo}
                 type={'user'}
                 page={'order'}
-                interactionWithDagger={this.changeActiveWindow}
+                changeActiveWindow={this.changeActiveWindow}
             />
+        )
+    }
+
+    renderResult = () => {
+        const orderInfo = this.props.isEdit ? this.props.editOrder : this.props.orderInfo
+        return (
+            <>
+                <h2 className={'mb-15'}>Итог</h2>
+                <RenderFullOrderInfo
+                    type={'order'}
+                    orderInfo={orderInfo}
+                />
+                <div className="button-section mt-15">
+                    <div className="main-item-style mr-2" onClick={() => this.changeActiveWindow('info')}>Назад</div>
+                    <div className="main-item-style" onClick={this.sendOrderHandler}>Зазказать</div>
+                </div>
+            </>
         )
     }
 
@@ -226,21 +275,23 @@ class OrderModalForm extends Component {
                     this.state.activeWin === 'map'
                         ? this.renderInputAddress()
                         : <div className={'order-form'} key={'order-form'}>
-                            {
-                                this.state.activeWin === 'info'
-                                    ? this.renderInputInformation()
-                                    : <div className={'order-constructor'}>
-                                        {this.state.activeWin === 'form'
-                                            ? this.renderProductForm()
-                                            : this.state.activeWin === 'list'
-                                                ? this.renderOrderListAndNavigationMenu()
-                                                : this.state.activeWin === 'name'
-                                                    ? this.renderInputName()
-                                                    : null
-                                        }
-                                    </div>
-                            }
-                        </div>
+                                {
+                                    this.state.activeWin === 'info'
+                                        ? this.renderInputInformation()
+                                        : this.state.activeWin === 'result'
+                                            ? this.renderResult()
+                                            : <div className={'order-constructor'}>
+                                                {this.state.activeWin === 'form'
+                                                    ? this.renderProductForm()
+                                                    : this.state.activeWin === 'list'
+                                                        ? this.renderOrderListAndNavigationMenu()
+                                                        : this.state.activeWin === 'name'
+                                                            ? this.renderInputName()
+                                                            : null
+                                                }
+                                            </div>
+                                }
+                            </div>
                 }
             </>
         )
@@ -261,8 +312,7 @@ class OrderModalForm extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        order: state.orderReducer.order,
-        name: state.orderReducer.name,
+        orderInfo: state.orderReducer.orderInfo,
         userInfo: state.userReducer.info
     }
 }
@@ -276,8 +326,8 @@ const mapDispatchToProps = (dispatch) => {
         removeProductFromOrder: (id, list) => dispatch(removeProductFromOrder(id, list)),
         sendOrder: (info) => dispatch(sendOrder(info)),
         deleteOrder: () => dispatch(deleteOrder()),
-        changeName: (name) => dispatch(changeName(name)),
-        setUserInfo: (info) => dispatch(setUserInfo(info))
+        setUserInfo: (info) => dispatch(setUserInfo(info)),
+        mergedData: (data) => dispatch(mergedData(data))
     }
 }
 

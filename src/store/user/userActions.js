@@ -36,9 +36,9 @@ export function setUserInfo(info) {
     return async (dispatch, getState) => {
         try {
             await dataBase.collection('users').doc(getState().authReducer.id).update({
-                name: info.name,
-                numberPhone: info.numberPhone,
-                address: info.address,
+                clientName: info.clientName,
+                clientNumberPhone: info.clientNumberPhone,
+                clientAddress: info.clientAddress,
                 coordinate: info.coordinate
             })
             dispatch(dispatchAction(SET_USER_INFO_SUCCESS, null))
