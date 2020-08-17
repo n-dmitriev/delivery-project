@@ -218,16 +218,23 @@ class OrderModalForm extends Component {
     }
 
     renderInputAddress = () => {
-        const options = {isEdit: this.checkingForCoordinate(), type: 'user'}
-        if (this.props.isEdit) {
-            options.address = this.props.editOrder.clientAddress
-            options.coordinate = this.props.editOrder.coordinate
-            options.deliveryValue = this.props.editOrder.deliveryValue
+        const edit = this.checkingForCoordinate()
+        const options = {isEdit: edit, type: 'user'}
+        if (edit) {
+            if (this.props.isEdit) {
+                options.address = this.props.editOrder.clientAddress
+                options.coordinate = this.props.editOrder.coordinate
+                options.deliveryValue = this.props.editOrder.deliveryValue
+            } else {
+                options.address = this.props.orderInfo.clientAddress
+                options.coordinate = this.props.orderInfo.coordinate
+                options.deliveryValue = this.props.orderInfo.deliveryValue
+            }
         } else {
-            options.address = this.props.orderInfo.clientAddress
-            options.coordinate = this.props.orderInfo.coordinate
-            options.deliveryValue = this.props.orderInfo.deliveryValue
+            options.address = this.props.userInfo.clientAddress
+            options.coordinate = this.props.userInfo.coordinate
         }
+
 
         return (
             <InputAddress

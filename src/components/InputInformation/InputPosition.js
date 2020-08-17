@@ -33,7 +33,7 @@ export default class InputPosition extends Component {
     state = {
         edit: false,
         showBorders: true,
-        coordinate: this.props.options?.isEdit ? this.props.options.coordinate : this.referencePoint,
+        coordinate: this.props.options?.coordinate ? this.props.options.coordinate : this.referencePoint,
         zoom: this.props.options?.isEdit ? 17 : 12,
         addressIsValid: this.props.options?.isEdit,
         errorMessage: '',
@@ -202,7 +202,7 @@ export default class InputPosition extends Component {
                         <input
                             placeholder={this.props.options?.type === 'courier' ? 'Укажите ваше местоположение'
                                 : 'Укажите ваш адрес'}
-                            defaultValue={this.props.options?.isEdit ? this.props.options.address : ''}
+                            defaultValue={this.props.options?.address}
                             ref={this.search}
                             type='text'
                             id="suggest"
