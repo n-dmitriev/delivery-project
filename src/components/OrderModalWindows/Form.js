@@ -152,11 +152,11 @@ export default class Form extends Component {
                     </small>
 
                     <div className="button-section mb-2 mt-3">
-                        <button className="main-item-style mr-15" onClick={this.addAndEditOrder}>
-                            {isEdit ? 'Применить' : 'Сохранить'}
-                        </button>
                         <button className="main-item-style main-item-style_danger" onClick={this.props.resetActiveItem}>
                             {isEdit ? 'Назад' : 'Отменить'}
+                        </button>
+                        <button className="main-item-style ml-2" onClick={this.addAndEditOrder}>
+                            {isEdit ? 'Применить' : 'Сохранить'}
                         </button>
                     </div>
                 </div>

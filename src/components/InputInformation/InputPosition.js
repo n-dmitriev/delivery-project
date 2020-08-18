@@ -38,7 +38,7 @@ export default class InputPosition extends Component {
         addressIsValid: this.props.options?.isEdit,
         errorMessage: '',
         deliveryValue: '',
-        address: this.props.options?.isEdit ? this.props.options.address : '',
+        address: this.props.options?.address ? this.props.options.address : '',
         empty: true,
         loading: true,
         priceListIsOpen: this.props.options?.type === 'landing'
@@ -85,44 +85,59 @@ export default class InputPosition extends Component {
             this.setState({empty: true})
     }
 
-    calculateDeliveryValue = async () => {
+    checkingInputData = async () => {
         if (!this.state.addressIsValid) {
-            if (this.state.errorMessage === '')
-                toaster.notify('Сперва укажите адрес!', {
-                    position: 'bottom-right',
-                    duration: 3000
-                })
-            else
+            if (this.state.errorMessage === '') {
+                if (this.state.coordinate !== this.referencePoint && this.state.address !== '') {
+                    const answer = await this.ymaps.geocode(this.state.address)
+                    const address = answer.geoObjects.get(0)
+                    await this.checkingAddressCorrectness(address, this.state.coordinate)
+                    if (this.state.addressIsValid)
+                        await this.calculateDeliveryValue()
+                    else
+                        toaster.notify(this.state.errorMessage, {
+                            position: 'bottom-right',
+                            duration: 3000
+                        })
+                } else
+                    toaster.notify('Сперва укажите адрес!', {
+                        position: 'bottom-right',
+                        duration: 3000
+                    })
+            } else
                 toaster.notify(this.state.errorMessage, {
                     position: 'bottom-right',
                     duration: 3000
                 })
-        } else {
-            // const route = await window.ymaps.route([this.referencePoint, this.state.coordinate])
-            // const distance = Math.ceil(route.getLength())\
-            const distance = Math.ceil(window.ymaps.coordSystem.geo.getDistance(this.state.coordinate, this.referencePoint))
-            let deliveryValue = 0, addressIsValid = true
+        } else
+            await this.calculateDeliveryValue()
+    }
 
-            if (distance < this.greenZone) {
-                deliveryValue = 150
-            } else if (distance <= this.yellowZone) {
-                deliveryValue = 150 + Math.ceil((distance - this.greenZone) / 1000) * this.priceIn1Km
-            } else if (distance <= this.redZone) {
-                deliveryValue = 150 + Math.ceil((this.yellowZone - this.greenZone) / 1000) * this.priceIn1Km
-                    + Math.ceil((distance - this.yellowZone) / 1000) * this.priceIn1Km * 2
-            } else if (distance > this.redZone) {
-                deliveryValue = 'Не доставим :('
-                addressIsValid = false
-            }
+    calculateDeliveryValue = async () => {
+        // const route = await window.ymaps.route([this.referencePoint, this.state.coordinate])
+        // const distance = Math.ceil(route.getLength())\
+        const distance = Math.ceil(window.ymaps.coordSystem.geo.getDistance(this.state.coordinate, this.referencePoint))
+        let deliveryValue = 0, addressIsValid = true
 
-            if (this.props.options?.type === 'user')
-                this.props.setAddressInfo(this.state.address, this.state.coordinate, deliveryValue)
-
-            this.setState({
-                addressIsValid,
-                deliveryValue: addressIsValid ? deliveryValue + ' ₽' : deliveryValue
-            })
+        if (distance < this.greenZone) {
+            deliveryValue = 150
+        } else if (distance <= this.yellowZone) {
+            deliveryValue = 150 + Math.ceil((distance - this.greenZone) / 1000) * this.priceIn1Km
+        } else if (distance <= this.redZone) {
+            deliveryValue = 150 + Math.ceil((this.yellowZone - this.greenZone) / 1000) * this.priceIn1Km
+                + Math.ceil((distance - this.yellowZone) / 1000) * this.priceIn1Km * 2
+        } else if (distance > this.redZone) {
+            deliveryValue = 'Не доставим :('
+            addressIsValid = false
         }
+
+        if (this.props.options?.type === 'user')
+            this.props.setAddressInfo(this.state.address, this.state.coordinate, deliveryValue)
+
+        this.setState({
+            addressIsValid,
+            deliveryValue: addressIsValid ? deliveryValue + ' ₽' : deliveryValue
+        })
     }
 
     checkingAddressCorrectness = (address, coordinate) => {
@@ -144,7 +159,7 @@ export default class InputPosition extends Component {
 
         const thisAddress = addressIsValid ? [address.getLocalities(), address.getThoroughfare(), address.getPremiseNumber()].join(', ') : ''
 
-        if (this.props.options?.type === 'courier') {
+        if (this.props.options?.type === 'courier' || this.props.options?.type === 'account') {
             this.props.setAddressInfo(thisAddress, coordinate, addressIsValid, errorMessage)
         }
 
@@ -210,8 +225,8 @@ export default class InputPosition extends Component {
                         />
                         {
                             !this.state.empty
-                                ? <span onClick={this.clear} className="input-dagger fa-animate">
-                                    &times;
+                                ? <span onClick={this.clear} className="input-dagger">
+                                    <i className="fa fa-times-circle fa-animate" aria-hidden="true"/>
                                 </span>
                                 : null
                         }
@@ -252,25 +267,32 @@ export default class InputPosition extends Component {
                                                 defaultState={{selected: true}}
                                                 onClick={this.showOrHide}
                                             />
-                                            <div
-                                                onClick={this.calculateDeliveryValue}
-                                                className={'input-coordinate__price'}>
-                                                {
-                                                    this.props.options?.isEdit
-                                                        ?
-                                                        this.state.address === this.props.options.address
-                                                            ? <>Стоимость
-                                                                доставки: <b>{this.props.options.deliveryValue}</b></>
-                                                            :
-                                                            this.state.deliveryValue !== ''
-                                                                ? <>Стоимость доставки: <b>{this.state.deliveryValue}</b></>
-                                                                : 'Расчитать стоимость доставки'
-                                                        :
-                                                        this.state.deliveryValue !== ''
-                                                            ? <>Стоимость доставки: <b>{this.state.deliveryValue}</b></>
-                                                            : 'Расчитать стоимость доставки'
-                                                }
-                                            </div>
+                                            {
+                                                this.props.options?.type !== 'account'
+                                                    ?
+                                                    <div
+                                                        onClick={this.checkingInputData}
+                                                        className={'input-coordinate__price'}>
+                                                        {
+                                                            this.props.options?.isEdit
+                                                                ?
+                                                                this.state.address === this.props.options.address
+                                                                    ? <>Стоимость
+                                                                        доставки: <b>{this.props.options.deliveryValue}</b></>
+                                                                    :
+                                                                    this.state.deliveryValue !== ''
+                                                                        ? <>Стоимость
+                                                                            доставки: <b>{this.state.deliveryValue}</b></>
+                                                                        : 'Расчитать стоимость доставки'
+                                                                :
+                                                                this.state.deliveryValue !== ''
+                                                                    ? <>Стоимость
+                                                                        доставки: <b>{this.state.deliveryValue}</b></>
+                                                                    : 'Расчитать стоимость доставки'
+                                                        }
+                                                    </div>
+                                                    : null
+                                            }
                                         </>
                                         : null
                                 }

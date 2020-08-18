@@ -39,10 +39,13 @@
 
   & .input-dagger {
     position: absolute;
-    top: 20px;
+    top: 33px;
     right: 5px;
-    font-size: 30px;
-    border: none;
+
+    & .fa {
+      opacity: 0.7;
+     font-size: 20px;
+    }
   }
 
   &__map {

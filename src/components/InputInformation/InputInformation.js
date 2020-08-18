@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {IMaskInput} from 'react-imask'
+import InputPosition from './InputPosition'
+import toaster from 'toasted-notes'
 
 
 export default class InputInformation extends Component {
@@ -11,7 +13,8 @@ export default class InputInformation extends Component {
         this.state = {
             nameIsValid: true,
             numberPhoneIsValid: true,
-            addressIsValid: true
+            addressIsValid: true,
+            infFromMap: {}
         }
     }
 
@@ -45,11 +48,44 @@ export default class InputInformation extends Component {
                         clientNumberPhone: this.numberPhone,
                         role: this.props.type
                     }
+                    if (this.props.page === 'account' && Object.keys(this.state.infFromMap).length > 0) {
+                        if (this.state.infFromMap?.positionIsValid) {
+                            info.clientAddress = this.state.infFromMap.clientAddress
+                            info.coordinate = this.state.infFromMap.coordinate
+                        } else {
+                            toaster.notify(this.state.infFromMap.errorMessage, {
+                                position: 'bottom-right',
+                                duration: 3000
+                            })
+                            return null
+                        }
+                    }
                 }
-
                 this.props.saveContactInformation(info)
             }
         }
+    }
+
+    setAddressInfo = (clientAddress, coordinate, positionIsValid, errorMessage) => {
+        this.setState({
+            infFromMap: {
+                clientAddress, coordinate, positionIsValid, errorMessage
+            }
+        })
+    }
+
+    renderInputAddress = () => {
+        const options = {
+            isEdit: true, type: 'account', address: this.props.userInfo.clientAddress,
+            coordinate: this.props.userInfo.coordinate
+        }
+
+        return (
+            <InputPosition
+                setAddressInfo={this.setAddressInfo}
+                options={options}
+            />
+        )
     }
 
     render() {
@@ -112,6 +148,11 @@ export default class InputInformation extends Component {
                         : null
                 }
 
+                {
+                    this.props.page === 'account'
+                        ? this.renderInputAddress()
+                        : null
+                }
 
                 <small
                     className={this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid ? 'hide' : 'error'}>

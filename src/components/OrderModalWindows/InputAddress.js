@@ -5,12 +5,12 @@ export default class InputAddress extends Component {
     render() {
         return (
             <div className={'contact-information'}>
-                <h2 className={'mb-2'}>Укажите ваш адрес</h2>
+                <h2 className={'mb-30'}>Укажите ваш адрес</h2>
                 <InputPosition
                     setAddressInfo={this.props.setAddressInfo}
                     options={this.props.options}
                 />
-                <div className="button-section mt-4">
+                <div className="button-section mt-30">
                     <button
                         onClick={() => {
                             this.props.interactionWithDagger('list')

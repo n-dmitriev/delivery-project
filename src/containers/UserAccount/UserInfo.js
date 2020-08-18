@@ -57,7 +57,7 @@ class element extends Component {
                             <div className="col-lg-8 col-md-10 col-sm-12">
                                 <div className="app__main-content">
                                     <h1 className={'mb-30'}>
-                                       Личный кабинет
+                                        Ваш профиль
                                     </h1>
 
                                     <FunctionalButtons
@@ -72,6 +72,7 @@ class element extends Component {
                                             saveContactInformation={this.saveContactInformation}
                                             userInfo={this.props.userInfo}
                                             type={'user'}
+                                            page={'account'}
                                         />
                                     </div>
                                 </div>
