@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import './UserOrdersPanel.scss'
-import List from '../RenderOrderList/List'
 import MiniTabPanel from '../UI/MiniTabPanel/MiniTabPanel'
+import TabList from './Tabs/TabList'
 
 export default class UserOrdersPanel extends Component {
     state = {
@@ -65,14 +65,14 @@ export default class UserOrdersPanel extends Component {
                 <div className={'user-panel__body'}>
                     {
                         this.state.activeTab === 'current-tab'
-                            ? <List
+                            ? <TabList
                                 orderList={this.props.arrOfLists[0].orderList}
                                 type={this.props.arrOfLists[0].type}
                                 increaseNumberElements={this.increaseNumberElements}
                                 loading={this.props.loading}
                             />
                             : this.state.activeTab === 'finish-tab'
-                            ? <List
+                            ? <TabList
                                 orderList={this.props.arrOfLists[1].orderList}
                                 type={this.props.arrOfLists[1].type}
                                 reOrder={this.props.reOrder}

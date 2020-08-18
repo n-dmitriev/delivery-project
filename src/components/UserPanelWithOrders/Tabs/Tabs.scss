@@ -1,0 +1,78 @@
+@import "../../../css/mixins";
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+
+  &__title {
+    display: flex;
+    padding-left: 17px;
+
+    & .target {
+      margin-left: auto;
+    }
+  }
+
+  &__content {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 600px;
+    cursor: pointer;
+  }
+
+  &__item {
+    padding: 20px;
+    border-bottom: 1px solid gray;
+    color: black;
+    position: relative;
+    @include animate();
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 34px;
+      bottom: auto;
+      left: 20px;
+      width: 11px;
+      height: 11px;
+      border-radius: 5px;
+      background: #8d8d8d;
+    }
+
+    &:hover::before,
+    &:focus,
+    {
+      background-color: #006acf;
+    }
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+
+  &__product-list {
+    display: flex;
+    width: 100%;
+
+    &_g {
+      flex-direction: row;
+    }
+
+    &_v {
+      flex-direction: column;
+    }
+
+    & .fa {
+      display: flex;
+      margin-left: auto;
+      margin-right: 10px;
+      font-size: 27px;
+    }
+
+    & li {
+      margin-right: 10px;
+      white-space: nowrap;
+    }
+  }
+}
