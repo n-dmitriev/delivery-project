@@ -10,7 +10,7 @@ import {fetchOrderList, passwordChange} from '../../store/user/userActions'
 import CourierPanel from '../../components/CourierPanelWithOrders/CourierPanel'
 import {
     changeOrderData,
-    interactWithPurchased, subscribeOrderInfo, updateCourierStatus, subscribe, unsubscribeAllOrders
+    interactWithPurchased, subscribeOrderInfo, updateCourierStatus, subscribe, unsubscribeAllOrders, removeLastSub
 } from '../../store/courier/courierAction'
 import FunctionalButtons from '../../components/FunctionalButtons/FunctionalButtons'
 
@@ -19,6 +19,14 @@ class CourierAccount extends Component {
         super()
 
         document.title = 'EasyWays | Личный кабнет курьера'
+    }
+
+    shouldComponentUpdate = (nextProps, nextState, nextContext) => {
+        if(nextProps.isEmpty && nextProps.listOfCurrentOrders.length > 0 && nextProps.unsubscribeList.length > 0
+            && !nextProps.subscribeLoading) {
+            this.props.removeLastSub()
+        }
+        return true
     }
 
     state = {
@@ -93,7 +101,6 @@ class CourierAccount extends Component {
     }
 
     render() {
-        console.log(this.props.unsubscribeList)
         return (
             <div className={'courier'}>
                 <PasswordChangeForm errorPassword={this.props.errorPassword}
@@ -147,7 +154,9 @@ function mapStateToProps(state) {
         listOfDeliveredOrders: state.userReducer.listOfDeliveredOrders,
         clEnd: state.userReducer.alEnd,
         dlEnd: state.userReducer.flEnd,
-        unsubscribeList: state.courierReducer.unsubscribeList
+        unsubscribeList: state.courierReducer.unsubscribeList,
+        isEmpty: state.courierReducer.isEmpty,
+        subscribeLoading: state.courierReducer.loading
     }
 }
 
@@ -162,7 +171,8 @@ function mapDispatchToProps(dispatch) {
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),
         fetchOrderList: (listType, typeId, soughtId, statusList, status) => dispatch(fetchOrderList(listType, typeId, soughtId, statusList, status)),
         updateCourierStatus: (status) => dispatch(updateCourierStatus(status)),
-        unsubscribeAllOrders: () => dispatch(unsubscribeAllOrders())
+        unsubscribeAllOrders: () => dispatch(unsubscribeAllOrders()),
+        removeLastSub: () => dispatch(removeLastSub())
     }
 }
 

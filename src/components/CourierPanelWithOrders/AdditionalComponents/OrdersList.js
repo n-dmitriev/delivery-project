@@ -10,7 +10,7 @@ export default class OrdersList extends Component {
     }
 
     interactionWithList = async () => {
-        if (this.props.positionIsValid) {
+        if (this.props.positionIsValid || (this.props.position !== '' && this.props.coordinate.length > 0)) {
             this.setState({
                 listIsOpen: !this.state.listIsOpen
             })
@@ -51,16 +51,32 @@ export default class OrdersList extends Component {
 
     }
 
+    renderPosition = () => {
+        const options = {type: 'courier'}
+        if (this.props.position !== '' && this.props.coordinate.length > 0) {
+            options.isEdit = true
+            options.coordinate = this.props.coordinate
+            options.address = this.props.position
+        } else {
+            options.isEdit = false
+        }
+        return (
+            <InputPosition
+                setAddressInfo={this.props.changePosition}
+                options={options}
+            />
+        )
+    }
+
     render() {
         return (
             <>
                 <div className="courier-panel__title">
                     <div className={!this.state.listIsOpen ? 'courier-panel__title_input' : 'hide'}>
-                        <InputPosition
-                            setAddressInfo={this.props.changePosition}
-                            options={{isEdit: false, type: 'courier'}}
-                        />
-                        <div className="button-section mt-4">
+                        {
+                            this.renderPosition()
+                        }
+                        <div className="button-section mt-2">
                             <button className="main-item-style" onClick={this.interactionWithList}>
                                 Загрузить список заказов
                             </button>

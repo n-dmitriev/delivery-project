@@ -78,7 +78,7 @@ export default class Header extends Component {
                              onClick={this.interactWithMenu}
                              to={(this.props.path + this.props.id) || '/'}>
                         <i className="fa fa-user-circle-o" aria-hidden="true"/>
-                        <span className={'name'}>Профиль</span>
+                        <span className={'name'}>Личный кабинет</span>
                     </NavLink>
                 )
             } else if (this.props.path === '/user-account/') {

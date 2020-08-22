@@ -1,7 +1,12 @@
 import {dataBase} from '../../firebase/firebase'
 import {dispatchAction, getElementById} from '../universalFunctions'
 import {fetchUserInfo} from '../user/userActions'
-import {SORT_ORDER_LIST, ADD_UNSUBSCRIBE, REMOVE_UNSUBSCRIBE_LIST} from './actionTypes'
+import {
+    SORT_ORDER_LIST,
+    ADD_UNSUBSCRIBE,
+    REMOVE_UNSUBSCRIBE_LIST,
+    REMOVE_LAST_S, START_LOADING, NOT_EMPTY, END_LOADING
+} from './actionTypes'
 import {ADD_USER_AL_SUCCESS, AL_CHANGE, FETCH_USER_START, SET_USER_AL_SUCCESS} from '../user/actionTypes'
 
 // 6 статусов
@@ -185,21 +190,18 @@ export function subscribeOrderInfo(courierId, status) {
 export function subscribe(coordinates = null, skip = 0, ordersList = []) {
     return async (dispatch) => {
         dispatch(dispatchAction(FETCH_USER_START, null))
-
-        console.log(coordinates, skip, ordersList)
-
         const unsubscribe = await dataBase.collection('orders')
             .where('status', '==', 0).orderBy('id')
-            .startAfter(skip).limit(2)
-            .onSnapshot((querySnapshot) => {
-                querySnapshot.docChanges().forEach((change) => {
-                    //console.log(change.type, change.doc.data())
+            .startAfter(skip).limit(1)
+            .onSnapshot(async (querySnapshot) => {
+                dispatch(dispatchAction(START_LOADING, null))
+                let order
+                await querySnapshot.docChanges().forEach((change) => {
                     if (change.type === 'added') {
-                        const order = change.doc.data()
+                        order = change.doc.data()
 
                         if (order.id === undefined)
                             order.id = change.doc.id
-
                         dispatch(dispatchAction(ADD_USER_AL_SUCCESS, order))
                     }
                     if (change.type === 'modified') {
@@ -231,6 +233,11 @@ export function subscribe(coordinates = null, skip = 0, ordersList = []) {
                     if (coordinates !== null)
                         dispatch(sortArrayByDistance(coordinates))
                 })
+                if(order) {
+                    dispatch(dispatchAction(NOT_EMPTY, null))
+                }
+                else
+                    dispatch(dispatchAction(END_LOADING, null))
             })
         dispatch(dispatchAction(ADD_UNSUBSCRIBE, unsubscribe))
     }
@@ -245,5 +252,14 @@ export function unsubscribeAllOrders() {
         })
 
         dispatch(dispatchAction(REMOVE_UNSUBSCRIBE_LIST, null))
+    }
+}
+
+export function removeLastSub() {
+    return (dispatch, getState) => {
+        const unsubscribeList = getState().courierReducer.unsubscribeList
+        const lastSub = unsubscribeList.pop()
+        lastSub()
+        dispatch(dispatchAction(REMOVE_LAST_S, unsubscribeList))
     }
 }

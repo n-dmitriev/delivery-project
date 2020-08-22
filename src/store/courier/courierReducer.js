@@ -1,10 +1,19 @@
-import {ADD_UNSUBSCRIBE, REMOVE_UNSUBSCRIBE_LIST} from './actionTypes'
+import {
+    ADD_UNSUBSCRIBE,
+    END_LOADING,
+    NOT_EMPTY,
+    REMOVE_LAST_S,
+    REMOVE_UNSUBSCRIBE_LIST,
+    START_LOADING
+} from './actionTypes'
 
 const initialState = {
-    unsubscribeList: []
+    unsubscribeList: [],
+    isEmpty: true,
+    loading: false,
 }
 
-export default function userInfReducer(state = initialState, action) {
+export default function courierReducer(state = initialState, action) {
     switch (action.type) {
         case ADD_UNSUBSCRIBE:
             return {
@@ -13,6 +22,22 @@ export default function userInfReducer(state = initialState, action) {
         case REMOVE_UNSUBSCRIBE_LIST:
             return {
                 ...state, unsubscribeList: []
+            }
+        case REMOVE_LAST_S:
+            return {
+                ...state, unsubscribeList: action.item
+            }
+        case START_LOADING:
+            return {
+                ...state, isEmpty: true, loading: true
+            }
+        case NOT_EMPTY:
+            return {
+                ...state, isEmpty: false, loading: false
+            }
+        case END_LOADING:
+            return {
+                ...state, loading: false
             }
         default:
             return state

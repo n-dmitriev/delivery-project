@@ -5,6 +5,17 @@
   flex-direction: column;
   @include border();
   @include shadow();
+  min-width: 550px;
+  height: 556px;
+
+  &__content {
+     overflow-y: scroll;
+     overflow-x: hidden;
+
+     & .list__content {
+       max-height: 510px !important;
+     }
+   }
 
   &__title {
     & .main-item-style {
@@ -12,9 +23,15 @@
     }
 
     &_input {
-        padding: 10px 10px;
-        display: flex;
-        flex-direction: column;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      top: 35px;
+
+      & .main-item-style {
+        margin: auto;
+        width: 95%;
+      }
     }
 
     &_edit {
@@ -52,7 +69,7 @@
         font-size: 20px !important;
       }
 
-      &:hover,&:active {
+      &:hover, &:active {
         background-color: gray;
         color: white;
       }
@@ -136,13 +153,13 @@
         }
       }
 
-      & .fa{
+      & .fa {
         font-size: 23px;
         width: 30px;
         height: 40px;
       }
 
-      & .courier-panel__item{
+      & .courier-panel__item {
         margin-bottom: 10px;
         padding: 10px;
         border: 1px solid lightgray;
@@ -150,7 +167,7 @@
         width: 100%;
         @include animate;
 
-        &:hover{
+        &:hover {
           @include animate-hover(1.02)
         }
       }
@@ -173,13 +190,6 @@
         }
       }
     }
-  }
-
-  &__content {
-    height: 455px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding: 10px;
   }
 
   &__input {
@@ -209,6 +219,7 @@
         order: 2;
         font-size: 16px !important;
       }
+
       & span {
         order: 1;
         font-size: 14px !important;
@@ -217,7 +228,7 @@
   }
 }
 
-@media (max-width: 500px) and (min-height: 700px){
+@media (max-width: 500px) and (min-height: 700px) {
   .courier-panel {
     width: 43vmax !important;
   }
