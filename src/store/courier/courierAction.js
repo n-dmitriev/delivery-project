@@ -101,23 +101,12 @@ export function updateCourierStatus(status) {
     }
 }
 
-export function calculateThePrice(id, price, distance) {
-    return async (dispatch) => {
-        try {
-            const priceFor1Km = 20
-            const minPrice = 150
-
-            let deliveryValue = Math.round(distance * priceFor1Km)
-
-            if (deliveryValue < minPrice)
-                deliveryValue = minPrice
-
-            await dataBase.collection('orders').doc(id)
-                .update({orderValue: price, deliveryValue: deliveryValue})
-            dispatch(fetchUserInfo())
-        } catch (e) {
-            console.log(e)
-        }
+export async function setOrderValue(id, orderValue) {
+    try {
+        await dataBase.collection('orders').doc(id)
+            .update({orderValue})
+    } catch (e) {
+        console.log(e)
     }
 }
 
@@ -187,6 +176,7 @@ export function subscribeOrderInfo(courierId, status) {
     }
 }
 
+// Подписка на списокк заказов
 export function subscribe(coordinates = null, skip = 0, ordersList = []) {
     return async (dispatch) => {
         dispatch(dispatchAction(FETCH_USER_START, null))
@@ -233,10 +223,9 @@ export function subscribe(coordinates = null, skip = 0, ordersList = []) {
                     if (coordinates !== null)
                         dispatch(sortArrayByDistance(coordinates))
                 })
-                if(order) {
+                if (order) {
                     dispatch(dispatchAction(NOT_EMPTY, null))
-                }
-                else
+                } else
                     dispatch(dispatchAction(END_LOADING, null))
             })
         dispatch(dispatchAction(ADD_UNSUBSCRIBE, unsubscribe))

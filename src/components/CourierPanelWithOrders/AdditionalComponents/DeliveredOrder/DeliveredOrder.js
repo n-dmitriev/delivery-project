@@ -16,11 +16,10 @@ export default class DeliveredOrder extends Component {
         this.setState({
             orderIsOpen: !this.state.orderIsOpen
         })
-        //this.props.subscribeOrderInfo(this.props.ordersList[0].id)
     }
 
     finishBuy = () => {
-        const orderList = this.props.ordersList[0].order
+        const orderList = this.props.orderInfo.order
         let counter = 0
         for (let item of orderList) {
             if (item.purchased)
@@ -40,7 +39,7 @@ export default class DeliveredOrder extends Component {
                     this.setState({
                         quantityIsValid: true
                     })
-                    this.props.changeOrderData(2, this.props.ordersList[0])
+                    this.props.changeOrderData(2, this.props.orderInfo)
                     toaster.notify('Заказ переведён в состояние "доставка"!', {
                         position: 'bottom-right',
                         duration: 3000
@@ -63,7 +62,7 @@ export default class DeliveredOrder extends Component {
     }
 
     render() {
-        const deliveredOrder = this.props.ordersList[0]
+        const deliveredOrder = this.props.orderInfo
         if (deliveredOrder)
             return (
                 <div className={'courier-panel__delivered'}>
@@ -112,15 +111,15 @@ export default class DeliveredOrder extends Component {
                         <small className={this.state.quantityIsValid ? 'hide' : 'error mb-15'}>
                             Преобретите как минимум 60% товаров или откажитесь от заказа!
                         </small>
-                        <div className="button-section button-section_bottom">
-                            <button className="main-item-style mr-15" onClick={this.finishBuy}>
-                                Закончить закупку
-                            </button>
-                            <button className="main-item-style main-item-style_danger"
-                                    onClick={() => this.cancel(deliveredOrder)}>
-                                Отказаться
-                            </button>
-                        </div>
+                    </div>
+                    <div className="button-section button-section_bottom">
+                        <button className="main-item-style mr-15" onClick={this.finishBuy}>
+                            Закончить закупку
+                        </button>
+                        <button className="main-item-style main-item-style_danger"
+                                onClick={() => this.cancel(deliveredOrder)}>
+                            Отказаться
+                        </button>
                     </div>
                 </div>
             )

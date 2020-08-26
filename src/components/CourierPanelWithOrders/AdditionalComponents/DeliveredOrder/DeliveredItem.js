@@ -2,12 +2,12 @@ import React, {Component} from 'react'
 
 export default class DeliveredItem extends Component {
     state = {
-        itemListIsOpen: false,
+        itemListIsOpen: false
     }
 
     openListHandler = () => {
         this.setState({
-            itemListIsOpen: !this.state.itemListIsOpen,
+            itemListIsOpen: !this.state.itemListIsOpen
         })
     }
 
@@ -32,11 +32,14 @@ export default class DeliveredItem extends Component {
                         <ul>
                             <li>{product.name}</li>
                             {
-                                product.brand !== undefined ? product.brand : ''
+                                product.brand !== '' ? product.brand : ''
                             }
                             <li>{product.quantity}</li>
                             {
                                 product.price !== '' ? <li>{product.price}</li> : ''
+                            }
+                            {
+                                product.relation !== '' ? product.relation : ''
                             }
                             {
                                 product.description !== '' ? <li>{product.description}</li> : ''

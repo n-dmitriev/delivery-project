@@ -6,31 +6,45 @@
   @include border();
   @include shadow();
   min-width: 550px;
-  height: 556px;
+  min-height: 500px;
 
   &__content {
      overflow-y: scroll;
      overflow-x: hidden;
+      margin: auto 0;
 
      & .list__content {
-       max-height: 510px !important;
+       max-height: 505px !important;
      }
    }
 
   &__title {
+    &_p {
+      padding: 10px;
+    }
+
     & .main-item-style {
       font-size: 16px;
     }
 
-    &_input {
+    &-input {
+      height: 100%;
       display: flex;
       flex-direction: column;
-      position: relative;
-      top: 35px;
+      padding: 10px;
+
+      & .input-coordinate {
+        margin-top: 10px;
+      }
+
+      & .button-section {
+        margin: 20px auto;
+        width: 100%;
+      }
 
       & .main-item-style {
+        width: 100%;
         margin: auto;
-        width: 95%;
       }
     }
 
@@ -70,8 +84,12 @@
       }
 
       &:hover, &:active {
-        background-color: gray;
+        background-color: #212529;
         color: white;
+
+        .fa {
+          color: white !important;
+        }
       }
     }
   }
@@ -87,6 +105,9 @@
   }
 
   &__delivered {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
 
     &-title {
       display: flex;
@@ -135,18 +156,13 @@
     }
 
     &-content {
-      height: 500px;
       display: flex;
       flex-direction: column;
       padding: 5px;
 
       &_scroll {
-        display: flex;
-        flex-direction: column;
-        overflow-y: scroll;
-        overflow-x: hidden;
-        height: 100%;
-        padding: 10px;
+        padding: 0 10px;
+        height: 344px;
 
         & small {
           margin-top: auto;
@@ -169,24 +185,6 @@
 
         &:hover {
           @include animate-hover(1.02)
-        }
-      }
-
-
-      .courier-panel__delivered-info {
-        & li {
-          position: relative;
-          padding-left: 30px;
-
-          &:before {
-            content: '';
-            position: absolute;
-            top: 11px;
-            left: 10px;
-            width: 10px;
-            height: 2px;
-            background-color: #5CB85C;
-          }
         }
       }
     }

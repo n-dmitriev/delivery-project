@@ -13,22 +13,22 @@ export default class DeliveryPanel extends Component {
         this.map = null
         this.ymaps = null
         this.route = null
-        this.state = {
-            value: '',
-            valueIsValid: true,
-            coordinateCourier: '',
-            checkIsValid: true,
-            edit: false,
-            listIsOpen: false,
-            infFromMap: {}
-        }
+    }
+
+    state = {
+        valueIsValid: true,
+        coordinateCourier: '',
+        checkIsValid: true,
+        isEdit: false,
+        listIsOpen: false,
+        infFromMap: {}
     }
 
 
     handleApiAvaliable = ymaps => {
         this.ymaps = ymaps
         ymaps
-            .route([this.props.coordinate, this.props.ordersList[0].coordinate])
+            .route([this.props.coordinate, this.props.orderInfo.coordinate])
             .then(route => {
                 this.map.geoObjects.add(route)
             })
@@ -36,12 +36,15 @@ export default class DeliveryPanel extends Component {
 
 
     nextStep = async () => {
+        const orderValue = parseInt(this.orderValue.current.value)
         await this.setState({
-            valueIsValid: parseInt(this.orderValue.current.value),
+            valueIsValid: orderValue > 0,
             checkIsValid: this.check.current.checked
         })
-        if (this.props.positionIsValid && this.state.valueIsValid && this.state.checkIsValid) {
-            this.editInfo()
+        if ((this.props.positionIsValid || this.props.errorMessage === '') && this.state.valueIsValid && this.state.checkIsValid) {
+            this.props.setOrderValue(this.props.orderInfo.id, orderValue)
+            if (this.state.isEdit)
+                this.editInfoIsOpen()
         } else toaster.notify(this.props.errorMessage, {
             position: 'bottom-right',
             duration: 3000
@@ -52,7 +55,7 @@ export default class DeliveryPanel extends Component {
         confirm(
             'завершить заказ', async () => {
                 this.props.unsubscribeAllOrders()
-                this.props.changeOrderData(3, this.props.ordersList[0])
+                this.props.changeOrderData(3, this.props.orderInfo)
                 toaster.notify('Заказ завершён!', {
                     position: 'bottom-right',
                     duration: 3000
@@ -64,7 +67,7 @@ export default class DeliveryPanel extends Component {
     cancelOrder = () => {
         confirm(
             'клиент отказался', async () => {
-                this.props.changeOrderData(4, this.props.ordersList[0])
+                this.props.changeOrderData(4, this.props.orderInfo)
                 toaster.notify('Заказ отменён!', {
                     position: 'bottom-right',
                     duration: 3000
@@ -73,9 +76,9 @@ export default class DeliveryPanel extends Component {
         )
     }
 
-    editInfo = () => {
+    editInfoIsOpen = () => {
         this.setState({
-            edit: !this.state.edit
+            isEdit: !this.state.isEdit
         })
     }
 
@@ -86,61 +89,66 @@ export default class DeliveryPanel extends Component {
     }
 
     render() {
-        const deliveredOrder = this.props.ordersList[0]
-        if (deliveredOrder)
+        const orderInfo = this.props.orderInfo
+        if (orderInfo) {
             return (
                 <>
-                    <div className="courier-panel__title">
-                        <div
-                            className={deliveredOrder.orderValue === '' || this.state.edit ? 'courier-panel__title_input' : 'hide'}>
-                            <InputPosition
-                                setAddressInfo={this.props.changePosition}
-                                options={{isEdit: false, type: 'courier'}}
-                            />
+                    <div
+                        className={this.state.isEdit || orderInfo.orderValue === ''
+                            ? 'courier-panel__title courier-panel__title_p' : 'hide'}>
+                        <InputPosition
+                            setAddressInfo={this.props.changePosition}
+                            options={{
+                                isEdit: true,
+                                type: 'courier',
+                                coordinate: this.props.coordinate,
+                                address: this.props.position
+                            }}
+                        />
 
-                            <div className="form-group">
-                                <input placeholder={'Укажите стоимость закупки'}
-                                       defaultValue={this.props.ordersList[0].orderValue}
-                                       className={!this.state.valueIsValid ? 'input-error' : ''}
-                                       ref={this.orderValue}
-                                       type='number'
-                                       id="dynamic-label-input-1"
-                                />
-                                <label className={'label'} htmlFor="dynamic-label-input-1">Стоимость закупки</label>
-                                <small
-                                    className={this.state.valueIsValid ? 'hide' : 'error'}>
-                                    Цена не может быть пустой!
-                                </small>
-                            </div>
-                            <div className={'checkbox mb-15'}>
-                                <input
-                                    className={this.state.checkIsValid ? '' : 'checkbox_input_error'}
-                                    ref={this.check}
-                                    type="checkbox" name="todo"/>
-                                <label className={'checkbox__label_mini'} htmlFor="todo"
-                                       data-content={'Сфотографируйте чек и отправте его вашему куратору'}>
-                                    Сфотографируйте чек и отправте его вашему куратору
-                                </label>
-                                <br/>
-                                <small
-                                    className={this.state.checkIsValid ? 'hide' : 'error'}>
-                                    Это обязательно!
-                                </small>
-                            </div>
-                            <div className="button-section">
-                                <button className="main-item-style" onClick={this.nextStep}>
-                                    Применить
-                                </button>
-                            </div>
+                        <div className="form-group mt-1">
+                            <input placeholder={'Укажите стоимость закупки'}
+                                   defaultValue={orderInfo.orderValue}
+                                   className={!this.state.valueIsValid ? 'input-error' : ''}
+                                   ref={this.orderValue}
+                                   type='number'
+                                   id="dynamic-label-input-1"
+                            />
+                            <label className={'label'} htmlFor="dynamic-label-input-1">Стоимость закупки</label>
+                            <small
+                                className={this.state.valueIsValid ? 'hide' : 'error'}>
+                                Цена не может быть пустой!
+                            </small>
+                        </div>
+                        <div className={'checkbox mb-15'}>
+                            <input
+                                className={this.state.checkIsValid ? '' : 'checkbox_input_error'}
+                                defaultChecked={orderInfo.orderValue !== '' ? 'checked' : ''}
+                                ref={this.check}
+                                type="checkbox" name="todo"/>
+                            <label className={'checkbox__label_mini'} htmlFor="todo"
+                                   data-content={'Сфотографируйте чек и отправте его вашему куратору'}>
+                                Сфотографируйте чек и отправте его вашему куратору
+                            </label>
+                            <br/>
+                            <small
+                                className={this.state.checkIsValid ? 'hide' : 'error'}>
+                                Это обязательно!
+                            </small>
+                        </div>
+                        <div className="button-section">
+                            <button className="main-item-style" onClick={this.nextStep}>
+                                Применить
+                            </button>
                         </div>
                     </div>
 
                     <div
-                        className={deliveredOrder.orderValue && !this.state.edit ? 'courier-panel__delivered' : 'hide'}>
+                        className={!this.state.isEdit && orderInfo.orderValue !== '' ? 'courier-panel__delivered' : 'hide'}>
                         <div
-                            onClick={this.editInfo}
+                            onClick={this.editInfoIsOpen}
                             className={'courier-panel__delivered-title mb-15'}>
-                            <h5>Доставляемый заказ {deliveredOrder.id}</h5>
+                            <h5>Доставляемый заказ {orderInfo.id}</h5>
                             <span>
                                 <i className="fa fa-arrow-left  fa-animate" aria-hidden="true"/>
                                 Редактировать
@@ -151,14 +159,22 @@ export default class DeliveryPanel extends Component {
                                 <span className={'courier-panel__list-item mb-15'}
                                       onClick={this.interactionWithList}>
                                     {this.state.listIsOpen
-                                        ? 'К карте'
-                                        : 'К информации'}
-                                    <i className="fa fa-arrow-right fa-animate" aria-hidden="true"/>
+                                        ?
+                                        <>
+                                            К карте
+                                            <i className="fa fa-arrow-left fa-animate" aria-hidden="true"/>
+                                        </>
+                                        :
+                                        <>
+                                            К информации
+                                            <i className="fa fa-arrow-right fa-animate" aria-hidden="true"/>
+                                        </>
+                                    }
                                 </span>
 
                                 <div className={'courier-panel__body'}>
                                     <div className={this.state.listIsOpen ? '' : 'hide'}>
-                                        {this.props.renderOrderInfo(deliveredOrder)}
+                                        {this.props.renderOrderInfo(orderInfo)}
                                     </div>
                                     <div className={this.state.listIsOpen ? 'hide' : 'courier-panel__map'}>
                                         <YMaps query={{apikey: '87bbec27-5093-4a9c-a244-9bedba71ad27'}}>
@@ -177,7 +193,7 @@ export default class DeliveryPanel extends Component {
                             </div>
 
 
-                            <div className="button-section button-section_bottom">
+                            <div className="button-section mt-4">
                                 <button className="main-item-style mr-15" onClick={this.finishOrder}>
                                     Доставлен
                                 </button>
@@ -189,7 +205,7 @@ export default class DeliveryPanel extends Component {
                     </div>
                 </>
             )
-        else
+        } else
             return null
     }
 }

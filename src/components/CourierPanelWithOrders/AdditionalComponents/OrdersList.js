@@ -9,10 +9,10 @@ export default class OrdersList extends Component {
         listIsOpen: false
     }
 
-    interactionWithList = async () => {
+    openOrderList = async () => {
         if (this.props.positionIsValid || (this.props.position !== '' && this.props.coordinate.length > 0)) {
             this.setState({
-                listIsOpen: !this.state.listIsOpen
+                listIsOpen: true
             })
             this.props.subscribeOrders(this.props.coordinate, 0, this.props.ordersList)
         } else {
@@ -24,6 +24,14 @@ export default class OrdersList extends Component {
                 duration: 3000
             })
         }
+    }
+
+    closeOrderList = () => {
+        this.setState({
+            listIsOpen: false
+        })
+        this.props.unsubscribeAllOrders()
+        this.props.resetList()
     }
 
     changeOrderData = async (status, data) => {
@@ -72,22 +80,23 @@ export default class OrdersList extends Component {
         return (
             <>
                 <div className="courier-panel__title">
-                    <div className={!this.state.listIsOpen ? 'courier-panel__title_input' : 'hide'}>
-                        {
-                            this.renderPosition()
-                        }
-                        <div className="button-section mt-2">
-                            <button className="main-item-style" onClick={this.interactionWithList}>
-                                Загрузить список заказов
-                            </button>
-                        </div>
-                    </div>
-
                     <div className={!this.state.listIsOpen ? 'hide' : 'courier-panel__title_edit'}
-                         onClick={this.interactionWithList}
+                         onClick={this.closeOrderList}
                     >
                         <span>{this.props.position}</span>
                         <i className="fa fa-pencil-square-o fa-animate" aria-hidden="true"/>
+                    </div>
+                </div>
+
+                <div
+                    className={!this.state.listIsOpen ? 'courier-panel__title-input' : 'hide'}>
+                    {
+                        this.renderPosition()
+                    }
+                    <div className="button-section">
+                        <button className="main-item-style" onClick={this.openOrderList}>
+                            Загрузить список заказов
+                        </button>
                     </div>
                 </div>
 

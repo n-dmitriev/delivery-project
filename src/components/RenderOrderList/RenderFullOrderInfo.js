@@ -7,7 +7,7 @@ const RenderFullOrderInfo = props => {
     const orderInfo = props.orderInfo
     return (
         <div>
-            <ul>
+            <ul className={'delivered-info'}>
                 {
                     props.type === 'user'
                         ? <>
