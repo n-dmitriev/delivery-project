@@ -35,7 +35,8 @@ export function authActions(email, password, isLogin, collectionType) {
                             clientAddress: '',
                             email: email,
                             role: 'user',
-                            id: user.uid
+                            id: user.uid,
+                            deliveryValue: ''
                         }
                         await collection.doc(user.uid).set(info)
                         dispatch(fetchUserInfo())

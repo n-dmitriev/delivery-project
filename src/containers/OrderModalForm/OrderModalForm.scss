@@ -2,8 +2,8 @@
 
 .order-modal-form {
   & .modal-close {
-     top: 0 !important;
-   }
+    top: 0 !important;
+  }
 }
 
 .order-form {
@@ -43,8 +43,11 @@
 
     &__result {
       padding-right: 5px;
-      overflow-y: scroll;
-      height: 256px;
+
+      .items-list {
+        max-height: 150px;
+        overflow-y: scroll;
+      }
     }
 
     &__content {

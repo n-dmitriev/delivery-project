@@ -13,7 +13,7 @@ export default class InputAddress extends Component {
                 <div className="button-section mt-30">
                     <button
                         onClick={() => {
-                            this.props.interactionWithDagger('list')
+                            this.props.changeActiveWindow('list')
                         }}
                         className="main-item-style mr-3">
                         Назад

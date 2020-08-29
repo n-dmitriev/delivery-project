@@ -54,7 +54,7 @@ export default class OrderListAndMenu extends Component {
                                 this.props.isEdit ? this.props.onClose() : this.props.deleteOrder()
                             }>Отменить
                             </button>
-                            <button className="main-item-style" onClick={this.props.tryToOpenMap}>
+                            <button className="main-item-style" onClick={this.props.tryToOpenContacts}>
                                 Далее
                             </button>
                             <span

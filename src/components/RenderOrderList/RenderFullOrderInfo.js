@@ -54,7 +54,7 @@ const RenderFullOrderInfo = props => {
                     ?
                     <>
                         <h4 className={'mb-3'}>Заказ</h4>
-                        <div className={'mb-4'}>
+                        <div className={'mb-4 items-list'}>
                             {
                                 orderInfo.order && orderInfo.order.length > 0
                                     ?
