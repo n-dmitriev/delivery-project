@@ -38,8 +38,8 @@ class App extends Component {
                 <div className="app__container">
                     <Switch>
                         <Route path='/' component={MainPage} exact/>
-                        <Route path='/user-account/:number/user-orders' component={UserOrders}/>
-                        <Route path='/user-account/:number/user-info' component={UserInfo}/>
+                        <Route path='/user-orders/:number' component={UserOrders}/>
+                        <Route path='/user-info/:number' component={UserInfo}/>
                         <Route path='/courier-account/:number' component={CourierAccount}/>
                         <Route path='/admin' component={Admin}/>
                         <Route path='/order/:number' component={OrderPage}/>

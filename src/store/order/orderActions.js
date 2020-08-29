@@ -57,7 +57,9 @@ export function cancelOrder(id) {
             const answer = await userOrders.where('orderId', '==', id).get()
             answer.forEach((el) => {
                 const courierId = el.data().courierId
-                dataBase.collection('couriers').doc(courierId).update({courierStatus: 0})
+                if (courierId.replace(/\s+/g, '') !== '') {
+                    dataBase.collection('couriers').doc(courierId).update({courierStatus: 0})
+                }
                 userOrders.doc(el.id).update({
                     status: 4
                 })
@@ -89,7 +91,6 @@ export function reOrder(orderInfo) {
             startTime: `${new Date()}`,
             endTime: '',
             orderValue: '',
-            deliveryValue: '',
             description: 'Курьер ещё не принял заказ',
             name: orderInfo.name,
             order: order,
@@ -97,7 +98,8 @@ export function reOrder(orderInfo) {
             status: 0,
             clientAddress: orderInfo.clientAddress,
             clientName: orderInfo.clientName,
-            clientNumberPhone: orderInfo.clientNumberPhone
+            clientNumberPhone: orderInfo.clientNumberPhone,
+            deliveryValue: orderInfo.deliveryValue
         }
 
         const orders = dataBase.collection('orders')

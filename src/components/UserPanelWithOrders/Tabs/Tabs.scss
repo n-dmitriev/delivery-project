@@ -19,11 +19,12 @@
     overflow-x: hidden;
     max-height: 600px;
     cursor: pointer;
+    padding: 5px;
+    background-color: white;
   }
 
   &__item {
     padding: 20px;
-    border-bottom: 1px solid gray;
     color: black;
     position: relative;
     @include animate();
@@ -37,13 +38,31 @@
       width: 11px;
       height: 11px;
       border-radius: 5px;
-      background: #8d8d8d;
+      background: #777777;
     }
 
-    &:hover::before,
-    &:focus,
+    &_red:hover::before,
+    &_red:focus,
     {
-      background-color: #006acf;
+      background: rgb(226, 63, 51);
+    }
+
+    &_blue:hover::before,
+    &_blue:focus,
+    {
+      background: rgb(19, 140, 228);
+    }
+
+    &_green:hover::before,
+    &_green:focus,
+    {
+      background: rgb(4, 158, 81);
+    }
+
+    &_yellow:hover::before,
+    &_yellow:focus,
+    {
+      background: #fbc630;
     }
 
     &:hover {

@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import Footer from '../../components/UI/Footer/Footer'
 import EditCurrentOrder, {accessCheck, editSentOrder, subscribe} from './auxiliaryFunction'
 import BigPreloader from '../../components/UI/Preloaders/BigPreloader'
-import {NavLink} from 'react-router-dom'
+import {Redirect, NavLink} from 'react-router-dom'
 import Tooltip from 'react-tooltip-lite'
 import {confirm} from '../../components/UI/Confirm/Confirm'
 import toaster from 'toasted-notes'
@@ -25,7 +25,8 @@ class OrderPage extends Component {
         orderInfo: {},
         isOrderModalOpen: false,
         unsubscribe: () => {
-        }
+        },
+        redirect: false
     }
 
     componentDidMount = async () => {
@@ -59,12 +60,28 @@ class OrderPage extends Component {
     cancelOrder = () => {
         confirm('отменить заказ',
             () => {
-                this.props.cancelOrder(this.props.orderInfo.id)
+                this.props.cancelOrder(this.state.orderInfo.id)
                 toaster.notify('Заказ отменён!', {
                     position: 'bottom-right',
                     duration: 3000
                 })
             })
+    }
+
+    reOrder = (e) => {
+        e.preventDefault()
+        confirm(
+            'возобновить заказ', async () => {
+                await this.props.reOrder(this.state.orderInfo)
+                this.setState({
+                    redirect: true
+                })
+                toaster.notify('Заказ возобновлён!', {
+                    position: 'bottom-right',
+                    duration: 3000
+                })
+            }
+        )
     }
 
     renderOrderInfoPage = (orderInfo) => {
@@ -161,9 +178,26 @@ class OrderPage extends Component {
                             <div className="col-lg-2 col-md-1 col-sm-0"/>
                             <div className="col-lg-8 col-md-10 col-sm-12">
                                 <div className="app__main-content">
-                                    <h2 className={'mb-30'}>
-                                        Информация о заказе {orderInfo.id}
-                                    </h2>
+                                    <div className="tab__title">
+                                        <h3 className={'mb-30'}>
+                                            Информация о заказе {orderInfo.id}
+                                        </h3>
+                                        {
+                                            orderInfo.status >= 3
+                                                ?
+                                                <Tooltip
+                                                    content={'Возобновить заказ'}
+                                                    direction="up"
+                                                    tagName="span"
+                                                    className="target"
+                                                    useDefaultStyles
+                                                >
+                                                    <i className="fa fa-refresh fa-animate" aria-hidden="true"
+                                                       onClick={this.reOrder}/>
+                                                </Tooltip>
+                                                : null
+                                        }
+                                    </div>
                                     {
                                         this.renderButtonSection(orderInfo)
                                     }
@@ -179,6 +213,11 @@ class OrderPage extends Component {
                             <div className="col-lg-2 col-md-1 col-sm-0"/>
                         </div>
                     </div>
+                    {
+                        this.state.redirect
+                            ? <Redirect to={`/user-orders/${this.props.id}`}/>
+                            : null
+                    }
                 </div>
             )
         } else if (this.state.loading && !this.state.access)
@@ -198,7 +237,9 @@ class OrderPage extends Component {
 }
 
 function mapStateToProps(state) {
-    return {}
+    return {
+        id: state.authReducer.id,
+    }
 }
 
 function mapDispatchToProps(dispatch) {

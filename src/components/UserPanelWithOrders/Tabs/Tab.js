@@ -48,41 +48,61 @@ export default class Tab extends Component {
 
     renderBody = () => {
         return (
-            <>
-                <ul>
-                    <li><b>{this.props.orderInfo.description}</b></li>
-                    <li className={'mb-15'}>
-                        <ProgressBar status={this.props.orderInfo.status}/>
-                    </li>
-                    <li className={'mb-15'}>Откуда: {this.props.orderInfo.name}</li>
-                    <li className={'mb-15'}>Адресс доставки: {this.props.orderInfo.clientAddress}</li><li className={'mb-15'}>Время начала заказа: {getDate(this.props.orderInfo.startTime)}</li>
-                    {
-                        this.props.orderInfo.endTime !== ''
-                            ?
-                            <li className={'mb-15'}>Время окончания заказа: {getDate(this.props.orderInfo.endTime)}</li>
-                            : null
-                    }
-                    <li className={'mb-15'}>Стоимость доставки: {this.props.orderInfo.deliveryValue} ₽</li>
-                    {
-                        this.props.orderInfo.orderValue !== ''
-                            ?
-                            <>
-                                <li className={'mb-15'}>Стоимость заказа: {this.props.orderInfo.orderValue} ₽</li>
-                                <li className={'mb-15'}>
-                                    <b>Итого: {parseInt(this.props.orderInfo.deliveryValue) + parseInt(this.props.orderInfo.orderValue)} ₽</b>
-                                </li>
-                            </>
-                            : null
-                    }
-                </ul>
-            </>
+            <ul>
+                <li><b>{this.props.orderInfo.description}</b></li>
+                <li className={'mb-15'}>
+                    <ProgressBar status={this.props.orderInfo.status}/>
+                </li>
+                <li className={'mb-15'}>Откуда: {this.props.orderInfo.name}</li>
+                <li className={'mb-15'}>Адресс доставки: {this.props.orderInfo.clientAddress}</li>
+                <li className={'mb-15'}>Время начала заказа: {getDate(this.props.orderInfo.startTime)}</li>
+                {
+                    this.props.orderInfo.endTime !== ''
+                        ?
+                        <li className={'mb-15'}>Время окончания заказа: {getDate(this.props.orderInfo.endTime)}</li>
+                        : null
+                }
+                <li className={'mb-15'}>Стоимость доставки: {this.props.orderInfo.deliveryValue} ₽</li>
+                {
+                    this.props.orderInfo.orderValue !== ''
+                        ?
+                        <>
+                            <li className={'mb-15'}>Стоимость заказа: {this.props.orderInfo.orderValue} ₽</li>
+                            <li className={'mb-15'}>
+                                <b>Итого: {parseInt(this.props.orderInfo.deliveryValue) + parseInt(this.props.orderInfo.orderValue)} ₽</b>
+                            </li>
+                        </>
+                        : null
+                }
+            </ul>
         )
     }
 
     render() {
+        let color = ''
+        switch (this.props.orderInfo.status) {
+            case -1:
+                color = 'yellow'
+                break
+            case 0 || 1 || 2:
+                color = 'blue'
+                break
+            case 3:
+                color = 'green'
+                break
+            case 4:
+                color = 'red'
+                break
+            case 5:
+                color = 'red'
+                break
+            default:
+                color = 'blue'
+                break
+        }
         return (
             <NavLink to={`/order/${this.props.orderInfo.id}?${this.props.type}`}>
-                <div className={'tab__item'}>
+                <div className={`tab__item tab__item_${color}`}>
                     <div className="tab__title">
                         {
                             this.renderTitle()

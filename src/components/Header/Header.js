@@ -90,14 +90,14 @@ export default class Header extends Component {
                             Заказать
                         </button>
                         <NavLink className={'header__link'}
-                                 to={(this.props.path + this.props.id + '/user-orders') || '/'}>
+                                 to={('/user-orders/' + this.props.id) || '/'}>
                             {/*<i className="fa fa-list" aria-hidden="true"/>*/}
                             {/*<span className={'name'}>Заказы</span>*/}
                             Заказы
                         </NavLink>
                         <NavLink className={'header__link'}
                                  onClick={this.interactWithMenu}
-                                 to={(this.props.path + this.props.id + '/user-info') || '/'}>
+                                 to={('/user-info/' + this.props.id) || '/'}>
                             <i className="fa fa-user-circle-o" aria-hidden="true"/>
                             <span className={'name'}>Профиль</span>
                         </NavLink>

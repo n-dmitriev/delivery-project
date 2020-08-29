@@ -11,8 +11,8 @@ const RenderFullOrderInfo = props => {
                 {
                     props.type === 'user'
                         ? <>
-                            <li className={'mb-2'}>{orderInfo.description}</li>
                             <li className={'mb-15'}>
+                                <span className={'mb-2'}><b>{orderInfo.description}</b></span>
                                 <ProgressBar status={orderInfo.status}/>
                             </li>
                         </>
