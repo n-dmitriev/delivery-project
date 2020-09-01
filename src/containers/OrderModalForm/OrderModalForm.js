@@ -110,7 +110,6 @@ class OrderModalForm extends Component {
             this.changeActiveWindow('contacts')
         } else {
             this.props.onClose()
-            this.props.trySendOrder(true)
             this.props.onOpenAuth()
             toaster.notify('Сперва зарегистируйтесь!', {
                 position: 'bottom-right',

@@ -1,3 +1,102 @@
+@import "../../css/mixins";
+
 .main-page {
-  padding: 15px;
+  background: white;
+  &__title {
+    height: 630px;
+    position: relative;
+    top: -34px;
+    background: url("../../img/title.jpg") no-repeat center;
+    background-size: cover;
+  }
+
+  &__qualities {
+    margin-bottom: 30px;
+  }
+
+  &__quality {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    span {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .fa {
+      font-size: 40px;
+      margin: 0 !important;
+    }
+  }
+
+  &__five-star {
+    margin-left: 0 !important;
+
+    & i {
+      font-size: 25px !important;
+    }
+  }
+
+  &__container {
+    padding: 0 30px;
+    font-size: 20px;
+    opacity: 0.85;
+
+    &-img {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      & img {
+        width: 350px;
+        height: 350px;
+        object-fit: cover;
+        padding: 5px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+    }
+
+    i {
+      border-bottom: 1px solid gray;
+      cursor: pointer;
+      @include animate();
+
+      &:hover {
+        color: #042447;
+      }
+    }
+
+    & hr {
+      border: none;
+      height: 3px;
+      margin: 40px 0;
+      background-image: linear-gradient(to right, #FFF, gray, #FFF);
+
+      &:before,
+      &:after {
+        content: '';
+        display: inline-block;
+        border-radius: 100%;
+        width: 20px;
+        height: 20px;
+        border: 2px solid gray;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #FFF;
+      }
+    }
+  }
+
+  .fixed-wrap {
+    height: 400px;
+    border-top: 4px solid #f0f0f0;
+    border-bottom: 4px solid #f0f0f0;
+    background: url("../../img/background.jpg") no-repeat center fixed;
+    background-size: cover;
+  }
 }

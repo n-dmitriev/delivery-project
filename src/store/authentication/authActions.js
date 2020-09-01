@@ -2,6 +2,7 @@ import {AUTH_ERROR, AUTH_LOGOUT, AUTH_OK, AUTH_SUCCESS, AUTH_START} from './acti
 import {fetchUserInfo} from '../user/userActions'
 import {authWithFirebase, dataBase} from '../../firebase/firebase'
 import {dispatchAction} from '../universalFunctions'
+import {RESET_USER_INFO} from '../user/actionTypes'
 
 
 //Функция авторизации
@@ -77,9 +78,10 @@ export function removeError() {
 
 //Функция выхода из аккаунта
 export function logout() {
-    localStorage.removeItem('id')
-    localStorage.removeItem('path')
-    return {
-        type: AUTH_LOGOUT
+    return dispatch => {
+        dispatch(dispatchAction(AUTH_LOGOUT, null))
+        dispatch(dispatchAction(RESET_USER_INFO, null))
+        localStorage.removeItem('id')
+        localStorage.removeItem('path')
     }
 }

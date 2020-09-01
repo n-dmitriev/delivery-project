@@ -12,6 +12,14 @@ export default class Header extends Component {
         isAuthModalOpen: false
     }
 
+    shouldComponentUpdate = (nextProps, nextState, nextContext) => {
+        if (nextProps.isAuth && this.state.isAuthModalOpen)
+            this.setState({
+                isAuthModalOpen: false
+            })
+        return true
+    }
+
     interactWithMenu = () => {
         this.setState({
             menuIsOpen: !this.state.menuIsOpen
@@ -112,10 +120,7 @@ export default class Header extends Component {
                         {/*<span className={'name'}>Заказать</span>*/}
                         Заказать
                     </button>
-                    <button className={'header__link'} onClick={() => {
-                        this.interactWithMenu()
-                        this.interactionWithAuthModal()
-                    }}>
+                    <button className={'header__link'} onClick={this.interactionWithAuthModal}>
                         {/*<i className="fa fa-sign-in" aria-hidden="true"/>*/}
                         {/*<span className={'name'}>Войти</span>*/}
                         Войти

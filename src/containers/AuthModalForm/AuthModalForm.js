@@ -26,33 +26,16 @@ class AuthModalForm extends Component {
     //Обрабочтик попытки авторизации
     loginHandler = async (login, email) => {
         await this.props.auth(login, email, true, 'users')
-        if (this.props.isAuth) {
-            if (this.props.trySendOrderNotAuth) {
-                this.props.trySendOrder(false)
-            }
-            toaster.notify('Вы успешно авторизовались!', {
-                position: 'bottom-right',
-                duration: 3000
-            })
-            this.closeAuthWin()
-        }
     }
 
     //Обработчик попытки сохранения пользовательских данных
     saveContactInformation = async (info) => {
         this.props.setUserInfo(info)
-        this.closeAuthWin('successRegistration')
-        if (this.props.trySendOrderNotAuth) {
-            this.props.trySendOrder(false)
-            toaster.notify('Ваши данные сохранены!', {
-                position: 'bottom-right',
-                duration: 3000
-            })
-        } else
-            toaster.notify('Ваши данные сохранены!', {
-                position: 'bottom-right',
-                duration: 3000
-            })
+        this.closeAuthWin()
+        toaster.notify('Ваши данные сохранены!', {
+            position: 'bottom-right',
+            duration: 3000
+        })
     }
 
     //Обработчик попытки решистрации
@@ -78,14 +61,10 @@ class AuthModalForm extends Component {
     //Редеринг формы для ввода контактной информации
     renderInputUserInfo() {
         return (
-            <>
-                <InputInformation
-                    saveContactInformation={this.saveContactInformation}
-                    onClose={this.closeAuthWin}
-                    trySend={this.props.trySendOrderNotAuth}
-                    type={'user'}
-                />
-            </>
+            <InputInformation
+                saveContactInformation={this.saveContactInformation}
+                type={'user'}
+            />
         )
     }
 
@@ -106,7 +85,6 @@ class AuthModalForm extends Component {
     renderSignIn = () => {
         return (
             <AuthShape
-                trySendOrderNotAuth={this.props.trySendOrderNotAuth}
                 type={'authModal'}
                 isError={this.props.isError}
                 auth={this.loginHandler}
@@ -135,7 +113,7 @@ class AuthModalForm extends Component {
     }
 
     render() {
-        if (this.props.isAuth === true && this.state.currentWin === 'signIn') return null
+
         return (
             <ModalWindow
                 isOpen={this.props.isOpen}

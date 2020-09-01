@@ -41,10 +41,6 @@ export default class AuthShape extends Component {
                        ref={this.password}/>
                 <small className={this.props.isError === true ? 'error' : 'hide'}>Неверный логин или пароль!</small>
 
-                <span className={this.props.trySendOrderNotAuth ? 'placeholder' : 'hide'}>
-                    Прежде чем сдеать заказ, авторизуйтесь или зарегистрируйтесь
-                </span>
-
                 <div className={'button-section mt-15'}>
                     <button className={'main-item-style mr-15'} onClick={this.authHandler}>Войти</button>
                     {

@@ -5,7 +5,7 @@ import {
     SET_USER_PASSWORD_SUCCESS,
     FETCH_USER_START,
     SET_USER_AL_SUCCESS,
-    SET_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, ADD_USER_FL_SUCCESS, AL_END, FL_END, AL_CHANGE
+    SET_USER_FL_SUCCESS, ADD_USER_AL_SUCCESS, ADD_USER_FL_SUCCESS, AL_END, FL_END, AL_CHANGE, RESET_USER_INFO
 } from './actionTypes'
 import {SORT_ORDER_LIST} from '../courier/actionTypes'
 
@@ -29,6 +29,10 @@ export default function userReducer(state = initialState, action) {
         case FETCH_USER_INFO_SUCCESS:
             return {
                 ...state, loading: false, info: action.item
+            }
+        case RESET_USER_INFO:
+            return {
+                ...state, info: {}
             }
         case SET_USER_AL_SUCCESS:
             return {

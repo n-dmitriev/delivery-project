@@ -29,6 +29,7 @@ export default class InputPosition extends Component {
     map = null
     ymaps = null
     route = null
+    inst = null
 
     state = {
         edit: false,
@@ -42,6 +43,10 @@ export default class InputPosition extends Component {
         empty: true,
         loading: true,
         priceListIsOpen: this.props.options?.type === 'landing'
+    }
+
+    componentWillUnmount() {
+        this.inst.events.remove('click')
     }
 
     showOrHide = () => {
@@ -60,6 +65,7 @@ export default class InputPosition extends Component {
 
     instRef = (inst) => {
         if (inst) {
+            this.inst = inst
             inst.cursors.push('arrow')
             inst.events.add('click', this.clickOnMap)
         }
