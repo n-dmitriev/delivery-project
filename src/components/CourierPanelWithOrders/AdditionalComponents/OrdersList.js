@@ -83,7 +83,7 @@ export default class OrdersList extends Component {
                         this.renderPosition()
                     }
                     <div className="button-section">
-                        <button className="main-item-style" onClick={this.openOrderList}>
+                        <button className="btn" onClick={this.openOrderList}>
                             Загрузить список заказов
                         </button>
                     </div>

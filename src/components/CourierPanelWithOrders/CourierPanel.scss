@@ -9,14 +9,14 @@
   min-height: 500px;
 
   &__content {
-     overflow-y: scroll;
-     overflow-x: hidden;
-      margin: auto 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: auto 0;
 
-     & .list__content {
-       max-height: 505px !important;
-     }
-   }
+    & .list__content {
+      max-height: 505px !important;
+    }
+  }
 
   &__title {
     &_p {
@@ -38,13 +38,21 @@
       }
 
       & .button-section {
-        margin: 20px auto;
-        width: 100%;
-      }
+        & .btn {
+          height: 36px;
+          width: 100%;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          color: white;
+          background-color: rgb(52, 58, 64);
+          @include animate();
 
-      & .main-item-style {
-        width: 100%;
-        margin: auto;
+          &:hover {
+            color: rgb(52, 58, 64);
+            background-color: white;
+            border: 1px solid rgb(52, 58, 64);
+          }
+        }
       }
     }
 

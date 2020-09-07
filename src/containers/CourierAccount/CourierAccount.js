@@ -113,7 +113,6 @@ class CourierAccount extends Component {
     }
 
     render() {
-        console.log(this.props.listOfCurrentOrders, this.props.unsubscribeList)
         return (
             <div className={'courier'}>
                 <PasswordChangeForm errorPassword={this.props.errorPassword}

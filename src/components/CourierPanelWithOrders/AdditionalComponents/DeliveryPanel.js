@@ -55,6 +55,7 @@ export default class DeliveryPanel extends Component {
             'завершить заказ', async () => {
                 this.props.unsubscribeAllOrders()
                 this.props.changeOrderData(3, this.props.orderInfo)
+                this.props.changePosition(this.props.orderInfo.coordinate, this.props.orderInfo.clientAddress, true, '')
                 toaster.notify('Заказ завершён!', {
                     position: 'bottom-right',
                     duration: 3000
