@@ -79,6 +79,8 @@ class CourierAccount extends Component {
                     />
                     <hr/>
 
+                    <h3 className={'mb-15'}>Панель заказов</h3>
+
                     <CourierPanel
                         fetchOrderList={this.props.fetchOrderList}
                         ordersList={this.props.listOfCurrentOrders}
@@ -111,6 +113,7 @@ class CourierAccount extends Component {
     }
 
     render() {
+        console.log(this.props.listOfCurrentOrders, this.props.unsubscribeList)
         return (
             <div className={'courier'}>
                 <PasswordChangeForm errorPassword={this.props.errorPassword}

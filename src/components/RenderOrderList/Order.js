@@ -3,7 +3,6 @@ import toaster from 'toasted-notes'
 import Item from './Item'
 import {confirm} from '../UI/Confirm/Confirm'
 import Tooltip from 'react-tooltip-lite'
-import {NavLink} from 'react-router-dom'
 import ProgressBar from '../UI/ProgressBar/ProgressBar'
 import {getDate} from '../../store/universalFunctions'
 
@@ -185,43 +184,23 @@ export default class Order extends Component {
     }
 
     render() {
-        if (this.props.type === 'active-courier')
-            return (
-                <div className={'list__item'}>
-                    <div className="list__title">
-                        {
-                            this.renderTitle()
-                        }
-                    </div>
-                    <div className="list__body">
-                        {
-                            this.renderBody()
-                        }
-                        {
-                            this.renderButtonSection()
-                        }
-                    </div>
+        return (
+            <div className={'list__item'}>
+                <div className="list__title">
+                    {
+                        this.renderTitle()
+                    }
                 </div>
-            )
-        else
-        {
-            return (
-                <NavLink to={`/order/${this.props.orderInfo.id}?${this.props.type}`}>
-                    <div className={'list__item'}>
-                        <div className="list__title">
-                            {
-                                this.renderTitle()
-                            }
-                        </div>
-                        <div className="list__body">
-                            {
-                                this.renderBody()
-                            }
-                        </div>
-                    </div>
-                </NavLink>
-            )
-        }
+                <div className="list__body">
+                    {
+                        this.renderBody()
+                    }
+                    {
+                        this.renderButtonSection()
+                    }
+                </div>
+            </div>
+        )
     }
 }
 

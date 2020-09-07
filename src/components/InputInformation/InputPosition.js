@@ -46,7 +46,8 @@ export default class InputPosition extends Component {
     }
 
     componentWillUnmount() {
-        this.inst.events.remove('click')
+        if(this.inst)
+            this.inst.events.remove('click')
     }
 
     showOrHide = () => {

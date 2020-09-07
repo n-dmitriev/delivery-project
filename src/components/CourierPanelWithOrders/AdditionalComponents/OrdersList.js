@@ -34,12 +34,6 @@ export default class OrdersList extends Component {
         this.props.resetList()
     }
 
-    changeOrderData = async (status, data) => {
-        if (status === 1)
-            await this.interactionWithList()
-        this.props.changeOrderData(status, data)
-    }
-
     orderList = () => {
         if (this.props.ordersList.length > 0) {
             return (
@@ -51,12 +45,7 @@ export default class OrdersList extends Component {
                 />
             )
         } else
-            return (
-                <>
-                    <span>Оу, здесь пусто :(</span>
-                </>
-            )
-
+            return null
     }
 
     renderPosition = () => {

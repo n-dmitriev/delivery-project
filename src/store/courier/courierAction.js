@@ -148,6 +148,7 @@ export function sortArrayByDistance(coordinate) {
 //Подписка на конкретный заказ
 export function subscribeOrderInfo(courierId, status) {
     return async (dispatch) => {
+        console.log('da')
         const answer = await dataBase.collection('user-orders')
             .where('status', '==', status)
             .where('courierId', '==', courierId)
@@ -179,6 +180,7 @@ export function subscribeOrderInfo(courierId, status) {
 // Подписка на списокк заказов
 export function subscribe(coordinates = null, skip = 0, ordersList = []) {
     return async (dispatch) => {
+        console.log('da')
         dispatch(dispatchAction(FETCH_USER_START, null))
         const unsubscribe = await dataBase.collection('orders')
             .where('status', '==', 0).orderBy('id')

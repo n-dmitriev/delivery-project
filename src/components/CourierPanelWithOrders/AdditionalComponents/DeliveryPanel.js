@@ -9,7 +9,6 @@ export default class DeliveryPanel extends Component {
         super(props)
         this.orderValue = React.createRef()
         this.check = React.createRef()
-        //this.courierPosition = React.createRef()
         this.map = null
         this.ymaps = null
         this.route = null

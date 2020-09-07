@@ -40,7 +40,6 @@ export function authActions(email, password, isLogin, collectionType) {
                             deliveryValue: ''
                         }
                         await collection.doc(user.uid).set(info)
-                        dispatch(fetchUserInfo())
                     }
 
                     const path = collectionType === 'users' ? '/user-account/' : '/courier-account/'

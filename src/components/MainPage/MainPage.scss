@@ -3,9 +3,8 @@
 .main-page {
   background: white;
   &__title {
-    height: 630px;
+    min-height: 300px;
     position: relative;
-    top: -34px;
     background: url("../../img/title.jpg") no-repeat center;
     background-size: cover;
   }
@@ -98,5 +97,38 @@
     border-bottom: 4px solid #f0f0f0;
     background: url("../../img/background.jpg") no-repeat center fixed;
     background-size: cover;
+  }
+}
+
+@media (max-width: 500px) {
+  .main-page {
+    &__title {
+      top: -20px;
+    }
+  }
+}
+
+@media (min-width: 500px) {
+  .main-page {
+    &__title {
+      top: -20px;
+    }
+  }
+}
+
+@media (min-width: 570px) {
+  .main-page {
+    &__title {
+      min-height: 400px;
+      top: -35px;
+    }
+  }
+}
+
+@media (min-width: 1000px) {
+  .main-page {
+    &__title {
+      height: 630px;
+    }
   }
 }

@@ -53,9 +53,13 @@
     margin: auto 0 auto auto;
 
     &_mobile {
+      z-index: 900;
+
       & .mobile-content {
         display: flex;
         flex-direction: column;
+        position: relative;
+        left: -30px;
       }
     }
   }
@@ -83,7 +87,7 @@
       background-color: #000501;
       height: 2px;
       bottom: -5px;
-      width:0;
+      width: 0;
       left: 50%;
       position: absolute;
       -webkit-transition: width .3s ease-in-out;
