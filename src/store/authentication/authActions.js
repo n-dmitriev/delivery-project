@@ -30,6 +30,7 @@ export function authActions(email, password, isLogin, collectionType) {
                             return
                         }
                     } else {
+                        await user.sendEmailVerification()
                         const info = {
                             clientName: '',
                             clientNumberPhone: '',
@@ -65,6 +66,12 @@ export function authActions(email, password, isLogin, collectionType) {
         } catch (e) {
             dispatch(dispatchAction(AUTH_ERROR, null))
         }
+    }
+}
+
+export function resetPassword(email) {
+    return () => {
+        authWithFirebase.sendPasswordResetEmail(email)
     }
 }
 
