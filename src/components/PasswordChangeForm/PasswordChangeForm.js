@@ -32,6 +32,7 @@ export default class PasswordChangeForm extends Component {
                confirm(
                    'изменить пароль', async () => {
                        this.props.passwordChange(this.oldPassword.current.value, this.newPassword.current.value)
+                       this.close()
                        toaster.notify('Ваш пароль успешно изменён!', {
                            position: 'bottom-right',
                            duration: null

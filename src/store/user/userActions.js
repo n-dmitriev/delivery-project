@@ -63,6 +63,7 @@ export function passwordChange(oldPassword, newPassword) {
             dispatch(dispatchAction(SET_USER_PASSWORD_SUCCESS))
         } catch
             (e) {
+            console.log(e)
             dispatch(dispatchAction(SET_USER_PASSWORD_ERROR, e))
         }
     }

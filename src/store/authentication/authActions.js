@@ -58,6 +58,7 @@ export function authActions(email, password, isLogin, collectionType) {
                     dispatch(dispatchAction(AUTH_SUCCESS, {id: user.uid, path}))
                     localStorage.setItem('id', JSON.stringify(user.uid))
                     localStorage.setItem('path', JSON.stringify(path))
+                    localStorage.setItem('email', JSON.stringify(email))
                     dispatch(fetchUserInfo())
                 } else {
                     dispatch(dispatchAction(AUTH_ERROR, null))
