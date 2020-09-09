@@ -12,11 +12,16 @@ export default class AppModalWindows extends Component {
                     isEdit={false}
                     onOpenAuth={this.props.interactionWithAuthModal}
                     onClose={this.props.interactionWithOrderModal}/>
-                <Auth
-                    isAuth={this.props.isAuth}
-                    isOpen={this.props.isAuthModalOpen}
-                    isError={this.props.isError}
-                    onClose={this.props.interactionWithAuthModal}/>
+                {
+                    this.props.isAuthModalOpen
+                        ? <Auth
+                            isAuth={this.props.isAuth}
+                            isOpen={this.props.isAuthModalOpen}
+                            isError={this.props.isError}
+                            onClose={this.props.interactionWithAuthModal}/>
+                        : null
+                }
+
             </>
         )
     }

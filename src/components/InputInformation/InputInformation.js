@@ -8,8 +8,8 @@ export default class InputInformation extends Component {
     constructor(props) {
         super(props)
         this.name = React.createRef()
-        this.numberPhone = React.createRef()
         this.address = React.createRef()
+        this.numberPhone = ''
         this.state = {
             nameIsValid: true,
             numberPhoneIsValid: true,
@@ -18,51 +18,53 @@ export default class InputInformation extends Component {
         }
     }
 
-
     //Валидация информации о пользователе
     validateUserInformation = () => {
         this.setState({
             nameIsValid: this.name.current.value.replace(/\s+/g, '') !== '',
             numberPhoneIsValid: this.numberPhone.replace(/\s+/g, '') !== '',
-            addressIsValid: this.props.type === 'courier' ? this.address.current.value.replace(/\s+/g, '') !== '' : true
+            addressIsValid: this.props.type === 'courier' ? this.address.current.value.replace(/\s+/g, '') !== '' :
+                Object.keys(this.state.infFromMap).length > 0
         })
     }
 
     saveUI = async (e) => {
         e.preventDefault()
-        if (this.name && this.numberPhone) {
-            await this.validateUserInformation()
-            if (this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid) {
-                let info
+        await this.validateUserInformation()
+        if (this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid) {
+            let info
 
-                if (this.props.type === 'courier')
-                    info = {
-                        name: this.name.current.value,
-                        numberPhone: this.numberPhone,
-                        role: this.props.type,
-                        address: this.address.current.value
-                    }
-                else {
-                    info = {
-                        clientName: this.name.current.value,
-                        clientNumberPhone: this.numberPhone,
-                        role: this.props.type
-                    }
-                    if (this.props.page === 'account' && Object.keys(this.state.infFromMap).length > 0) {
-                        if (this.state.infFromMap?.positionIsValid) {
-                            info.clientAddress = this.state.infFromMap.clientAddress
-                            info.coordinate = this.state.infFromMap.coordinate
-                        } else {
-                            toaster.notify(this.state.infFromMap.errorMessage, {
-                                position: 'bottom-right',
-                                duration: 3000
-                            })
-                            return null
-                        }
+            if (this.props.type === 'courier')
+                info = {
+                    name: this.name.current.value,
+                    numberPhone: this.numberPhone,
+                    role: this.props.type,
+                    address: this.address.current.value
+                }
+            else {
+                info = {
+                    clientName: this.name.current.value,
+                    clientNumberPhone: this.numberPhone,
+                    role: this.props.type
+                }
+                if (this.props.page === 'account') {
+                    if (this.state.infFromMap.positionIsValid) {
+                        info.clientAddress = this.state.infFromMap.clientAddress
+                        info.coordinate = this.state.infFromMap.coordinate
+                    } else {
+                        toaster.notify(this.state.infFromMap.errorMessage, {
+                            position: 'bottom-right',
+                            duration: 3000
+                        })
+                        return null
                     }
                 }
-                this.props.saveContactInformation(info)
             }
+            if (!this.state.addressIsValid)
+                this.setState({
+                    addressIsValid: true
+                })
+            this.props.saveContactInformation(info)
         }
     }
 
@@ -75,11 +77,16 @@ export default class InputInformation extends Component {
     }
 
     renderInputAddress = () => {
-        const options = {
-            isEdit: true, type: 'account', address: this.props.userInfo.clientAddress,
-            coordinate: this.props.userInfo.coordinate
-        }
-
+        let options
+        if (this.props.userInfo)
+            options = {
+                isEdit: true, type: 'account', address: this.props.userInfo.clientAddress,
+                coordinate: this.props.userInfo.coordinate
+            }
+        else
+            options = {
+                isEdit: false, type: 'account'
+            }
         return (
             <InputPosition
                 setAddressInfo={this.setAddressInfo}
@@ -90,13 +97,13 @@ export default class InputInformation extends Component {
 
     render() {
         let isEdit = false
-        if (this.props.userInfo) {
+        if (this.props.userInfo && this.props.userInfo.clientNumberPhone) {
             isEdit = true
             this.numberPhone = this.props.userInfo.clientNumberPhone
         }
         return (
             <>
-                <h2 className={'mb-30'}>{isEdit ? 'Контактная информация' : 'Укажите контактную ифнормацию'}</h2>
+                <h2 className={'mb-30'}>Контактная информация</h2>
 
 
                 <div className={'input-field'}>
@@ -112,15 +119,13 @@ export default class InputInformation extends Component {
                 <div className={'input-field'}>
                     <label className={'mb-15'}>Номер телефона*</label>
                     <div
-                        className={`number-block mb-30 ${this.state.numberPhoneIsValid === false ? 'input-error' : ''}`}>
+                        className={`number-block mb-30 ${!this.state.numberPhoneIsValid ? 'input-error' : ''}`}>
                         <IMaskInput
                             mask={'+{7}(000)000-00-00'}
                             unmask={false}
-                            onAccept={
-                                (value) => this.numberPhone = value
-                            }
+                            onAccept={(value) => this.numberPhone = value}
                             placeholder='+7 ('
-                            value={isEdit ? this.props.userInfo.clientNumberPhone : null}
+                            value={isEdit ? this.props.userInfo.clientNumberPhone : this.numberPhone}
                         />
                     </div>
                 </div>
@@ -130,13 +135,7 @@ export default class InputInformation extends Component {
                         ?
                         <div className={'input-field'}>
                             <label className={'mb-15'}>
-                                {
-                                    this.props.type === 'courier'
-                                        ?
-                                        'Ссылка на вк'
-                                        :
-                                        'Адрес*'
-                                }
+                                Ссылка на вк
                             </label>
                             <input className={this.state.addressIsValid === false ? 'input-error mb-15' : 'mb-30'}
                                    type="text"
@@ -154,9 +153,10 @@ export default class InputInformation extends Component {
                         : null
                 }
 
-                <small
-                    className={this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid ? 'hide' : 'error'}>
-                    Поля помеченные * обязательные для заполнения
+                <small className={'error mt-15'}>
+                    {this.state.nameIsValid && this.state.numberPhoneIsValid && this.state.addressIsValid
+                        ? null : <div className={'mb-2'}>Поля помеченные * обязательные для заполнения</div>}
+                    {!this.state.addressIsValid ? <div className={'mb-2'}>Укажите адрес доставки!</div> : null}
                 </small>
 
                 <div className={'button-section mt-30'}>
@@ -167,6 +167,11 @@ export default class InputInformation extends Component {
                                           this.props.changeActiveWindow('map')
                                       }}>
                                 Назад
+                            </button>
+                            : this.props.page === 'account' && !isEdit
+                            ? <button className={'main-item-style mr-2'}
+                                      onClick={this.props.onClose}>
+                                Позже
                             </button>
                             : null
                     }

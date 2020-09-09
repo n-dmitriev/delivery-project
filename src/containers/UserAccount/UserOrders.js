@@ -10,7 +10,6 @@ import UserOrdersPanel from '../../components/UserPanelWithOrders/UserOrdersPane
 class UserOrders extends Component {
     constructor() {
         super()
-
         document.title = 'EasyWays | Заказы'
     }
 

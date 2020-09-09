@@ -10,22 +10,39 @@ import ModalWindow from '../../components/UI/ModalWindow/ModalWindow'
 
 //Данный контейнер отвечает за авторизацию и регистрацию пользователей
 class AuthModalForm extends Component {
-    //Обрабочтик попытки авторизации
-    loginHandler = async (login, email) => {
-        await this.props.auth(login, email, true, 'users')
+    state = {
+        isLogin: true
     }
 
-
-    //Обработчик попытки решистрации
-    registerHandler = async (login, email) => {
-        await this.props.auth(login, email, false, 'users')
-        if (this.props.isError !== true) {
-            toaster.notify('Вы успешно зарегестрировались!', {
-                position: 'bottom-right',
-                duration: 3000
+    componentWillUnmount() {
+        if (this.state.isLogin)
+            this.setState({
+                isLogin: true
             })
-            this.switchCurrentWin('userInfoInp')
+    }
+
+    shouldComponentUpdate = (nextProps, nextState, nextContext) => {
+        if (nextProps.isAuth) {
+            if (this.state.isLogin) {
+                this.props.onClose()
+                toaster.notify('Вы успешно авторизовались!', {
+                    position: 'bottom-right',
+                    duration: 3000
+                })
+            } else
+                toaster.notify('Вы успешно зарегестрировались!', {
+                    position: 'bottom-right',
+                    duration: 3000
+                })
         }
+        return true
+    }
+
+    authHandler = async (login, email, isLogin) => {
+        await this.setState({
+            isLogin
+        })
+        await this.props.auth(login, email, isLogin, 'users')
     }
 
     renderContent = () => {
@@ -34,12 +51,13 @@ class AuthModalForm extends Component {
                 <AuthShape
                     type={'authModal'}
                     isError={this.props.isError}
-                    auth={this.loginHandler}
-                    registerHandler={this.registerHandler}
-                    closeAuthWin={this.props.onClose}
+                    isAuth={this.props.isAuth}
+                    authHandler={this.authHandler}
+                    onClose={this.props.onClose}
                     currentWin={'signIn'}
-                    removeError={this.props.removeError()}
+                    removeError={this.props.removeError}
                     resetPassword={this.props.resetPassword}
+                    setUserInfo={this.props.setUserInfo}
                 />
             </div>
         )

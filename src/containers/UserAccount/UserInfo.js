@@ -13,7 +13,6 @@ import {passwordChange, setUserInfo} from '../../store/user/userActions'
 class element extends Component {
     constructor() {
         super()
-
         document.title = 'EasyWays | Личный кабинет'
     }
 

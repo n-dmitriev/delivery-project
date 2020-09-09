@@ -12,14 +12,6 @@ export default class Header extends Component {
         isAuthModalOpen: false
     }
 
-    shouldComponentUpdate = (nextProps, nextState, nextContext) => {
-        if (nextProps.isAuth && this.state.isAuthModalOpen)
-            this.setState({
-                isAuthModalOpen: false
-            })
-        return true
-    }
-
     interactWithMenu = () => {
         this.setState({
             menuIsOpen: !this.state.menuIsOpen

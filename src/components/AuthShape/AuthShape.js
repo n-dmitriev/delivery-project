@@ -17,10 +17,29 @@ export default class AuthShape extends Component {
         }
     }
 
-    //Меняем контент в модальном окне, состояния: signIn, signUp, userInfoInp, success
+    shouldComponentUpdate = (nextProps, nextState, nextContext) => {
+        if(nextProps.isAuth && this.state.currentWin === 'signUp') {
+            this.setState({
+                currentWin: 'userInfoInp'
+            })
+        }
+        return true
+    }
+
+    componentWillUnmount() {
+        if (this.props.type === 'authModal')
+            this.setState({
+                currentWin: 'signIn'
+            })
+    }
+
+    //Меняем контент в модальном окне, состояния: signIn, signUp, userInfoInp
     switchCurrentWin = (winName) => {
         this.setState({
-            currentWin: winName
+            currentWin: winName,
+            loginIsValid: true,
+            passwordIsValid: true,
+            passwordDoublerIsValid: true
         })
         if (this.props.isError)
             this.props.removeError()
@@ -38,8 +57,7 @@ export default class AuthShape extends Component {
         if (this.password && this.login) {
             await this.validateUserData()
             if (this.state.loginIsValid && this.state.passwordIsValid && (this.passwordDoubler ? this.state.passwordDoublerIsValid : true)) {
-                console.log(this.login.current.value, this.password.current.value)
-                this.props.auth(this.login.current.value, this.password.current.value)
+                await this.props.authHandler(this.login.current.value, this.password.current.value, this.state.currentWin === 'signIn')
             }
         }
     }
@@ -70,7 +88,7 @@ export default class AuthShape extends Component {
                                 <div className="button-section">
                                     <button className={'btn btn-dark mr-2'}
                                             onClick={async () => {
-                                                this.props.closeAuthWin()
+                                                this.props.onClose()
                                                 onClose()
                                             }}
                                     >
@@ -88,7 +106,7 @@ export default class AuthShape extends Component {
     //Обработчик попытки сохранения пользовательских данных
     saveContactInformation = async (info) => {
         this.props.setUserInfo(info)
-        this.closeAuthWin()
+        this.props.onClose()
         toaster.notify('Ваши данные сохранены!', {
             position: 'bottom-right',
             duration: 3000
@@ -96,11 +114,13 @@ export default class AuthShape extends Component {
     }
 
     //Редеринг формы для ввода контактной информации
-    inputUserInfoWindow() {
+    inputUserInfoWindow = () => {
         return (
             <InputInformation
                 saveContactInformation={this.saveContactInformation}
+                page={'account'}
                 type={'user'}
+                onClose={this.props.onClose}
             />
         )
     }
@@ -124,7 +144,7 @@ export default class AuthShape extends Component {
                         <div className={'mb-2'}>Пароль не может содержать менее 6 символов!</div>
                         : null}
                     {this.props.isError ? <div className={'mb-2'}>
-                        Вы указали некорректную почту!</div> : null}
+                        Вы указали некорректную почту или пароль!</div> : null}
                 </small>
 
                 <span className={'change-password'}
@@ -159,6 +179,7 @@ export default class AuthShape extends Component {
 
                 <label className={'mb-15'}>Введите пароль</label>
                 <input className={!this.state.passwordIsValid ? 'input-error mb-2' : 'mb-2'} type="password"
+                       onChange={this.changePasswordDoubler}
                        ref={this.password}/>
 
                 <label className={'mb-15'}>Повторите пароль</label>
@@ -228,7 +249,6 @@ export default class AuthShape extends Component {
     }
 
     render() {
-        console.log(this.props.isError)
         const winList = [
             {
                 win: 'signIn',
