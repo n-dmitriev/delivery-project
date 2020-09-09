@@ -136,7 +136,7 @@ class Admin extends Component {
                                         <AuthShape
                                             isError={this.props.error}
                                             auth={this.authAction}
-                                            thisReg={false}
+                                            currentWin={'signIn'}
                                         />
                                         : <>
                                             {

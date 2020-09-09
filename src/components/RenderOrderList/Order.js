@@ -196,7 +196,7 @@ export default class Order extends Component {
                         this.renderBody()
                     }
                     {
-                        this.renderButtonSection()
+                        this.props.type !== 'finish-courier' ? this.renderButtonSection() : null
                     }
                 </div>
             </div>

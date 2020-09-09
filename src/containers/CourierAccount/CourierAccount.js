@@ -131,7 +131,7 @@ class CourierAccount extends Component {
                                         <AuthShape
                                             isError={this.props.error}
                                             auth={this.authAction}
-                                            thisReg={false}
+                                            currentWin={'signIn'}
                                         />
                                         : this.props.isAuth && JSON.parse(localStorage.getItem('path')) === '/courier-account/'
                                         ?

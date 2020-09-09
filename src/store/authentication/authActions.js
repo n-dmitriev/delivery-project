@@ -60,6 +60,7 @@ export function authActions(email, password, isLogin, collectionType) {
                     localStorage.setItem('path', JSON.stringify(path))
                     dispatch(fetchUserInfo())
                 } else {
+                    dispatch(dispatchAction(AUTH_ERROR, null))
                     new Error('Карамба, что-то пошло не так!')
                 }
             })

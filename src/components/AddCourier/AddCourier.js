@@ -33,9 +33,9 @@ export default class AddCourier extends Component {
 
     renderRegistForm = () => {
         return <AuthShape
+            currentWin={'signUp'}
             isError={this.props.error}
             auth={this.registrHandler}
-            thisReg={true}
             description={'курьера'}
         />
     }

@@ -38,6 +38,7 @@ export default class AuthShape extends Component {
         if (this.password && this.login) {
             await this.validateUserData()
             if (this.state.loginIsValid && this.state.passwordIsValid && (this.passwordDoubler ? this.state.passwordDoublerIsValid : true)) {
+                console.log(this.login.current.value, this.password.current.value)
                 this.props.auth(this.login.current.value, this.password.current.value)
             }
         }
@@ -117,7 +118,14 @@ export default class AuthShape extends Component {
                 <input className={this.props.isError === true ? 'input-error mb-15' : 'mb-15'} type="password"
                        ref={this.password}/>
 
-                <small className={this.props.isError === true ? 'error' : 'hide'}>Неверный логин или пароль!</small>
+                <small className={'error'}>
+                    {!this.state.loginIsValid ? <div className={'mb-2'}>Почта не может быть пустой!</div> : null}
+                    {!this.state.passwordIsValid ?
+                        <div className={'mb-2'}>Пароль не может содержать менее 6 символов!</div>
+                        : null}
+                    {this.props.isError ? <div className={'mb-2'}>
+                        Вы указали некорректную почту!</div> : null}
+                </small>
 
                 <span className={'change-password'}
                       onClick={() => this.switchCurrentWin('resetPassword')}
@@ -220,6 +228,7 @@ export default class AuthShape extends Component {
     }
 
     render() {
+        console.log(this.props.isError)
         const winList = [
             {
                 win: 'signIn',
