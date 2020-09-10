@@ -54,10 +54,6 @@ class Admin extends Component {
         this.interactionWithEditModal()
     }
 
-    authAction = async (login, email) => {
-        await this.props.authAdmin(login, email)
-    }
-
     fetchDb = async () => {
         await this.props.fetchDataBase('couriers')
     }
@@ -135,7 +131,7 @@ class Admin extends Component {
                                         ?
                                         <AuthShape
                                             isError={this.props.error}
-                                            auth={this.authAction}
+                                            authHandler={this.props.authAdmin}
                                             currentWin={'signIn'}
                                         />
                                         : <>

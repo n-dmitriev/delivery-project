@@ -63,7 +63,7 @@ export function changeOrderData(status, data) {
                 }
                 case -1: {
                     courierId = ''
-                    description = 'Ваш заказ проверяется на корректность.'
+                    description = 'Курьер посчитал ваш заказ некорректно заполненым!.'
                     break
                 }
                 default: {
@@ -177,8 +177,8 @@ export function subscribeOrderInfo(courierId, status) {
 }
 
 // Подписка на списокк заказов
-export function subscribe(coordinates = null, skip = 0, ordersList = []) {
-    return async (dispatch) => {
+export function subscribe(coordinates = null, skip = 0) {
+    return async (dispatch, getState) => {
         dispatch(dispatchAction(FETCH_USER_START, null))
         const unsubscribe = await dataBase.collection('orders')
             .where('status', '==', 0).orderBy('id')
@@ -196,12 +196,13 @@ export function subscribe(coordinates = null, skip = 0, ordersList = []) {
                     }
                     if (change.type === 'modified') {
                         const data = change.doc.data()
+                        const ordersList = getState().userReducer.listOfCurrentOrders
                         const index = getElementById(ordersList, data.id)
+
                         if (index === -1) {
                             return null
                         }
-
-                        if (ordersList[index].status === 0) {
+                        if (data.status === 0) {
                             ordersList[index] = data
                             dispatch(dispatchAction(AL_CHANGE, ordersList))
                         } else {
@@ -211,8 +212,9 @@ export function subscribe(coordinates = null, skip = 0, ordersList = []) {
                     }
                     if (change.type === 'removed') {
                         const data = change.doc.data()
+                        const ordersList = getState().userReducer.listOfCurrentOrders
                         const index = getElementById(ordersList, data.id)
-                        ordersList[index] = data
+
                         if (index === -1) {
                             return null
                         }
@@ -250,5 +252,18 @@ export function removeLastSub() {
         const lastSub = unsubscribeList.pop()
         lastSub()
         dispatch(dispatchAction(REMOVE_LAST_S, unsubscribeList))
+    }
+}
+
+export function removeOrder(id) {
+    return (dispatch, getState) => {
+        const ordersList = getState().userReducer.listOfCurrentOrders
+
+        const index = getElementById(ordersList, id)
+        if (index === -1) {
+            return null
+        }
+        ordersList.splice(index, 1)
+        dispatch(dispatchAction(AL_CHANGE, [...ordersList]))
     }
 }

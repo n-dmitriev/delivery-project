@@ -14,7 +14,7 @@ export default class OrdersList extends Component {
             this.setState({
                 listIsOpen: true
             })
-            this.props.subscribeOrders(this.props.coordinate, 0, this.props.ordersList)
+            this.props.subscribeOrders(this.props.coordinate, 0)
         } else {
             const errorMessage = this.props.errorMessage.replace(/\s+/g, '') !== ''
                 ? this.props.errorMessage

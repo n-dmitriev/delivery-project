@@ -24,7 +24,7 @@ export default class InputInformation extends Component {
             nameIsValid: this.name.current.value.replace(/\s+/g, '') !== '',
             numberPhoneIsValid: this.numberPhone.replace(/\s+/g, '') !== '',
             addressIsValid: this.props.type === 'courier' ? this.address.current.value.replace(/\s+/g, '') !== '' :
-                Object.keys(this.state.infFromMap).length > 0
+                this.props.type === 'user' ? true : Object.keys(this.state.infFromMap).length > 0
         })
     }
 

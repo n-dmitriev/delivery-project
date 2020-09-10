@@ -107,7 +107,11 @@ class OrderModalForm extends Component {
 
     tryToOpenContacts = () => {
         if (this.props.isAuth) {
-            this.changeActiveWindow('contacts')
+            if (this.props.userInfo.deliveryValue) {
+                this.changeActiveWindow('contacts')
+            } else {
+                this.changeActiveWindow('map')
+            }
         } else {
             this.props.onClose()
             this.props.onOpenAuth()
@@ -295,11 +299,13 @@ class OrderModalForm extends Component {
 
     renderContactInformation = () => {
         return (
+            <div key={'order-form'}>
                 <ContactInformation
                     saveCurrentData={this.saveCurrentData}
                     interactionWithDagger={this.changeActiveWindow}
                     userInfo={this.props.userInfo}
                 />
+            </div>
         )
     }
 
@@ -315,7 +321,8 @@ class OrderModalForm extends Component {
                     />
                 </div>
                 <div className="button-section mt-15">
-                    <div className="main-item-style mr-2" onClick={() => this.changeActiveWindow('contacts')}>Назад</div>
+                    <div className="main-item-style mr-2" onClick={() => this.changeActiveWindow('contacts')}>Назад
+                    </div>
                     <div className="main-item-style" onClick={this.sendOrderHandler}>Зазказать</div>
                 </div>
             </div>

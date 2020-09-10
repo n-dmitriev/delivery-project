@@ -12,17 +12,15 @@ export default class DeliveryPanel extends Component {
         this.map = null
         this.ymaps = null
         this.route = null
+        this.state = {
+            valueIsValid: true,
+            coordinateCourier: '',
+            checkIsValid: true,
+            isEdit: false,
+            listIsOpen: false,
+            infFromMap: {}
+        }
     }
-
-    state = {
-        valueIsValid: true,
-        coordinateCourier: '',
-        checkIsValid: true,
-        isEdit: false,
-        listIsOpen: false,
-        infFromMap: {}
-    }
-
 
     handleApiAvaliable = ymaps => {
         this.ymaps = ymaps
@@ -32,7 +30,6 @@ export default class DeliveryPanel extends Component {
                 this.map.geoObjects.add(route)
             })
     }
-
 
     nextStep = async () => {
         const orderValue = parseInt(this.orderValue.current.value)
@@ -55,7 +52,7 @@ export default class DeliveryPanel extends Component {
             'завершить заказ', async () => {
                 this.props.unsubscribeAllOrders()
                 this.props.changeOrderData(3, this.props.orderInfo)
-                this.props.changePosition(this.props.orderInfo.coordinate, this.props.orderInfo.clientAddress, true, '')
+                this.props.changePosition(this.props.orderInfo.clientAddress, this.props.orderInfo.coordinate, true, '')
                 toaster.notify('Заказ завершён!', {
                     position: 'bottom-right',
                     duration: 3000

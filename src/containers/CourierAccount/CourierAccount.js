@@ -47,7 +47,7 @@ class CourierAccount extends Component {
         })
     }
 
-    authAction = async (login, email) => {
+    authHandler = async (login, email) => {
         await this.props.auth(login, email, true, 'couriers')
     }
 
@@ -130,7 +130,7 @@ class CourierAccount extends Component {
                                         ?
                                         <AuthShape
                                             isError={this.props.error}
-                                            auth={this.authAction}
+                                            authHandler={this.authHandler}
                                             currentWin={'signIn'}
                                         />
                                         : this.props.isAuth && JSON.parse(localStorage.getItem('path')) === '/courier-account/'
@@ -177,7 +177,7 @@ function mapDispatchToProps(dispatch) {
         logout: () => dispatch(logout()),
         passwordChange: (oldPassword, newPassword) => dispatch(passwordChange(oldPassword, newPassword)),
         auth: (email, password, isLogin, collection) => dispatch(authActions(email, password, isLogin, collection)),
-        subscribe: (coordinates, skip, ordersList) => dispatch(subscribe(coordinates, skip, ordersList)),
+        subscribe: (coordinates, skip) => dispatch(subscribe(coordinates, skip)),
         subscribeOrderInfo: (id, status) => dispatch(subscribeOrderInfo(id, status)),
         changeOrderData: (status, data) => dispatch(changeOrderData(status, data)),
         interactWithPurchased: (id, flag) => dispatch(interactWithPurchased(id, flag)),

@@ -63,7 +63,7 @@ export default class DeliveredOrder extends Component {
 
     render() {
         const deliveredOrder = this.props.orderInfo
-        if (deliveredOrder)
+        if (deliveredOrder) {
             return (
                 <div className={'courier-panel__delivered'}>
                     <div
@@ -123,6 +123,7 @@ export default class DeliveredOrder extends Component {
                     </div>
                 </div>
             )
+        }
         else return null
     }
 }

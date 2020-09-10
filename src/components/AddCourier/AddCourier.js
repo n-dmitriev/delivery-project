@@ -22,7 +22,7 @@ export default class AddCourier extends Component {
         this.props.ocClose()
     }
 
-    registrHandler = (email, password) => {
+    authHandler = (email, password) => {
         this.props.add(email, password)
         this.switchCurrentWin('input')
         toaster.notify('Курьер зарегистрирован!', {
@@ -35,7 +35,7 @@ export default class AddCourier extends Component {
         return <AuthShape
             currentWin={'signUp'}
             isError={this.props.error}
-            auth={this.registrHandler}
+            authHandler={this.authHandler}
             description={'курьера'}
         />
     }

@@ -32,14 +32,14 @@ export default class DeliveredItem extends Component {
                         <ul>
                             <li>{product.name}</li>
                             {
-                                product.brand !== '' ? product.brand : ''
+                                product.brand !== '' ? <li>{product.brand}</li> : ''
                             }
                             <li>{product.quantity}</li>
                             {
                                 product.price !== '' ? <li>{product.price}</li> : ''
                             }
                             {
-                                product.relation !== '' ? product.relation : ''
+                                product.relation !== '' ? <li>{product.relation}</li> : ''
                             }
                             {
                                 product.description !== '' ? <li>{product.description}</li> : ''
