@@ -36,6 +36,7 @@ export default class InputInformation extends Component {
 
             if (this.props.type === 'courier')
                 info = {
+                    id: this.props.courierId ? this.props.courierId : this.props.userInfo.id,
                     name: this.name.current.value,
                     numberPhone: this.numberPhone,
                     role: this.props.type,
@@ -96,10 +97,17 @@ export default class InputInformation extends Component {
     }
 
     render() {
-        let isEdit = false
-        if (this.props.userInfo && this.props.userInfo.clientNumberPhone) {
-            isEdit = true
-            this.numberPhone = this.props.userInfo.clientNumberPhone
+        let isEdit = false, name
+        if (this.props.userInfo) {
+            if (this.props.page === 'account' || 'order' ? this.props.userInfo.clientNumberPhone : false) {
+                isEdit = true
+                this.numberPhone = this.numberPhone ? this.numberPhone : this.props.userInfo.clientNumberPhone
+                name = this.name.current?.value ? this.name.current.value : this.props.userInfo.clientName
+            } else if (this.props.page === 'admin') {
+                isEdit = true
+                this.numberPhone = this.numberPhone ? this.numberPhone : this.props.userInfo.numberPhone
+                name = this.name.current?.value ? this.name.current.value : this.props.userInfo.name
+            }
         }
         return (
             <>
@@ -111,7 +119,7 @@ export default class InputInformation extends Component {
                     <input className={this.state.nameIsValid === false ? 'input-error mb-30' : 'mb-30'}
                            type="text"
                            ref={this.name}
-                           defaultValue={isEdit ? this.props.userInfo.clientName : null}
+                           defaultValue={isEdit ? name : null}
                            placeholder={'Иван Иванович'}
                     />
                 </div>
@@ -123,9 +131,11 @@ export default class InputInformation extends Component {
                         <IMaskInput
                             mask={'+{7}(000)000-00-00'}
                             unmask={false}
-                            onAccept={(value) => this.numberPhone = value}
+                            onAccept={(value) => {
+                                this.numberPhone = value
+                            }}
                             placeholder='+7 ('
-                            value={isEdit ? this.props.userInfo.clientNumberPhone : this.numberPhone}
+                            value={this.numberPhone}
                         />
                     </div>
                 </div>

@@ -13,6 +13,7 @@ localStorage.setItem('adminId', JSON.stringify(adminId))
 
 const initialState = {
     adminId: adminId,
+    courierId: '',
     error: false,
     users: [],
     couriers: [],
@@ -52,7 +53,7 @@ export default function authAdmin(state = initialState, action) {
         }
         case CREATE_NEW_COURIER_S: {
             return {
-                ...state, error: false
+                ...state, error: false, courierId: action.item
             }
         }
         case CREATE_NEW_COURIER_E: {

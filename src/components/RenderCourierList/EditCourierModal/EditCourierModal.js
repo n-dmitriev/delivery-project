@@ -17,6 +17,7 @@ export default class EditCourierModal extends Component {
                         saveContactInformation={this.saveContactInformation}
                         onClose={this.props.onClose}
                         type={'courier'}
+                        page={'admin'}
                         userInfo={this.props.userInfo}
                     />
                 </div>

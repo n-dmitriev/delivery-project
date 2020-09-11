@@ -51,6 +51,7 @@ export default class AddCourier extends Component {
 
     renderCourierInfoForm = () => {
         return <InputInformation
+            courierId={this.props.courierId}
             saveContactInformation={this.saveContactInformation}
             onClose={this.close}
             type={'courier'}

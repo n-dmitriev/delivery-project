@@ -47,10 +47,6 @@ class Admin extends Component {
         this.setState({
             editingCourier: courier
         })
-        toaster.notify('Данные курьера отредактированы!', {
-            position: 'bottom-right',
-            duration: 3000
-        })
         this.interactionWithEditModal()
     }
 
@@ -66,9 +62,19 @@ class Admin extends Component {
         this.props.removeCourier(id)
     }
 
+    setCourierInfo = (info) => {
+        toaster.notify('Данные курьера отредактированы!', {
+            position: 'bottom-right',
+            duration: 3000
+        })
+        this.props.setCourierInfo(info)
+    }
+
     renderAdminPanel = () => {
         return (
             <div>
+                <h1>Панель админа</h1>
+                <hr/>
                 <h2 className={'mb-15'}>Информация о заказах</h2>
 
                 <AdminPanelWithOrders
@@ -111,21 +117,20 @@ class Admin extends Component {
                     isOpen={this.state.isAddCourierOpen}
                     ocClose={this.interactionWithCourierModal}
                     setCourierInfo={this.props.setCourierInfo}
+                    courierId={this.props.courierId}
                 />
 
                 <EditCourierModal
                     isOpen={this.state.editModalIsOpen}
                     onClose={this.interactionWithEditModal}
-                    setCourierInfo={this.props.setCourierInfo}
+                    setCourierInfo={this.setCourierInfo}
                     userInfo={this.state.editingCourier}
                 />
                 <div className={'container'}>
                     <div className="row">
-                        <div className="col-lg-2 col-md-2 col-sm-0"></div>
+                        <div className="col-lg-2 col-md-2 col-sm-0"/>
                         <div className="col-lg-8 col-md-8 col-sm-12">
                             <div className="app__main-content">
-                                <h1>Панель админа</h1>
-                                <hr/>
                                 {
                                     this.props.adminId === null
                                         ?
@@ -142,7 +147,7 @@ class Admin extends Component {
                                 }
                             </div>
                         </div>
-                        <div className="col-lg-2 col-md-2 col-sm-0"></div>
+                        <div className="col-lg-2 col-md-2 col-sm-0"/>
                     </div>
                 </div>
             </div>
@@ -153,6 +158,7 @@ class Admin extends Component {
 function mapStateToProps(state) {
     return {
         adminId: state.adminReducer.adminId,
+        courierId: state.adminReducer.courierId,
         error: state.adminReducer.error,
         users: state.adminReducer.users,
         couriers: state.adminReducer.couriers,
