@@ -20,7 +20,7 @@ export default class MainPage extends Component {
 
                 <div className={'main-page__qualities'}>
                     <div className="row">
-                        <div className="col-4 main-page__quality">
+                        <div className="col-6 col-sm-6 col-md-4 main-page__quality">
                             <div className={'main-page__five-star fa-animate'}>
                                 <i className="fa fa-star-o" aria-hidden="true"/><i className="fa fa-star-o"
                                                                                    aria-hidden="true"/>
@@ -30,11 +30,11 @@ export default class MainPage extends Component {
                             </div>
                             <span>Удобство</span>
                         </div>
-                        <div className="col-4 main-page__quality">
+                        <div className="col-6 col-sm-6 col-md-4 main-page__quality">
                             <i className="fa fa-thumbs-o-up fa-animate" aria-hidden="true"/>
                             <span>Качество</span>
                         </div>
-                        <div className="col-4 main-page__quality">
+                        <div className="col-12 col-sm-12 col-md-4 main-page__quality">
                             <i className="fa fa-bolt fa-animate" aria-hidden="true"/>
                             <span>Скорость</span>
                         </div>

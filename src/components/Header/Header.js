@@ -84,11 +84,11 @@ export default class Header extends Component {
             } else if (this.props.path === '/user-account/') {
                 return (
                     <>
-                        <button className={'header__link'} onClick={this.checkTime}>
+                        <div className={'header__link'} onClick={this.checkTime}>
                             {/*<i className="fa fa-pencil" aria-hidden="true"/>*/}
                             {/*<span className={'name'}>Заказать</span>*/}
                             Заказать
-                        </button>
+                        </div>
                         <NavLink className={'header__link'}
                                  to={('/user-orders/' + this.props.id) || '/'}>
                             {/*<i className="fa fa-list" aria-hidden="true"/>*/}
@@ -125,8 +125,8 @@ export default class Header extends Component {
         return (
             <>
                 <header>
-                    <nav className={'header'}>
-                        <NavLink to={'/'} className={'header__title'}>
+                    <nav className={'header animate__slideInDown'}>
+                        <NavLink to={'/'} className={`header__title ${this.state.menuIsOpen ? 'open' : ''}`}>
                             <img className={'header__title-logo'} src={logo} alt="EasyWays"/>
                         </NavLink>
 

@@ -61,6 +61,10 @@
         position: relative;
         left: -30px;
       }
+
+     & .header__link {
+       margin: 0 auto 10px 0;
+     }
     }
   }
 
@@ -116,9 +120,15 @@
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 575px) {
   .header {
     box-shadow: none;
+    padding: 5px;
+  }
+
+  .header__title.open {
+    position: relative;
+    top: -46px;
   }
 
   .header__title-logo {

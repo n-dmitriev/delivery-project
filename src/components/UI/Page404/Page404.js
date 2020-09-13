@@ -7,9 +7,9 @@ export default class Page404 extends Component {
         return (
             <div className={'page-404'}>
                 <div className={'page-404__content'}>
-                    <h1 className={'text-danger mb-2'}>Ошибка 404</h1>
-                    <h2 className={'mb-4'}>Страница не найдена!</h2>
-                    <NavLink to={'/'} className={'btn btn-danger'}>
+                    <span className={'hit-the-floor'}>404</span>
+                    <span className={'hit-the-floor hit-the-floor_mini'}>Страница не найдена!</span>
+                    <NavLink to={'/'} className={'btn btn-danger mt-30'}>
                         На главную <i className="fa fa-home ml-1" aria-hidden="true"/>
                     </NavLink>
                 </div>

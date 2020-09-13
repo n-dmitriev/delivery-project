@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import './App.scss'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'animate.css/animate.min.css'
 import 'toasted-notes/src/styles.css'
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import 'react-sweet-progress/lib/style.css'
