@@ -42,25 +42,33 @@ export default class ContactInformation extends Component {
 
 
                 <div className="button-section mt-30">
-                    <button
-                        onClick={() => {
-                            this.props.interactionWithDagger('list')
-                        }}
-                        className="main-item-style main-item-style_danger mr-3">
-                        Назад
-                    </button>
-                    <button
-                        onClick={() => {
-                            this.props.interactionWithDagger('map')
-                        }}
-                        className="main-item-style mr-3 ">
-                        Редактировать
-                    </button>
-                    <button
-                        onClick={this.props.saveCurrentData}
-                        className="main-item-style">
-                        Далее
-                    </button>
+                    <div className="row text-center">
+                        <div className="col-6 col-sm-4">
+                            <button
+                                onClick={() => {
+                                    this.props.interactionWithDagger('list')
+                                }}
+                                className="main-item-style main-item-style_danger">
+                                Назад
+                            </button>
+                        </div>
+                        <div className="col-6 col-sm-4 text-center mb-2">
+                            <button
+                                onClick={() => {
+                                    this.props.interactionWithDagger('map')
+                                }}
+                                className="main-item-style">
+                                Изменить
+                            </button>
+                        </div>
+                        <div className="col-12 col-sm-4">
+                            <button
+                                onClick={this.props.saveCurrentData}
+                                className="main-item-style">
+                                Далее
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

@@ -42,3 +42,39 @@
     }
   }
 }
+
+@media (max-width: 500px) {
+  .footer {
+    .fa {
+      font-size: 30px !important;
+    }
+
+    &__logo {
+      &_e {
+        font-size: 31px !important;;
+      }
+
+      &_w {
+        font-size: 29px !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 370px) {
+  .footer {
+    .fa {
+      font-size: 27px !important;
+    }
+
+    &__logo {
+      &_e {
+        font-size: 28px !important;;
+      }
+
+      &_w {
+        font-size: 26px !important;
+      }
+    }
+  }
+}

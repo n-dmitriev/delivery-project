@@ -275,7 +275,7 @@ class OrderModalForm extends Component {
             <div key={'order-form'}>
                 <InputAddress
                     nextStep={this.nextStep}
-                    interactionWithDagger={this.changeActiveWindow}
+                    changeActiveWindow={this.changeActiveWindow}
                     setAddressInfo={this.setAddressInfo}
                     options={options}
                 />

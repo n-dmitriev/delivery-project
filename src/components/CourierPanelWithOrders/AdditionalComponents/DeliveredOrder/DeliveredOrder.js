@@ -75,11 +75,11 @@ export default class DeliveredOrder extends Component {
                                 ?
                                 <span>
                                         <i className="fa fa-arrow-left fa-animate" aria-hidden="true"/>
-                                        Вернуться к информации
+                                        К информации
                                     </span>
                                 :
                                 <span>
-                                        Перейти к заказу
+                                        К заказу
                                         <i className="fa fa-arrow-right fa-animate" aria-hidden="true"/>
                                     </span>
                         }

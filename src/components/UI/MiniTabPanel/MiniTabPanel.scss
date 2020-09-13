@@ -55,3 +55,15 @@
     }
   }
 }
+
+@media (max-width: 570px) {
+  .tab-panel, .tab-panel-invert {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 370px) {
+  .tab-panel, .tab-panel-invert {
+      font-size: 14px;
+    }
+}

@@ -55,6 +55,8 @@
   display: flex;
   flex-direction: column;
   width: 800px;
+  height: auto;
+
 
   .button-section {
     justify-content: center;
@@ -82,22 +84,50 @@
 
 @media (max-width: 500px) {
   .product-form__input-field {
-
     & label {
-      font-size: 15px !important;
+      font-size: 16px !important;
       margin-right: 0;
     }
 
+    & input {
+       font-size: 16px !important;
+     }
   }
 
-  & input {
-    font-size: 18px !important;
-  }
+
+}
+
+@media (max-width: 490px) {
+  .product-form {
+
+      &_h {
+        height: 610px;
+      }
+    }
 }
 
 @media (max-width: 370px) {
   .product-form {
     padding: 5px 10px 0 10px;
+
+    &_h {
+      height: 540px !important;
+    }
+
+    & .select {
+      margin-top: 15px;
+    }
+  }
+
+  .contact-information {
+    width: 300px;
+  }
+
+  .order-form {
+
+    & .tab-panel-invert {
+      top: -6px !important;
+    }
   }
 
   .product-form__input-field {
